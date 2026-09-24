@@ -12,7 +12,7 @@ export const CONFIG = {
   },
   ciudadRespaldo: 'Bogotá',
   // URL pública real (necesaria para que el QR apunte a tu dominio):
-  urlPublica: '',   // ej: 'https://tu-usuario.github.io/sinaptia/'
+  urlPublica: 'https://sinaptia.vercel.app',   // dominio de producción (canonical, og:url, QR)
   // Automatización de prospectos: POST JSON con el lead completo cuando acepta el PDF.
   // null = solo localStorage + PDF.
   webhookUrl: null,

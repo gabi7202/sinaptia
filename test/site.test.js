@@ -300,12 +300,26 @@ const blobs = [];
   const htmlCrudo = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
   t('el h1 tiene texto estático de respaldo (SEO y sin JS)',
     /<h1 class="greet" id="saludo">[A-ZÁÉÍÓÚÑ][^<]{10,}<span class="cur" hidden>/.test(htmlCrudo));
-  t('sin origen configurado, canonical y og:url se omiten (no pueden ser absolutos)',
-    !/rel="canonical"/.test(htmlCrudo) && !/property="og:url"/.test(htmlCrudo));
+  t('con urlPublica configurada, canonical y og:url son absolutos',
+    /rel="canonical" href="https:\/\/sinaptia\.vercel\.app\/"/.test(htmlCrudo) && /property="og:url" content="https:\/\/sinaptia\.vercel\.app\/"/.test(htmlCrudo));
   t('og:image y twitter:card presentes siempre',
     /property="og:image"/.test(htmlCrudo) && /name="twitter:card"/.test(htmlCrudo));
+  t('og:image apunta al og.png raíz en todas las páginas (no al directorio de la página)',
+    /property="og:image" content="https:\/\/sinaptia\.vercel\.app\/og\.png"/.test(htmlCrudo));
+  const vozCrudo = fs.readFileSync(path.join(DIST, 'voz/index.html'), 'utf8');
+  t('og:image de /voz también apunta a la raíz (regresión del 404 /voz/og.png)',
+    /property="og:image" content="https:\/\/sinaptia\.vercel\.app\/og\.png"/.test(vozCrudo) && !/\/voz\/og\.png/.test(vozCrudo));
   t('JSON-LD con Organization, Service y WebSite',
     /"Organization"/.test(htmlCrudo) && /"Service"/.test(htmlCrudo) && /"WebSite"/.test(htmlCrudo));
+  t('JSON-LD no expone precios ni ofertas (cero precios, también para crawlers)',
+    !/"price"\s*:/.test(htmlCrudo) && !/"offers"\s*:/.test(htmlCrudo) && !/priceCurrency/.test(htmlCrudo));
+  const audHtml = fs.readFileSync(path.join(DIST, 'auditoria.html'), 'utf8');
+  t('auditoria.html sin placeholders de plantilla', !/\{\{/.test(audHtml));
+  t('auditoria.html sin plazos prometidos en la copia (título, CTA, microcta)',
+    !/Auditoría IA de 20 minutos/.test(audHtml) && !/Tardarás unos 20 minutos/.test(audHtml) &&
+    !/Agendar 30 minutos/.test(audHtml) && !/en 14 días/.test(audHtml) && !/precio cerrado/.test(audHtml));
+  t('auditoria.html sin rango de precio propio visible (3.000–8.000 € fuera)', !/3\.000.8\.000/.test(audHtml));
+  t('auditoria.html: el CTA de llamada lleva a /voz (entrada contextual)', /href="\.\/voz"/.test(audHtml));
   t('og.png existe en el build', fs.existsSync(path.join(DIST, 'og.png')));
   t('sin agenda configurada, el CTA final no lleva a un enlace muerto',
     !d.querySelector('#contacto a[href*="tu-usuario"]') && !!d.getElementById('cta-agendar'));

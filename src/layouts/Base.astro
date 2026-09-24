@@ -22,7 +22,7 @@ const jsonLd = JSON.stringify({
       name: 'SINAPTIA',
       slogan: 'IA que entra en operación',
       url: origen || undefined,
-      logo: origen ? origen.replace(/\/$/, '') + ogImg : undefined,
+      logo: origen ? ogImg : undefined,
       contactPoint: { '@type': 'ContactPoint', email: CONFIG.marca.email, contactType: 'sales', availableLanguage: ['Spanish', 'English', 'Portuguese'] },
     },
     {
@@ -32,7 +32,7 @@ const jsonLd = JSON.stringify({
       provider: { '@id': (origen || '/') + '#organizacion' },
       areaServed: 'Worldwide',
       description: 'Diagnóstico de automatización con IA y una automatización real en producción dentro de la primera fase, para empresas medianas, emprendedores y startups.',
-      offers: { '@type': 'Offer', name: 'Diagnóstico de IA + piloto en la primera fase', price: '1800', priceCurrency: 'USD' },
+      // sin `offers`/price: decisión de marca = cero precios visibles (también para crawlers)
     },
     {
       '@type': 'WebSite',
@@ -58,7 +58,7 @@ const jsonLd = JSON.stringify({
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     {hayOrigen && <meta property="og:url" content={urlAbsoluta} />}
-    <meta property="og:image" content={urlAbsoluta.replace(/\/$/, '') + ogImg} />
+    <meta property="og:image" content={ogImg} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Sinaptia — diagnóstico de IA y una automatización real en producción en tu operación" />
@@ -68,7 +68,7 @@ const jsonLd = JSON.stringify({
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={urlAbsoluta.replace(/\/$/, '') + ogImg} />
+    <meta name="twitter:image" content={ogImg} />
     {hayOrigen && <link rel="canonical" href={urlAbsoluta} />}
     <script type="application/ld+json" set:html={jsonLd} />
   </head>
