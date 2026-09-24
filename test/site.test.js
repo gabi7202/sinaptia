@@ -325,16 +325,27 @@ const blobs = [];
   const idxC = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
   t('auditoria.html sin correo (mailto eliminado)', !/mailto:/.test(audHtml));
   t('auditoria.html con WhatsApp directo (wa.me/529834066179)', audHtml.includes('wa.me/529834066179'));
-  t('auditoria.html con ubicación Tapachula · México · CP 30794',
+  t('auditoria.html con ubicación SEO (Tapachula de Córdova y Ordóñez, Chiapas 30794, México)',
     audHtml.includes('Tapachula') && audHtml.includes('30794'));
   t('index sin correo hola@ (eliminado)', !idxC.includes('hola@sinaptialabs.com'));
-  t('index con WhatsApp directo en CTA/footer', idxC.includes('wa.me/529834066179'));
+  t('index con WhatsApp directo en el CTA', idxC.includes('wa.me/529834066179'));
   t('index con número legible +52 983 406 6179', idxC.includes('983 406 6179'));
-  t('index con ubicación Tapachula · México · CP 30794', idxC.includes('Tapachula') && idxC.includes('30794'));
+  t('index con ubicación SEO (Tapachula de Córdova y Ordóñez, Chiapas 30794, México)',
+    idxC.includes('Tapachula de Córdova y Ordóñez') && idxC.includes('30794'));
+  const footIdx = idxC.slice(idxC.indexOf('<footer'), idxC.indexOf('</footer>'));
+  t('footer limpio: sin WhatsApp ni dominio genérico (sinaptialabs.com)',
+    !footIdx.includes('wa.me') && !footIdx.includes('sinaptialabs.com'));
+  t('footer con la dirección SEO como único dato de contacto',
+    footIdx.includes('Tapachula de Córdova y Ordóñez') && footIdx.includes('30794'));
+  t('auditoria: pie sin dominio genérico ni WhatsApp (el CTA sí conserva wa.me)',
+    !audHtml.slice(audHtml.indexOf('class="foot"')).includes('sinaptialabs.com'));
   t('index JSON-LD: contactPoint por teléfono (no email)',
     /"telephone":\s*"\+529834066179"/.test(idxC) && !/"email":/.test(idxC));
   t('index JSON-LD: PostalAddress MX (Tapachula, Chiapas, 30794)',
     /"addressCountry":\s*"MX"/.test(idxC) && /"postalCode":\s*"30794"/.test(idxC));
+  t('index JSON-LD: dirección SEO completa (localidad oficial + GeoCoordinates + areaServed)',
+    /"addressLocality":\s*"Tapachula de Córdova y Ordóñez"/.test(idxC)
+    && /"GeoCoordinates"/.test(idxC) && /"areaServed"/.test(idxC));
   const priv = fs.readFileSync(path.join(DIST, 'privacidad', 'index.html'), 'utf8');
   t('privacidad: derechos/borrado por WhatsApp, sin mailto',
     priv.includes('wa.me/529834066179') && !/mailto:/.test(priv));

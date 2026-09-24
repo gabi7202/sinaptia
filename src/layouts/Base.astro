@@ -24,7 +24,16 @@ const jsonLd = JSON.stringify({
       url: origen || undefined,
       logo: origen ? ogImg : undefined,
       contactPoint: { '@type': 'ContactPoint', telephone: '+529834066179', contactType: 'sales', availableLanguage: ['Spanish', 'English', 'Portuguese'] },
-      address: { '@type': 'PostalAddress', addressLocality: 'Tapachula', addressRegion: 'Chiapas', postalCode: '30794', addressCountry: 'MX' },
+      // dirección en formato SEO local: PostalAddress completo + coordenadas (misma fuente que el footer, NAP consistente)
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: CONFIG.marca.direccion.localidad,
+        addressRegion: CONFIG.marca.direccion.region,
+        postalCode: CONFIG.marca.direccion.cp,
+        addressCountry: CONFIG.marca.direccion.pais,
+      },
+      geo: { '@type': 'GeoCoordinates', latitude: CONFIG.marca.direccion.geo.lat, longitude: CONFIG.marca.direccion.geo.lng },
+      areaServed: { '@type': 'Place', name: 'Worldwide' },
     },
     {
       '@type': 'Service',

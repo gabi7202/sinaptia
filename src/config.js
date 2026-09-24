@@ -9,7 +9,14 @@ export const CONFIG = {
     whatsapp: '9834066179',                    // WhatsApp directo (sin correo)
     whatsappLegible: '+52 983 406 6179',
     waLink: 'https://wa.me/529834066179',
-    ubicacion: 'Tapachula, Chiapas · México · CP 30794',
+    ubicacion: 'Tapachula de Córdova y Ordóñez, Chiapas 30794, México',  // formato NAP/SEO (idéntico en footer, auditoría y JSON-LD)
+    direccion: {                   // dirección estructurada para SEO local (schema.org)
+      localidad: 'Tapachula de Córdova y Ordóñez',
+      region: 'Chiapas',
+      cp: '30794',
+      pais: 'MX',
+      geo: { lat: 14.9057, lng: -92.2632 },   // coordenadas de la ciudad
+    },
     web: 'sinaptialabs.com',
     agenda: 'https://cal.com/tu-usuario/descubrimiento',
   },
