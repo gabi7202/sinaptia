@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
+import { FAQ } from '../src/lib/faq.js';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(RAIZ, 'dist');
@@ -254,6 +255,16 @@ const blobs = [];
   t('el QR y sus demos llevan a la llamada (?voz=1)',
     !!d.querySelector('#qr .qr-svg svg') && d.querySelectorAll('#qr a[href*="voz=1"]').length >= 3,
     'demos: ' + d.querySelectorAll('#qr a[href*="voz=1"]').length);
+  // Plan B del CTA principal: la voz no puede ser el único camino (permiso denegado,
+  // ruido, móvil, accesibilidad). El chat de texto tiene que estar visible y funcionar.
+  t('el bloque de voz ofrece un plan B visible por escrito', !!d.querySelector('#cta-escribir'));
+  d.querySelector('#cta-escribir').click();
+  await esperar(260);
+  t('y al tocarlo se abre el mismo agente con su caja de texto',
+    d.getElementById('panel').classList.contains('abierto') && !!d.getElementById('entrada'));
+  d.getElementById('cerrar').click();
+  await esperar(120);
+  t('las visitas capturan UTMs para atribuir campañas a leads', /utm_source/.test(htmlConBundle('index.html')));
   t('el selector de idioma pinta ES / EN / PT', d.querySelectorAll('#nav-id button').length === 3);
   d.querySelectorAll('#nav-id button')[1].click();
   await esperar(400);
@@ -303,12 +314,26 @@ const blobs = [];
   const textoVisible = visible.textContent;
   const plazos = textoVisible.match(/\b\d+\s*(d[ií]as|semanas|meses|minutos|min)\b/gi);
   t('ningún "X días / semanas / meses / minutos" en el texto visible', !plazos, plazos ? plazos.join(', ') : '');
+  // Regla de marca: CERO PLAZOS. Antes solo se miraban dígitos, así que "dos semanas"
+  // o "siete días" escritos con letra se colaban en la copia y en las respuestas del agente.
+  const PERMITIDOS = ['Costo de una hora de tu equipo', 'un día quiero terminar'];   // datos del cliente / modismo, no promesas
+  const textoMarca = PERMITIDOS.reduce((acc, f) => acc.split(f).join('«»'), textoVisible);
+  const plazosLetra = textoMarca.match(
+    /\b(un|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|one|two|three|four|five|six|seven)\s+(d[ií]a|d[ií]as|semana|semanas|mes|meses|hora|horas|minuto|minutos|day|days|week|weeks|month|months|hour|hours|minute|minutes)\b/gi);
+  t('ningún plazo escrito con letra ("dos semanas", "siete días") en la copia visible',
+    !plazosLetra, plazosLetra ? plazosLetra.join(', ') : '');
   // en este punto del test el idioma activo es EN (el test multilingüe lo cambió antes)
   const rPlazo = await decir('how long does a project like this take?');
   t('el agente tampoco promete plazos al responder',
     !/\b\d+\s*(days|weeks|months|d[ií]as|semanas|meses)\b/i.test(rPlazo.ultimo), rPlazo.ultimo.slice(0, 90));
   t('y explica que el ritmo sale de revisar el proceso',
     /process|review|depend|scope/i.test(rPlazo.ultimo), rPlazo.ultimo.slice(0, 90));
+  t('ni con letra ("two weeks") en la respuesta del agente',
+    !/\b(one|two|three|four|five|six|seven|un|una|dos|tres|cuatro|cinco|seis|siete)\s+(days?|weeks?|months?|d[ií]as?|semanas?|meses?)\b/i.test(rPlazo.ultimo),
+    rPlazo.ultimo.slice(0, 90));
+  const rUrgente = await decir('lo necesito para ayer, urgentemente');
+  t('ante la urgencia no suelta un plazo ("un piloto en dos semanas" fuera)',
+    !/\b(dos|tres|siete|\d+)\s+(semanas?|d[ií]as?)\b/i.test(rUrgente.ultimo), rUrgente.ultimo.slice(0, 90));
 
   console.log('\n\x1b[36m  SEO Y ROBUSTEZ (puntos de la revisión)\x1b[0m');
   const htmlCrudo = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
@@ -327,8 +352,18 @@ const blobs = [];
     /"Organization"/.test(htmlCrudo) && /"Service"/.test(htmlCrudo) && /"WebSite"/.test(htmlCrudo));
   t('JSON-LD no expone precios ni ofertas (cero precios, también para crawlers)',
     !/"price"\s*:/.test(htmlCrudo) && !/"offers"\s*:/.test(htmlCrudo) && !/priceCurrency/.test(htmlCrudo));
+  // GEO: los motores generativos citan respuestas cortas y marcadas como FAQ.
+  t('JSON-LD FAQPage presente con todas las preguntas',
+    /"FAQPage"/.test(htmlCrudo) && (htmlCrudo.match(/"@type":"Question"/g) || []).length === FAQ.length,
+    String((htmlCrudo.match(/"@type":"Question"/g) || []).length) + ' de ' + FAQ.length);
+  const respuestasIguales = FAQ.every(({ a }) => htmlCrudo.includes(JSON.stringify(a)));
+  t('el texto del FAQPage es idéntico al visible (Google exige coincidencia)', respuestasIguales);
+  t('las respuestas del FAQ no prometen plazos',
+    !FAQ.some(({ a }) => /\b(un|una|dos|tres|cuatro|cinco|seis|siete|\d+)\s+(d[ií]as?|semanas?|meses?|minutos?)\b/i.test(a)));
   const audHtml = fs.readFileSync(path.join(DIST, 'auditoria.html'), 'utf8');
   t('auditoria.html sin placeholders de plantilla', !/\{\{/.test(audHtml));
+  t('auditoria.html sin plazos propios con letra ("diagnóstico de dos semanas", "en seis semanas")',
+    !/dos semanas|seis semanas|siete d[ií]as|en \d+ semanas/i.test(audHtml));
   t('auditoria.html sin plazos prometidos en la copia (título, CTA, microcta)',
     !/Auditoría IA de 20 minutos/.test(audHtml) && !/Tardarás unos 20 minutos/.test(audHtml) &&
     !/Agendar 30 minutos/.test(audHtml) && !/en 14 días/.test(audHtml) && !/precio cerrado/.test(audHtml));

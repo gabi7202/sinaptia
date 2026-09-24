@@ -675,6 +675,16 @@ $('fab').onclick = abrir;
 $('cerrar').onclick = cerrar;
 $('nav-agente').onclick = abrir;
 $('cta-agente').onclick = abrir;
+
+/* Plan B siempre visible: quien no puede hablar (ruido, oficina, sin micrófono,
+   sin permiso del navegador) entra por texto al mismo agente. Mismo cerebro,
+   mismo embudo, otra puerta. */
+const ctaEscribir = $('cta-escribir');
+if (ctaEscribir) ctaEscribir.addEventListener('click', () => {
+  abrir();
+  bd.registrar('cta', { evento2: 'chat_texto' });
+  setTimeout(() => { try { entrada.focus(); } catch (_) {} }, 160);
+});
 $('enviar').onclick = () => enviar();
 $('pdfbtn').onclick = generarPdf;
 entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } });
@@ -777,9 +787,18 @@ function saludoDe(c) {
   return (pack.cuerdas && pack.cuerdas.saludoHora) ? pack.cuerdas.saludoHora(h) : c.saludo;
 }
 
+/* UTMs: si el visitante viene de una campaña, la guardamos con la visita para
+   poder atribuir leads y llamadas a cada origen (sin esto no se puede optimizar). */
+const utm = {};
+for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']) {
+  const v = PARAMS.get(k);
+  if (v) utm[k] = String(v).slice(0, 80);
+}
+
 funnel.marcar('visita', {
   origen: PARAMS.get('voz') === '1' ? 'qr' : PARAMS.get('negocio') ? 'demo-' + PARAMS.get('negocio') : (document.referrer ? 'referido' : 'directo'),
   idioma: pack.codigo,
+  ...utm,
 });
 
 resolverContexto().then((c) => {

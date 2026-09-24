@@ -134,24 +134,24 @@ export const SKILL = {
       decir: 'Te lo digo directo porque me lo preguntan mucho: esto no elimina personas, elimina tareas. ' +
              'El equipo deja de transcribir y contestar lo mismo cien veces, y pasa a hacer lo que una máquina ' +
              'no puede: negociar, cuidar al cliente y decidir. Los proyectos que prometen despedir gente son ' +
-             'los que se cancelan a los tres meses.',
+             'los primeros que se cancelan.',
       porque: 'Buscaba reemplazar personal; se reencuadró como eliminación de tareas, no de puestos.',
       retoma: 'Entonces: ¿qué tareas repetitivas quieres quitarle a tu equipo esta semana?',
     },
     {
       id: 'para_ayer',
       cuando: [/(para (ayer|mañana|esta semana)|en (una )?semana|urgentemente|ya mismo|inmediato)/i],
-      decir: 'Entiendo la urgencia, y hay una parte que sí puede ir rápido: un piloto real en dos semanas es ' +
-             'perfectamente posible. Lo que no existe es un sistema completo y confiable en siete días, y quien ' +
-             'te lo venda te lo va a entregar roto. Prefiero darte algo que funcione de verdad dentro de la primera fase, que algo rápido y roto.',
+      decir: 'Entiendo la urgencia, y hay una parte que sí puede ir rápido: la primera pieza real puede estar ' +
+             'funcionando pronto. Lo que no existe es un sistema completo y confiable de un día para otro, y quien ' +
+             'te lo promete te lo va a entregar roto. Prefiero darte algo que funcione de verdad dentro de la primera fase, que algo rápido y roto.',
       porque: 'Pedía plazos irreales; se ofreció una primera pieza dentro de la primera fase, sin prometer fechas.',
       retoma: 'Con eso en mente: ¿qué proceso querrías ver funcionando primero?',
     },
     {
       id: 'es_caro',
       cuando: [/(muy caro|carísimo|no tengo (presupuesto|plata|dinero)|no puedo pagar)/i],
-      decir: 'Legítimo. Ponlo en perspectiva: un administrativo cuesta entre 25 y 40 mil dólares al año y ' +
-             'trabaja ocho horas. Un sistema bien hecho cuesta eso una vez y trabaja siempre. Si aun así no es ' +
+      decir: 'Legítimo. Ponlo en perspectiva: un puesto administrativo te cuesta cada mes y trabaja ocho horas. ' +
+             'Un sistema bien hecho se paga una vez y trabaja siempre. Si aun así no es ' +
              'momento, el diagnóstico te sirve igual: te dice qué arreglar gratis y cuándo volver.',
       porque: 'Objeción de precio; se reencuadró contra el coste de un puesto y se ofreció vía de entrada.',
       retoma: '¿Qué te frena más: el monto o no estar seguro del retorno?',

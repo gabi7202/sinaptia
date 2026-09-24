@@ -1,5 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
+import { CONFIG } from '../config.js';
+import { faqJsonLd } from '../lib/faq.js';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import QueHace from '../components/QueHace.astro';
@@ -17,11 +19,17 @@ import AgentDock from '../components/AgentDock.astro';
 import Llamada from '../components/Llamada.astro';
 import Invitacion from '../components/Invitacion.astro';
 import Footer from '../components/Footer.astro';
+
+// FAQPage: mismo texto que la sección visible (Google exige coincidencia).
+// Ayuda a aparecer en resultados enriquecidos y a que los motores generativos
+// puedan citar nuestras respuestas tal cual.
+const faqLd = JSON.stringify(faqJsonLd(CONFIG.urlPublica));
 ---
 <Base
   title="SINAPTIA — IA que entra en operación"
   description="Un agente de IA que te saluda por tu ciudad y tu clima, entiende tu operación en una sola conversación, corrige lo que está mal planteado y te deja un brief en PDF con lo que de verdad conviene automatizar."
 >
+  <script type="application/ld+json" set:html={faqLd} />
   <Nav />
   <Hero />
   <QueHace />
