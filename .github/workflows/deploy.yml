@@ -2,9 +2,9 @@
 # Así no hace falta commitear dist/ (que está ignorado) ni romper la raíz del repo.
 name: Desplegar en GitHub Pages
 
+# Solo manual: el deploy real es Vercel (vercel.json). Pages queda como
+# respaldo activable desde la pestaña Actions (requiere habilitar Pages).
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
