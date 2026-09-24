@@ -5,6 +5,7 @@
  * JSON-LD FAQPage de la home (una fuente, dos salidas).
  */
 import { FAQ } from '../lib/faq.js';
+import CtaStrip from './CtaStrip.astro';
 ---
 <section id="faq">
   <div class="wrap wrap-narrow">
@@ -16,5 +17,6 @@ import { FAQ } from '../lib/faq.js';
         <details open={abierta || undefined}><summary>{q}</summary><p>{a}</p></details>
       ))}
     </div>
-  </div>
+      <CtaStrip titulo="¿Tu duda no está aquí? Pregúntasela directo a Nexa." nexa="Tengo una duda que no aparece en el FAQ y quiero preguntártela." />
+</div>
 </section>

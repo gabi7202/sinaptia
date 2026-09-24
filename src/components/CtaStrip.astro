@@ -1,0 +1,17 @@
+---
+/**
+ * CtaStrip.astro — Cierre de sección con dos puertas: Nexa (chat) y WhatsApp.
+ * Existe para que ninguna sección termine en el vacío: el prospecto que se
+ * convenció a mitad de página siempre tiene el siguiente paso a la vista.
+ */
+import { CONFIG } from '../config.js';
+
+const { titulo, nexa, whatsapp = 'Hola, vengo del sitio y quiero hablar sobre IA para mi negocio' } = Astro.props;
+---
+<div class="cta-strip">
+  <p>{titulo}</p>
+  <div class="cta-strip-row">
+    <button class="btn s sit-cta" data-sitmsg={nexa}>Pregúntale a Nexa</button>
+    <a class="btn s" href={`${CONFIG.marca.waLink}?text=${encodeURIComponent(whatsapp)}`} target="_blank" rel="noopener">WhatsApp directo</a>
+  </div>
+</div>

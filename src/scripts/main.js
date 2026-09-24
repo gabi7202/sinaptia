@@ -155,7 +155,7 @@ async function resolverContexto() {
 
 function escribir(el, texto, cb) {
   const curViejo = el.querySelector('.cur');
-  if (!CONFIG.ui.efectoEscritura) {
+  if (!CONFIG.ui.efectoEscritura || MENOS_MOVIMIENTO) {
     el.textContent = texto;
     if (curViejo) { curViejo.hidden = false; el.appendChild(curViejo); }
     if (cb) cb(); return;
@@ -423,6 +423,18 @@ function animarPagina() {
     });
   }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
   objetivos.forEach((el) => io.observe(el));
+}
+
+/* Las animaciones fuera de pantalla se pausan: el navegador deja de pintar
+   lo que nadie está mirando (menos CPU/GPU, menos fatiga visual al bajar). */
+function pausarAnimacionesFueraDeVista() {
+  if (MENOS_MOVIMIENTO || !('IntersectionObserver' in window)) return;
+  const animados = document.querySelectorAll(
+    '.hero, header, nav, .panel, .ticker, .lm, .qr-grid, section[id]');
+  const io = new IntersectionObserver((entradas) => {
+    entradas.forEach((e) => e.target.classList.toggle('anim-pausada', !e.isIntersecting));
+  }, { rootMargin: '250px' });
+  animados.forEach((el) => { el.classList.add('anim-pausable'); io.observe(el); });
 }
 
 /* Acordeón de situaciones: una abierta a la vez → nunca hay dos para comparar. */
@@ -732,7 +744,7 @@ function setIdioma(codigo) {
 }
 pintarIdiomas();
 
-alRalentizar(() => { acordeon(); animarPagina(); });
+alRalentizar(() => { acordeon(); animarPagina(); pausarAnimacionesFueraDeVista(); });
 const fab = $('fab');
 if (fab) fab.classList.add('oculto');
 

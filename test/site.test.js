@@ -265,6 +265,19 @@ const blobs = [];
   d.getElementById('cerrar').click();
   await esperar(120);
   t('las visitas capturan UTMs para atribuir campañas a leads', /utm_source/.test(htmlConBundle('index.html')));
+  // Cero puntos de fuga: cada sección termina con una puerta (Nexa o WhatsApp).
+  {
+    const estatico = htmlConBundle('index.html');
+    const sinCta = [];
+    const reSecciones = /<section[^>]*id="([^"]+)"[\s\S]*?<\/section>/g;
+    let m;
+    while ((m = reSecciones.exec(estatico))) {
+      const id = m[1];
+      if (id === 'contacto') continue; // esa sección ES el CTA final
+      if (!/<(a|button)[^>]*class="[^"]*(?:btn|qr-id|sit-cta)/.test(m[0])) sinCta.push(id);
+    }
+    t('ninguna sección termina sin CTA (puntos de fuga cerrados)', sinCta.length === 0, 'sin CTA: ' + sinCta.join(','));
+  }
   // El recurso gratuito estaba enterrado al final de una página larguísima.
   t('la auditoría gratuita es visible arriba y su ancla existe',
     !!d.querySelector('.hero-alt a[href="#auditoria"]') && !!d.querySelector('#auditoria'));

@@ -527,6 +527,18 @@ button.qr-id{font-family:inherit;cursor:pointer;margin-left:6px}
   transition:opacity .6s ease, transform .6s cubic-bezier(.22,.9,.3,1)}
 [data-reveal].revelado{opacity:1;transform:none}
 
+/* ── tira de CTA de fin de sección ───────────────────── */
+.cta-strip{margin-top:38px;padding:22px 24px;border:1px solid var(--borde);border-radius:16px;
+  background:var(--blanco);text-align:center}
+.cta-strip p{font-size:15.5px;font-weight:600;margin-bottom:14px}
+.cta-strip-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ── rendimiento: las secciones fuera de vista no se pintan ── */
+main section:not(.hero),body>section:not(#contacto){content-visibility:auto;contain-intrinsic-size:auto 720px}
+
+/* ── animaciones fuera de vista: en pausa (no compiten por CPU/GPU) ── */
+.anim-pausable.anim-pausada,.anim-pausable.anim-pausada *{animation-play-state:paused!important}
+
 /* ── menos movimiento: todo visible y quieto ─────────── */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;
