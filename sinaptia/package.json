@@ -19,6 +19,7 @@
   "license": "ISC",
   "description": "Sitio Astro que saluda con tu ciudad y tu clima, conversa como consultor, corrige planteamientos malos y entrega un brief en PDF. Estático (GitHub Pages) con backend opcional de voz real: Claude en streaming + Supabase (api/voz, solo Vercel).",
   "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
     "astro": "^5.18.2",
     "qrcode": "^1.5.4"
   },
