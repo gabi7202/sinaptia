@@ -22,10 +22,9 @@ export const CONFIG = {
   },
   voz: {
     lang: 'es-ES',
-    genero: 'auto',        // 'femenina' | 'masculina' | 'auto'
-    prefVoz: '',           // ej: 'es-MX' o el nombre exacto de una voz de tu sistema          // o 'es-MX', 'es-AR'… cambia también la voz elegida
-    autoEscucha: true,      // bucle de conversación: la IA habla y vuelve a escuchar
-    prefVoz: '',            // ej: 'es-MX' para forzar acento; vacío = la mejor 'es' disponible
+    genero: 'femenina',    // decisión de marca: Nexa habla con voz femenina. 'femenina' | 'masculina' | 'auto'
+    prefVoz: '',           // ej: 'es-MX' para forzar acento; vacío = la mejor voz femenina 'es' disponible
+    autoEscucha: true,     // bucle de conversación: la IA habla y vuelve a escuchar
     velocidad: 1.04,
     tono: 1,
   },

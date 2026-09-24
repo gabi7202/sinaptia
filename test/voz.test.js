@@ -200,6 +200,71 @@ await (async () => {
   v.detener();
 })();
 
+// N · Voz femenina: decisión de marca (2026-09). Por defecto, sin config y en los 3 idiomas.
+console.log('\n\x1b[36m  Voz femenina (decisión de marca)\x1b[0m\n');
+await (async () => {
+  const { tts, habladas } = mundo();
+  tts.voces = [
+    { lang: 'es-ES', name: 'Microsoft Jorge Desktop' },
+    { lang: 'es-ES', name: 'Microsoft Helena Desktop' },
+    { lang: 'en-US', name: 'Samantha' },
+  ];
+  const v = new Voz({ responder: (tx) => tx });   // sin conf: el default debe ser femenina
+  v.iniciar('Hola, soy Nexa.');
+  t('por defecto (sin config) elige la voz femenina, no la primera ni la masculina',
+    habladas[0].voice && /helena/i.test(habladas[0].voice.name), habladas[0].voice && habladas[0].voice.name);
+  v.detener();
+})();
+await (async () => {
+  const { tts, habladas } = mundo();
+  tts.voces = [
+    { lang: 'es-MX', name: 'Microsoft Raúl' },
+    { lang: 'es-MX', name: 'Microsoft Dalia' },
+    { lang: 'es-ES', name: 'Microsoft Helena' },
+  ];
+  const v = new Voz({ responder: (tx) => tx, conf: { lang: 'es-ES', prefVoz: 'es-MX', genero: 'femenina' } });
+  v.iniciar('Hola.');
+  t('la preferencia de acento no se salta el género: Dalia (es-MX, femenina)',
+    habladas[0].voice && /dalia/i.test(habladas[0].voice.name), habladas[0].voice && habladas[0].voice.name);
+  v.detener();
+})();
+await (async () => {
+  const { tts, habladas } = mundo();
+  tts.voces = [
+    { lang: 'en-US', name: 'Male EN' },
+    { lang: 'en-US', name: 'Female EN' },
+  ];
+  const v = new Voz({ responder: (tx) => tx, conf: { lang: 'en-US', genero: 'masculina' } });
+  v.iniciar('Hi.');
+  t('"Female" no cuela como voz masculina (frontera de palabra en \\bmale\\b)',
+    habladas[0].voice && habladas[0].voice.name === 'Male EN', habladas[0].voice && habladas[0].voice.name);
+  v.detener();
+})();
+await (async () => {
+  const { tts, habladas } = mundo();
+  tts.voces = [
+    { lang: 'es-ES', name: 'Microsoft Jorge' },
+    { lang: 'en-US', name: 'Samantha' },
+  ];
+  const v = new Voz({ responder: (tx) => tx });   // default femenina
+  v.iniciar('Hola.');
+  t('si no hay voz femenina en español, conserva el español (idioma > género)',
+    habladas[0].voice && habladas[0].voice.lang === 'es-ES', habladas[0].voice && habladas[0].voice.lang);
+  v.detener();
+})();
+await (async () => {
+  const { tts, habladas } = mundo();
+  tts.voces = [
+    { lang: 'pt-BR', name: 'Microsoft Antonio' },
+    { lang: 'pt-BR', name: 'Microsoft Francisca Online' },
+  ];
+  const v = new Voz({ responder: (tx) => tx, conf: { lang: 'pt-BR', prefVoz: 'pt-BR', genero: 'femenina' } });
+  v.iniciar('Olá.');
+  t('PT: elige Francisca (voz femenina en los tres idiomas del selector)',
+    habladas[0].voice && /francisca/i.test(habladas[0].voice.name), habladas[0].voice && habladas[0].voice.name);
+  v.detener();
+})();
+
 console.log('\n  \x1b[90m' + '─'.repeat(46) + '\x1b[0m');
 const total = ok + fallos.length;
 if (!fallos.length) console.log('  \x1b[32m' + ok + '/' + total + ' EN VERDE (100%)\x1b[0m · conversación por voz verificada');

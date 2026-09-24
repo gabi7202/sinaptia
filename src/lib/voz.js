@@ -42,7 +42,7 @@ export class Voz {
       velocidad: conf.velocidad || 1.04,
       tono: conf.tono || 1,
       prefVoz: conf.prefVoz || '',
-      genero: conf.genero || 'auto',
+      genero: conf.genero || 'femenina',   // decisión de marca: si nadie dice lo contrario, voz femenina
     };
     this.estado = ESTADOS.INACTIVA;
     this.activa = false;
@@ -66,8 +66,9 @@ export class Voz {
 
   /**
    * Elige la mejor voz disponible, no la primera. Criterios, en orden:
-   *  1. preferencia exacta (conf.prefVoz)
-   *  2. género pedido (conf.genero), por heurística de nombres conocidos
+   *  1. género de marca (conf.genero, por defecto 'femenina'), por heurística
+   *     de nombres conocidos — se respeta TAMBIÉN dentro de la preferencia de acento
+   *  2. preferencia de acento (conf.prefVoz), sin saltarse el género
    *  3. voces neurales/naturales (suenan humanas) antes que las robóticas
    *  4. coincidencia de idioma más específica (es-MX antes que es-)
    */
@@ -76,27 +77,36 @@ export class Voz {
     if (!todas.length) return null;
     const lang = (this.conf.lang || 'es').toLowerCase();
     const delIdioma = todas.filter((v) => v.lang && v.lang.toLowerCase().startsWith(lang.split('-')[0]));
-    const pref = this.conf.prefVoz;
-    if (pref) {
-      const p = delIdioma.find((v) => v.lang.toLowerCase().startsWith(pref.toLowerCase())) ||
-                todas.find((v) => v.lang && v.lang.toLowerCase().startsWith(pref.toLowerCase()));
-      if (p) return p;
-    }
-    const genero = this.conf.genero || 'auto';
-    const FEM = /helena|m[oó]nica|monica|paulina|luc[ií]a|lucia|pen[eé]lope|penelope|paloma|marisol|carmen|google espa|microsoft sabina|microsoft elvira|female|mujer/i;
-    const MAS = /jorge|carlos|diego|pablo|raul|raúl|andres|andr[eé]s|miguel|male|hombre|george|david/i;
-    const porGenero = genero === 'femenina' ? delIdioma.filter((v) => FEM.test(v.name))
-                    : genero === 'masculina' ? delIdioma.filter((v) => MAS.test(v.name))
-                    : [];
+    const genero = this.conf.genero || 'femenina';
+    // nombres femeninos reales de Windows (Helena, Laura, Sabina, Elvira…), macOS
+    // (Mónica, Paulina), Chrome (Google español), Edge neural (Dalia, Lorena…),
+    // EN (Samantha, Zira, Aria…) y PT (Maria, Francisca, Camila…). \bmale\b: ojo,
+    // "Female" contiene "male" — sin frontera de palabra colaría como masculina.
+    const FEM = /helena|laura|m[oó]nica|monica|paulina|luc[ií]a|lucia|pen[eé]lope|penelope|paloma|marisol|carmen|sabina|elvira|dalia|lorena|raquel|ximena|esperanza|isabela|francisca|camila|mar[ií]a|maria|conchita|lupe|rosario|juliana|samantha|victoria|karen|zira|aria|jenny|michelle|serena|susan|joana|helia|h[eé]lia|google espa|google portugu|google us english|female|mujer|femenin|woman/i;
+    const MAS = /jorge|carlos|diego|pablo|ra[uú]l|andres|andr[eé]s|miguel|enrique|pedro|daniel|alex|fred|george|david|hombre|var[oó]n|varon|\bmale\b|\bman\b/i;
     const NEURAL = /natural|neural|google|microsoft|enhanced|premium|online/i;
-    const lista = porGenero.length ? porGenero : delIdioma;
-    return (
+    const porGenero = (lista) => genero === 'femenina' ? lista.filter((v) => FEM.test(v.name))
+                             : genero === 'masculina' ? lista.filter((v) => MAS.test(v.name))
+                             : [];
+    const mejor = (lista) =>
       lista.find((v) => NEURAL.test(v.name)) ||
       lista.find((v) => v.lang && v.lang.toLowerCase() === lang) ||
-      lista[0] ||
+      lista[0] || null;
+    // preferencia explícita de acento: se respeta, pero dentro de ella manda el género
+    const pref = (this.conf.prefVoz || '').toLowerCase();
+    if (pref) {
+      const dePref = delIdioma.filter((v) => v.lang.toLowerCase().startsWith(pref))
+        .concat(todas.filter((v) => v.lang && v.lang.toLowerCase().startsWith(pref) && delIdioma.indexOf(v) === -1));
+      const conGenero = mejor(porGenero(dePref));
+      if (conGenero) return conGenero;
+      if (dePref.length) return mejor(dePref) || dePref[0];
+    }
+    // sin preferencia: el género del idioma; si no existe ninguna voz de ese
+    // género en el idioma, mejor hablar el idioma correcto con otra voz
+    const conGenero = porGenero(delIdioma);
+    return mejor(conGenero.length ? conGenero : delIdioma) ||
       todas.find((v) => NEURAL.test(v.name)) ||
-      todas[0] || null
-    );
+      todas[0] || null;
   }
 
   iniciar(saludoInicial) {

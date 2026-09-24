@@ -503,6 +503,7 @@ function asegurarVoz() {
     conf: {
       lang: pack.stt || (CONFIG.voz && CONFIG.voz.lang) || 'es-ES',
       autoEscucha: !CONFIG.voz || CONFIG.voz.autoEscucha !== false,
+      genero: (CONFIG.voz && CONFIG.voz.genero) || 'femenina',   // antes no se pasaba: el dock siempre caía en 'auto'
       prefVoz: pack.voz || (CONFIG.voz && CONFIG.voz.prefVoz) || '',
       velocidad: (CONFIG.voz && CONFIG.voz.velocidad) || 1.04,
       tono: (CONFIG.voz && CONFIG.voz.tono) || 1,

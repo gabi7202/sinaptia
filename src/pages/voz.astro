@@ -125,7 +125,7 @@ import { IDIOMAS } from '../lib/i18n.js';
         onEstado: (e) => { $('voz-card').dataset.estado = e; $('estado').textContent = estadoTxt(e); },
         onTranscripcion: (t, final) => { $('transcripcion').textContent = t; if (final) funnel.marcar('voz_turno'); },
         onRespuesta: (t) => { $('respuesta').textContent = t; },
-        conf: { lang: pack.stt, genero: (CONFIG.voz && CONFIG.voz.genero) || 'auto', prefVoz: pack.voz },
+        conf: { lang: pack.stt, genero: (CONFIG.voz && CONFIG.voz.genero) || 'femenina', prefVoz: pack.voz },
       });
       return voz;
     }
