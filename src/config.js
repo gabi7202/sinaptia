@@ -6,7 +6,10 @@ export const CONFIG = {
     nombre: 'SINAPTIA',
     agente: 'Nexa',
     tagline: 'IA que entra en operación',
-    email: 'hola@sinaptialabs.com',
+    whatsapp: '9834066179',                    // WhatsApp directo (sin correo)
+    whatsappLegible: '+52 983 406 6179',
+    waLink: 'https://wa.me/529834066179',
+    ubicacion: 'Tapachula, Chiapas · México · CP 30794',
     web: 'sinaptialabs.com',
     agenda: 'https://cal.com/tu-usuario/descubrimiento',
   },

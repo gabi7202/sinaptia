@@ -23,7 +23,8 @@ const jsonLd = JSON.stringify({
       slogan: 'IA que entra en operación',
       url: origen || undefined,
       logo: origen ? ogImg : undefined,
-      contactPoint: { '@type': 'ContactPoint', email: CONFIG.marca.email, contactType: 'sales', availableLanguage: ['Spanish', 'English', 'Portuguese'] },
+      contactPoint: { '@type': 'ContactPoint', telephone: '+529834066179', contactType: 'sales', availableLanguage: ['Spanish', 'English', 'Portuguese'] },
+      address: { '@type': 'PostalAddress', addressLocality: 'Tapachula', addressRegion: 'Chiapas', postalCode: '30794', addressCountry: 'MX' },
     },
     {
       '@type': 'Service',

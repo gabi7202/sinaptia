@@ -13,7 +13,7 @@ import { CONFIG } from '../config.js';
       ) : (
         <button class="btn p" id="cta-agendar">Agendar hablando con Nexa</button>
       )}
-      <a class="btn s" href={`mailto:${CONFIG.marca.email}`}>{CONFIG.marca.email}</a>
+      <a class="btn s" href={`${CONFIG.marca.waLink}?text=${encodeURIComponent('Hola, quiero hablar sobre IA para mi negocio')}`} target="_blank" rel="noopener">WhatsApp directo: {CONFIG.marca.whatsappLegible}</a>
     </div>
     <p class="cta-micro">Si al final de la llamada no vemos un caso claro de retorno, te lo diremos directamente.</p>
   </div>

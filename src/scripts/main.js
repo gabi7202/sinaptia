@@ -308,10 +308,10 @@ function generarPdf() {
   d.aviso('Lo que NO recomendamos automatizar: ' + P.no);
   d.sub('5 · Siguientes pasos');
   d.vineta('Revisar este brief con quien decida contigo.');
-  d.vineta('Agendar una llamada: ' + CONFIG.marca.agenda);
+  d.vineta('Escríbenos por WhatsApp: ' + CONFIG.marca.whatsappLegible + ' (' + CONFIG.marca.waLink + ')');
   d.vineta('Si se aprueba: kickoff y acceso a sistemas en la semana 1.');
   d.separador();
-  d.parrafo(CONFIG.pdf.pie + ' · ' + CONFIG.marca.email + ' · ' + CONFIG.marca.web);
+  d.parrafo(CONFIG.pdf.pie + ' · WhatsApp ' + CONFIG.marca.whatsappLegible + ' · ' + CONFIG.marca.web + ' · ' + CONFIG.marca.ubicacion);
   d.descargar(CONFIG.pdf.nombreArchivo + '-' + slug(L.empresa || L.nombre || 'brief') + '.pdf');
   burbuja('sys', 'PDF generado y descargado.');
 }

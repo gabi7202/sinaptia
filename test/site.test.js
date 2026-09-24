@@ -320,6 +320,24 @@ const blobs = [];
     !/Agendar 30 minutos/.test(audHtml) && !/en 14 días/.test(audHtml) && !/precio cerrado/.test(audHtml));
   t('auditoria.html sin rango de precio propio visible (3.000–8.000 € fuera)', !/3\.000.8\.000/.test(audHtml));
   t('auditoria.html: el CTA de llamada lleva a /voz (entrada contextual)', /href="\.\/voz"/.test(audHtml));
+
+  // Contacto: WhatsApp directo, ubicación México, sin correo
+  const idxC = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
+  t('auditoria.html sin correo (mailto eliminado)', !/mailto:/.test(audHtml));
+  t('auditoria.html con WhatsApp directo (wa.me/529834066179)', audHtml.includes('wa.me/529834066179'));
+  t('auditoria.html con ubicación Tapachula · México · CP 30794',
+    audHtml.includes('Tapachula') && audHtml.includes('30794'));
+  t('index sin correo hola@ (eliminado)', !idxC.includes('hola@sinaptialabs.com'));
+  t('index con WhatsApp directo en CTA/footer', idxC.includes('wa.me/529834066179'));
+  t('index con número legible +52 983 406 6179', idxC.includes('983 406 6179'));
+  t('index con ubicación Tapachula · México · CP 30794', idxC.includes('Tapachula') && idxC.includes('30794'));
+  t('index JSON-LD: contactPoint por teléfono (no email)',
+    /"telephone":\s*"\+529834066179"/.test(idxC) && !/"email":/.test(idxC));
+  t('index JSON-LD: PostalAddress MX (Tapachula, Chiapas, 30794)',
+    /"addressCountry":\s*"MX"/.test(idxC) && /"postalCode":\s*"30794"/.test(idxC));
+  const priv = fs.readFileSync(path.join(DIST, 'privacidad', 'index.html'), 'utf8');
+  t('privacidad: derechos/borrado por WhatsApp, sin mailto',
+    priv.includes('wa.me/529834066179') && !/mailto:/.test(priv));
   t('og.png existe en el build', fs.existsSync(path.join(DIST, 'og.png')));
   t('sin agenda configurada, el CTA final no lleva a un enlace muerto',
     !d.querySelector('#contacto a[href*="tu-usuario"]') && !!d.getElementById('cta-agendar'));
