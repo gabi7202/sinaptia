@@ -78,9 +78,23 @@ const blobs = [];
   const resuelto = await hasta(() => !$('ctx-temp').classList.contains('cargando'), 10000);
   t('resuelve el clima y sale del esqueleto', resuelto);
   t('la temperatura se pinta con unidad', /\d+°/.test($('ctx-temp').textContent), $('ctx-temp').textContent);
-  t('el cielo reacciona al clima (data-cielo válido)', ['despejado', 'nublado', 'lluvia', 'noche'].includes($('ctx-sky').dataset.cielo), $('ctx-sky').dataset.cielo);
+  t('el cielo reacciona al clima (data-cielo válido)', ['despejado', 'parcial', 'nublado', 'niebla', 'llovizna', 'lluvia', 'tormenta', 'nieve'].includes($('ctx-sky').dataset.cielo), $('ctx-sky').dataset.cielo);
   const cielo = $('ctx-sky').dataset.cielo;
-  t('el cielo tiene los elementos de su estado', cielo === 'noche' ? $('ctx-estrellas').children.length > 0 : cielo === 'lluvia' ? $('ctx-lluvia').children.length > 0 : true, 'cielo=' + cielo);
+  const momento = $('ctx-sky').dataset.momento;
+  t('el cielo marca día o noche (los iconos oficiales tienen versión nocturna)', ['dia', 'noche'].includes(momento), 'momento=' + momento);
+  const conGotas = ['llovizna', 'lluvia', 'tormenta'].includes(cielo);
+  t('el cielo tiene los elementos de su estado',
+    (conGotas ? $('ctx-lluvia').children.length > 0 : true) &&
+    (cielo === 'nieve' ? $('ctx-nieve').children.length > 0 : true) &&
+    (momento === 'noche' ? $('ctx-estrellas').children.length > 0 : true) &&
+    (['nublado', 'niebla'].includes(cielo) ? $('ctx-sky').querySelectorAll('.humo').length === 3 : true), 'cielo=' + cielo);
+  t('tormenta trae su relámpago y los demás no', $('ctx-rayo').hidden === (cielo !== 'tormenta'), 'cielo=' + cielo);
+  t('de noche sale la luna en cielo despejado o parcial; de día el sol',
+    (momento === 'noche' || cielo !== 'despejado' && cielo !== 'parcial') ? true : !$('ctx-sol').hidden, 'cielo=' + cielo);
+  t('el panel muestra la ficha del tiempo (hora, sensación, viento, humedad)',
+    !$('ctx-stats').hidden && /\d/.test($('ctx-hora').textContent) && !!$('ctx-sens') && !!$('ctx-viento') && !!$('ctx-humedad'),
+    $('ctx-hora').textContent);
+  t('el panel avisa que el clima se actualiza en vivo', !$('ctx-live').hidden && /actualizado/.test($('ctx-live').textContent));
   t('el panel no muestra esqueletos colgados tras resolver', !$('ctx-temp').classList.contains('cargando') && !$('ctx-cond').classList.contains('cargando'));
   t('la ciudad aparece en el tag del cielo', ($('ctx-ciudad-tag').textContent || '').length > 2, $('ctx-ciudad-tag').textContent);
   t('el panel ya no muestra fuentes, latencia ni badges', !$('ctx-fuentes') && !$('ctx-badge') && !$('ctx-badge-ref'));

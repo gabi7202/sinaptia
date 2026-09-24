@@ -48,19 +48,26 @@ export const SKILL = {
   // recitar el sitio: en una llamada, cada segundo de rodeo es distracción.
   saludoVoz: 'Hola, soy Nexa. Dime en una frase qué necesitas y te llevo directo.',
 
+  // Formato de sitio del tiempo oficial: ciudad, hora, temperatura, fenómeno
+  // y una nota práctica de una línea. Nada de consejo médico ni de salud.
   saludo: {
     plantilla:
-      '{saludo}. Llegas desde {ciudad}, donde ahora son las {hora} y hay {temp}° con {clima}. {tip}\n\n' +
-      'Soy {nombre}, el asistente de {empresa}. En un par de preguntas entiendo tu operación y te dejo ' +
-      'un brief en PDF con lo que de verdad te conviene automatizar — y lo que no.\n\n' +
+      '{saludo}. {ciudad}: {hora}, {temp}° y {clima}. {tip}\n\n' +
+      'Soy {nombre}, asistente de {empresa}. Con un par de preguntas entiendo tu operación y te dejo ' +
+      'un brief en PDF con lo que conviene automatizar — y lo que no.\n\n' +
       'Empiezo yo: ¿a qué se dedica tu empresa?',
     tips: {
-      calor:    'Con esa temperatura, un vaso de agua al lado no es opcional.',
-      frio:     'Hace frío: algo caliente al lado y seguimos.',
-      lluvia:   'Está lloviendo: buen momento para estar dentro pensando en esto.',
-      nublado:  'Cielo cubierto: luz perfecta para leer sin reflejos.',
-      despejado:'Día despejado: aprovecha, que esto va rápido.',
-      noche:    'Y a esta hora, trabajando: respeto.',
+      despejado: 'Cielo despejado: luz pareja todo el día.',
+      parcial:   'Sol y nubes por turnos.',
+      nublado:   'Cielo cubierto, sin lluvia a la vista.',
+      niebla:    'Niebla: visibilidad baja en carretera.',
+      llovizna:  'Llovizna intermitente: paraguas por si acaso.',
+      lluvia:    'Lluvia en la zona: paraguas a la mano.',
+      tormenta:  'Tormenta eléctrica: mejor quedarse dentro.',
+      nieve:     'Nieve: trayectos con calma.',
+      calor:     'Calor fuerte: salidas cortas y con sombra.',
+      frio:      'Frío a esta hora: abrigo listo antes de salir.',
+      noche:     'De noche el clima sigue aquí: se actualiza solo.',
     },
   },
 

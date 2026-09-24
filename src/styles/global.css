@@ -92,10 +92,17 @@ section{padding:72px 0}
 .ctx{position:relative;border-radius:18px;overflow:hidden;background:var(--blanco);
   border:1px solid var(--borde);box-shadow:var(--sombra-alta)}
 .ctx-sky{position:relative;height:104px;overflow:hidden;transition:background 1.2s ease}
-.ctx-sky[data-cielo="despejado"]{background:linear-gradient(180deg,#BBD9F7,#E8F1FC)}
+/* Gradientes de día por fenómeno (vocabulario de los símbolos oficiales) */
+.ctx-sky[data-cielo="despejado"],.ctx-sky[data-cielo="parcial"]{background:linear-gradient(180deg,#BBD9F7,#E8F1FC)}
 .ctx-sky[data-cielo="nublado"]{background:linear-gradient(180deg,#9FB4C8,#DCE6F0)}
+.ctx-sky[data-cielo="niebla"]{background:linear-gradient(180deg,#AEBAC6,#E6EBF0)}
+.ctx-sky[data-cielo="llovizna"]{background:linear-gradient(180deg,#8CA1B5,#C3D0DC)}
 .ctx-sky[data-cielo="lluvia"]{background:linear-gradient(180deg,#7E93A8,#B9C7D6)}
-.ctx-sky[data-cielo="noche"]{background:linear-gradient(180deg,#12233B,#2C4468)}
+.ctx-sky[data-cielo="tormenta"]{background:linear-gradient(180deg,#5B6E85,#93A5B8)}
+.ctx-sky[data-cielo="nieve"]{background:linear-gradient(180deg,#C4D2E0,#EEF3F8)}
+/* Versión nocturna: los iconos oficiales también la tienen */
+.ctx-sky[data-momento="noche"]{background:linear-gradient(180deg,#12233B,#2C4468)}
+.ctx-sky[data-momento="noche"][data-cielo="tormenta"]{background:linear-gradient(180deg,#0C1828,#1D3150)}
 .ctx-sky .sol{position:absolute;right:34px;top:22px;width:52px;height:52px;border-radius:50%;
   background:radial-gradient(circle at 35% 35%,#FFF3C4,#F59E0B 68%);
   box-shadow:0 0 34px 10px rgba(245,158,11,.35);animation:flota 7s ease-in-out infinite}
@@ -109,15 +116,58 @@ section{padding:72px 0}
   animation:gira 26s linear infinite;opacity:.55}
 @keyframes gira{to{transform:rotate(360deg)}}
 @keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.ctx-sky .nube{position:absolute;height:16px;border-radius:99px;background:rgba(255,255,255,.75);
-  animation:deriva linear infinite}
+/* Luna creciente de la versión nocturna (si mask no existe, queda luna llena) */
+.ctx-sky .luna{position:absolute;right:34px;top:20px;width:42px;height:42px;border-radius:50%;
+  background:radial-gradient(circle at 40% 38%,#FFFDF4,#D9E4F1 72%);
+  box-shadow:0 0 22px 6px rgba(220,230,245,.28);animation:flota 9s ease-in-out infinite;
+  -webkit-mask:radial-gradient(circle at 74% 26%,transparent 0 62%,#000 63%);
+  mask:radial-gradient(circle at 74% 26%,transparent 0 62%,#000 63%)}
+/* Nubes: solo en los cielos que las llevan, y del gris de cada fenómeno */
+.ctx-sky .nube{position:absolute;height:16px;border-radius:99px;background:rgba(255,255,255,.78);
+  display:none;animation:deriva linear infinite}
 .ctx-sky .nube.n1{width:88px;top:26px;left:-90px;animation-duration:26s}
 .ctx-sky .nube.n2{width:64px;top:48px;left:-70px;animation-duration:34s;opacity:.7}
 .ctx-sky .nube.n3{width:110px;top:64px;left:-110px;animation-duration:42s;opacity:.5}
+.ctx-sky[data-cielo="parcial"] .nube.n1,.ctx-sky[data-cielo="parcial"] .nube.n2{display:block}
+.ctx-sky[data-cielo="nublado"] .nube,.ctx-sky[data-cielo="niebla"] .nube,
+.ctx-sky[data-cielo="llovizna"] .nube,.ctx-sky[data-cielo="lluvia"] .nube,
+.ctx-sky[data-cielo="tormenta"] .nube,.ctx-sky[data-cielo="nieve"] .nube{display:block}
+.ctx-sky[data-cielo="nublado"] .nube{background:rgba(233,238,244,.92)}
+.ctx-sky[data-cielo="niebla"] .nube{background:rgba(240,244,248,.85)}
+.ctx-sky[data-cielo="llovizna"] .nube{background:rgba(203,213,224,.92)}
+.ctx-sky[data-cielo="lluvia"] .nube{background:rgba(186,198,211,.94)}
+.ctx-sky[data-cielo="tormenta"] .nube{background:rgba(148,163,180,.96)}
+.ctx-sky[data-cielo="nieve"] .nube{background:rgba(235,240,246,.92)}
+.ctx-sky[data-momento="noche"] .nube{background:rgba(120,138,160,.7)}
 @keyframes deriva{to{transform:translateX(560px)}}
+/* Humo: bandas difusas que derivan en cielo cubierto y en niebla */
+.ctx-sky .humo{position:absolute;width:200px;height:30px;border-radius:99px;filter:blur(12px);
+  background:rgba(255,255,255,.42);opacity:0;pointer-events:none}
+.ctx-sky .humo.h1{top:30px;left:-210px;--hd:26s;--hz:-4s}
+.ctx-sky .humo.h2{top:52px;left:-210px;--hd:34s;--hz:-14s}
+.ctx-sky .humo.h3{top:72px;left:-210px;--hd:44s;--hz:-24s}
+.ctx-sky[data-cielo="nublado"] .humo,.ctx-sky[data-cielo="niebla"] .humo{
+  animation:humo var(--hd) linear var(--hz) infinite}
+.ctx-sky[data-cielo="niebla"] .humo{background:rgba(248,250,252,.62);height:24px}
+.ctx-sky[data-momento="noche"] .humo{background:rgba(148,166,190,.3)}
+@keyframes humo{0%{transform:translateX(0) scaleY(.9);opacity:0}
+  12%,78%{opacity:1}100%{transform:translateX(680px) scaleY(1.3);opacity:0}}
 .ctx-sky .gota{position:absolute;top:-12px;width:1.6px;height:11px;border-radius:99px;
   background:linear-gradient(180deg,transparent,rgba(255,255,255,.85));animation:cae linear infinite}
+.ctx-sky .gota.fina{width:1.2px;height:7px;opacity:.7}
 @keyframes cae{to{transform:translateY(120px)}}
+/* Nieve: copos lentos con vaivén */
+.ctx-sky .copo{position:absolute;top:-8px;width:4px;height:4px;border-radius:50%;background:#fff;
+  box-shadow:0 0 4px rgba(255,255,255,.8);animation:caeCopo linear infinite}
+@keyframes caeCopo{0%{transform:translate(0,0)}25%{transform:translate(5px,32px)}
+  50%{transform:translate(-4px,62px)}75%{transform:translate(4px,92px)}100%{transform:translate(0,122px)}}
+/* Tormenta: destello doble con rayo, como en los iconos oficiales */
+.ctx-sky .rayo{position:absolute;inset:0;opacity:0;pointer-events:none;background:rgba(255,255,255,.5)}
+.ctx-sky .rayo::before{content:"";position:absolute;top:16px;left:40%;width:16px;height:36px;
+  background:#FFF3B8;clip-path:polygon(58% 0,22% 54%,46% 54%,30% 100%,82% 40%,54% 40%,78% 0);
+  filter:drop-shadow(0 0 8px rgba(255,240,160,.95))}
+.ctx-sky[data-cielo="tormenta"] .rayo{animation:relampago 7s linear infinite}
+@keyframes relampago{0%,88%,96%,100%{opacity:0}89%{opacity:.85}90.5%{opacity:.12}92%{opacity:.55}}
 .ctx-sky .estrella{position:absolute;width:2px;height:2px;border-radius:50%;background:#DCE6F0;
   animation:titila 3.4s ease-in-out infinite}
 @keyframes titila{0%,100%{opacity:.25}50%{opacity:.95}}
@@ -135,6 +185,16 @@ section{padding:72px 0}
   font-variant-numeric:tabular-nums}
 .ctx-temp small{font-size:17px;color:var(--tinta3);font-weight:500}
 .ctx-cond{font-size:13.5px;color:var(--tinta2)}
+/* Ficha de datos actuales, como en los sitios oficiales del tiempo */
+.ctx-stats{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:12px;font-size:12px;color:var(--tinta3)}
+.ctx-stats[hidden],.ctx-live[hidden]{display:none}
+.ctx-stats span{display:inline-flex;align-items:baseline;gap:5px}
+.ctx-stats b{font-size:13px;color:var(--tinta);font-variant-numeric:tabular-nums}
+.ctx-live{display:flex;align-items:center;gap:7px;margin-top:10px;font-family:var(--mono);
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tinta3)}
+.ctx-live i{width:7px;height:7px;border-radius:50%;background:var(--ok);
+  box-shadow:0 0 8px rgba(4,120,87,.5);animation:pulso 1.8s infinite}
+.ctx-live b{font-variant-numeric:tabular-nums}
 
 /* ── secciones genéricas ─────────────────────────────── */
 .sec-head{max-width:660px;margin-bottom:42px}

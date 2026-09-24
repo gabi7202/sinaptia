@@ -6,7 +6,7 @@
 import { CONFIG } from '../config.js';
 import { SKILL } from '../lib/skill.js';
 import { crearAgente } from '../lib/engine.js';
-import { obtenerContexto, geocodar } from '../lib/weather.js';
+import { obtenerContexto, geocodar, refrescar, cieloDe, descripcion, horaDe } from '../lib/weather.js';
 import { PDFDoc } from '../lib/pdf.js';
 import { Voz, ESTADOS } from '../lib/voz.js';
 import { packPor, IDIOMAS } from '../lib/i18n.js';
@@ -18,36 +18,50 @@ import { Memoria, textoRecuerdo } from '../lib/memoria.js';
 
 const $ = (id) => document.getElementById(id);
 
-/* ══════════ 1 · Panel de contexto vivo ══════════ */
+/* ══════════ 1 · Panel de contexto vivo (clima en tiempo real) ══════════ */
 
-function cieloPara(code, esDeNoche) {
-  if (esDeNoche) return 'noche';
-  if (code >= 95) return 'lluvia';
-  if (code >= 51 && code <= 82) return 'lluvia';
-  if (code === 3 || code === 45 || code === 48) return 'nublado';
-  if (code === 2) return 'nublado';
-  return 'despejado';
-}
-
-function vestirCielo(cielo) {
+/**
+ * Viste el cielo como los iconos de las páginas oficiales del tiempo:
+ * un símbolo por fenómeno (sol, nubes, humo/niebla, gotas, copos, relámpago)
+ * y su versión nocturna (luna + estrellas) cuando en la ciudad es de noche.
+ */
+function vestirCielo(ctx) {
   const sky = $('ctx-sky');
+  const cielo = cieloDe(ctx.code);
+  const momento = ctx.esDeNoche ? 'noche' : 'dia';
   sky.dataset.cielo = cielo;
-  $('ctx-sol').hidden = !(cielo === 'despejado');
-  // lluvia
+  sky.dataset.momento = momento;
+  // sol de día, luna de noche; en cielo cubierto se esconden (como en el icono oficial)
+  $('ctx-sol').hidden = !(momento === 'dia' && (cielo === 'despejado' || cielo === 'parcial'));
+  $('ctx-luna').hidden = !(momento === 'noche' && (cielo === 'despejado' || cielo === 'parcial'));
+  $('ctx-rayo').hidden = cielo !== 'tormenta';
+  // lluvia: más gotas y más rápidas cuanto más fuerte el código
   const ll = $('ctx-lluvia'); ll.innerHTML = '';
-  if (cielo === 'lluvia') {
-    for (let i = 0; i < 26; i++) {
-      const g = document.createElement('div');
-      g.className = 'gota';
-      g.style.left = Math.random() * 100 + '%';
-      g.style.animationDuration = (0.7 + Math.random() * 0.8) + 's';
-      g.style.animationDelay = (Math.random() * 1.6) + 's';
-      ll.appendChild(g);
+  const fuerte = [65, 66, 67, 82].includes(Number(ctx.code));
+  const gotas = cielo === 'llovizna' ? 16 : cielo === 'lluvia' ? (fuerte ? 34 : 26) : cielo === 'tormenta' ? 34 : 0;
+  for (let i = 0; i < gotas; i++) {
+    const g = document.createElement('div');
+    g.className = 'gota' + (cielo === 'llovizna' ? ' fina' : '');
+    g.style.left = Math.random() * 100 + '%';
+    g.style.animationDuration = (cielo === 'llovizna' ? 1.2 + Math.random() * 0.9 : 0.7 + Math.random() * 0.8) + 's';
+    g.style.animationDelay = (Math.random() * 1.6) + 's';
+    ll.appendChild(g);
+  }
+  // nieve: copos lentos con vaivén
+  const nv = $('ctx-nieve'); nv.innerHTML = '';
+  if (cielo === 'nieve') {
+    for (let i = 0; i < 22; i++) {
+      const c = document.createElement('div');
+      c.className = 'copo';
+      c.style.left = Math.random() * 100 + '%';
+      c.style.animationDuration = (3.4 + Math.random() * 3) + 's';
+      c.style.animationDelay = (Math.random() * 3) + 's';
+      nv.appendChild(c);
     }
   }
-  // estrellas
+  // estrellas: siempre que sea de noche en la ciudad del visitante
   const es = $('ctx-estrellas'); es.innerHTML = '';
-  if (cielo === 'noche') {
+  if (momento === 'noche') {
     for (let i = 0; i < 34; i++) {
       const e = document.createElement('div');
       e.className = 'estrella';
@@ -57,6 +71,65 @@ function vestirCielo(cielo) {
       es.appendChild(e);
     }
   }
+}
+
+/** Pinta el panel con los datos del contexto, como ficha de sitio del tiempo. */
+function pintarPanel(ctx) {
+  ctx.clima = descripcion(ctx.code, (typeof pack !== 'undefined' && pack && pack.codigo) || 'es');
+  vestirCielo(ctx);
+  $('ctx-ciudad-tag').textContent = ctx.ciudad;
+  $('ctx-temp').classList.remove('cargando');
+  $('ctx-temp').innerHTML = ctx.temp + '°<small>C</small>';
+  $('ctx-cond').classList.remove('cargando');
+  $('ctx-cond').textContent = ctx.clima;
+  // datos factuales: hora local, sensación, viento, humedad
+  $('ctx-hora').textContent = ctx.hora || '—';
+  $('ctx-sens').textContent = ctx.aparente != null ? ctx.aparente + '°' : '—';
+  $('ctx-viento').textContent = ctx.viento ? ctx.viento + ' km/h' : '—';
+  $('ctx-humedad').textContent = ctx.humedad != null ? ctx.humedad + '%' : '—';
+  $('ctx-stats').hidden = false;
+  $('ctx-live').hidden = false;
+  $('ctx-live-hora').textContent = ctx.actualizado || ctx.hora || '—';
+  const nav = $('nav-live');
+  nav.classList.remove('resolviendo');
+  if (!NEGOCIO) $('nav-live-txt').textContent = ctx.ciudad.toLowerCase() + ' · ' + ctx.temp + '° · ' + (ctx.hora || '');
+}
+
+/**
+ * Tiempo real: el reloj de la ciudad avanza solo y el clima se re-consulta
+ * cada 10 minutos (Open-Meteo refresca sus observaciones ~cada 15). Si una
+ * consulta falla, el panel se queda con lo último bueno: degrada, no se rompe.
+ */
+const RELOJ_MS = 15000;
+const CLIMA_MS = 10 * 60 * 1000;
+let ultimaSync = Date.now();
+
+async function reConsultarClima(getCtx) {
+  const ctx = getCtx();
+  if (!ctx || !ctx.preciso || document.hidden) return;
+  const fresco = await refrescar(ctx);
+  ultimaSync = Date.now();
+  if (fresco) pintarPanel(fresco);
+}
+
+function programarVivo(getCtx) {
+  setInterval(() => {
+    const ctx = getCtx();
+    if (!ctx) return;
+    const h = horaDe(ctx.zonaHoraria);
+    ctx.hora = h;
+    const el = $('ctx-hora');
+    if (el) el.textContent = h;
+    if (!NEGOCIO) {
+      const live = $('nav-live-txt');
+      if (live) live.textContent = ctx.ciudad.toLowerCase() + ' · ' + ctx.temp + '° · ' + h;
+    }
+  }, RELOJ_MS);
+  setInterval(() => reConsultarClima(getCtx), CLIMA_MS);
+  // al volver a la pestaña, si el clima envejeció, se pone al día enseguida
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && Date.now() - ultimaSync > 5 * 60 * 1000) reConsultarClima(getCtx);
+  });
 }
 
 async function resolverContexto() {
@@ -74,17 +147,7 @@ async function resolverContexto() {
   }
   const ms = Math.round(performance.now() - t0);
 
-  vestirCielo(cieloPara(ctx.code, ctx.esDeNoche));
-  $('ctx-ciudad-tag').textContent = ctx.ciudad;
-  $('ctx-temp').classList.remove('cargando');
-  $('ctx-temp').innerHTML = ctx.temp + '°<small>C</small>';
-  $('ctx-cond').classList.remove('cargando');
-  $('ctx-cond').textContent = ctx.clima;
-
-  const nav = $('nav-live');
-  nav.classList.remove('resolviendo');
-  $('nav-live-txt').textContent = ctx.ciudad.toLowerCase() + ' · ' + ctx.temp + '° · ' + ctx.hora;
-
+  pintarPanel(ctx);
   return ctx;
 }
 
@@ -641,6 +704,9 @@ function setIdioma(codigo) {
   window.__saludado = false;
   if (ctx) {
     ctx.saludo = saludoDe(ctx);
+    ctx.clima = descripcion(ctx.code, pack.codigo);   // el cielo también habla el nuevo idioma
+    const cond = $('ctx-cond');
+    if (cond) cond.textContent = ctx.clima;
     agente = crearAgente(pack, ctx);
     const s2 = agente.iniciar();
     iniciado = true;
@@ -727,6 +793,7 @@ resolverContexto().then((c) => {
     if (live) live.textContent = 'demo adaptada · ' + NEGOCIO.nombre.toLowerCase();
   }
   iniciado = true;
+  programarVivo(() => ctx);   // reloj de la ciudad + re-consulta del clima en vivo
   window.__primerMensaje = saludo;
   escribir($('saludo'), saludo.split('\n\n')[0], () => {
     if (pendiente) { const m = pendiente; pendiente = null; setTimeout(() => enviar(m), 350); }

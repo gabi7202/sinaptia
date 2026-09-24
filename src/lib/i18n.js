@@ -18,17 +18,22 @@ const en = {
 
   saludo: {
     plantilla:
-      '{greeting}. You are writing from {ciudad}, where it is {hora} and {temp}° with {clima}. {tip}\n\n' +
-      "I'm {nombre}, {empresa}'s assistant. In a couple of questions I'll understand your operation and " +
-      'leave you a one-page brief with what is worth automating — and what is not.\n\n' +
+      '{saludo}. {ciudad}: {hora}, {temp}° with {clima}. {tip}\n\n' +
+      "I'm {nombre}, {empresa}'s assistant. A couple of questions about your operation and I'll leave you " +
+      'a one-page PDF brief with what is worth automating — and what is not.\n\n' +
       'I will start: what does your company do?',
     tips: {
-      calor: 'With that heat, keep a glass of water close.',
-      frio: 'It is cold out there: something warm beside you, and let us talk.',
-      lluvia: 'Rain outside: good moment to be in here thinking about this.',
-      nublado: 'Overcast sky: perfect light to read without glare.',
-      despejado: 'Clear day: make the most of it, this goes fast.',
-      noche: 'And at this hour, still working: respect.',
+      despejado: 'Clear sky: even daylight all day.',
+      parcial: 'Sun and clouds taking turns.',
+      nublado: 'Overcast, no rain in sight.',
+      niebla: 'Fog: low visibility on the road.',
+      llovizna: 'Light drizzle on and off: umbrella just in case.',
+      lluvia: 'Rain in the area: keep an umbrella handy.',
+      tormenta: 'Thunderstorm nearby: better to stay in.',
+      nieve: 'Snow: take it slow on the road.',
+      calor: 'Hot out: short trips, walk in the shade.',
+      frio: 'Cold right now: grab a coat before heading out.',
+      noche: 'Night where you are: the weather keeps updating on its own.',
     },
   },
   correcciones: [
@@ -203,17 +208,22 @@ const pt = {
 
   saludo: {
     plantilla:
-      '{greeting}. Você fala de {ciudad}, onde agora são {hora} e faz {temp}° com {clima}. {tip}\n\n' +
-      'Sou {nombre}, assistente da {empresa}. Em um par de perguntas entendo sua operación e deixo um brief de uma ' +
-      'página com o que vale automatizar — e o que não vale.\n\n' +
+      '{saludo}. {ciudad}: {hora}, {temp}° com {clima}. {tip}\n\n' +
+      'Sou {nombre}, assistente da {empresa}. Com algumas perguntas entendo sua operação e deixo um brief ' +
+      'em PDF com o que vale automatizar — e o que não vale.\n\n' +
       'Começo eu: o que sua empresa faz?',
     tips: {
-      calor: 'Com esse calor, mantenha um copo de água por perto.',
-      frio: 'Está frio: algo quente ao lado e vamos conversar.',
-      chuva: 'Chuva lá fora: bom momento para estar aqui pensando nisso.',
-      nublado: 'Céu nublado: luz perfeita para ler sem reflexo.',
-      despejado: 'Dia limpo: aproveite, isto vai rápido.',
-      noite: 'E a esta hora, ainda trabalhando: respeito.',
+      despejado: 'Céu limpo: luz igual o dia todo.',
+      parcial: 'Sol e nuvens se revezando.',
+      nublado: 'Céu encoberto, sem chuva à vista.',
+      niebla: 'Neblina: visibilidade baixa na estrada.',
+      llovizna: 'Garoa de vez em quando: guarda-chuva por precaução.',
+      lluvia: 'Chuva na região: guarda-chuva à mão.',
+      tormenta: 'Tempestade por perto: melhor ficar dentro.',
+      nieve: 'Neve: vá com calma no trajeto.',
+      calor: 'Calor forte: saídas curtas e pela sombra.',
+      frio: 'Frio agora: casaco pronto antes de sair.',
+      noche: 'Noite por aí: o clima segue atualizando sozinho.',
     },
   },
   correcciones: [

@@ -1,14 +1,21 @@
 ---
 /* Consola de diagnóstico de contexto. Arranca en estado "cargando" con
-   esqueleto animado; main.js la resuelve y enciende cada señal escalonada. */
+   esqueleto animado; main.js la resuelve y enciende cada señal escalonada.
+   El cielo simula el fenómeno real (vocabulario de los servicios oficiales:
+   sol, luna, nubes, bandas de niebla/humo, gotas, copos, relámpago) con su
+   versión de día y de noche, y se re-consulta en vivo. */
 ---
 <aside class="ctx" aria-label="Lectura de contexto del visitante">
-  <div class="ctx-sky" id="ctx-sky" data-cielo="nublado">
+  <div class="ctx-sky" id="ctx-sky" data-cielo="nublado" data-momento="dia">
     <div class="scan"></div>
     <div class="sol" id="ctx-sol" hidden></div>
+    <div class="luna" id="ctx-luna" hidden></div>
+    <div class="humo h1"></div><div class="humo h2"></div><div class="humo h3"></div>
     <div class="nube n1"></div><div class="nube n2"></div><div class="nube n3"></div>
     <div id="ctx-lluvia"></div>
+    <div id="ctx-nieve"></div>
     <div id="ctx-estrellas"></div>
+    <div class="rayo" id="ctx-rayo" hidden></div>
     <div class="ciudad-tag">desde <b id="ctx-ciudad-tag">—</b></div>
   </div>
   <div class="ctx-body">
@@ -16,5 +23,12 @@
       <div class="ctx-temp cargando" id="ctx-temp">00°</div>
       <div class="ctx-cond cargando" id="ctx-cond">consultando el cielo…</div>
     </div>
+    <div class="ctx-stats" id="ctx-stats" hidden>
+      <span><b id="ctx-hora">--:--</b>hora local</span>
+      <span><b id="ctx-sens">—</b>sensación</span>
+      <span><b id="ctx-viento">—</b>viento</span>
+      <span><b id="ctx-humedad">—</b>humedad</span>
+    </div>
+    <div class="ctx-live" id="ctx-live" hidden><i></i>en vivo · actualizado <b id="ctx-live-hora">—</b></div>
   </div>
 </aside>

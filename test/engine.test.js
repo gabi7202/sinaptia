@@ -41,7 +41,33 @@ t('el saludo termina con la primera pregunta de descubrimiento', () => {
 });
 t('el tip de contexto aparece en el saludo', () => {
   const a = crearAgente(SKILL, { ...CTX, temp: 33, tipKey: 'calor' });
-  incluye(a.iniciar(), 'agua');
+  incluye(a.iniciar(), 'sombra');
+});
+t('plantillas sin placeholders huérfanos (regresión {greeting})', () => {
+  const conocidas = ['saludo', 'ciudad', 'temp', 'clima', 'hora', 'tip', 'nombre', 'empresa'];
+  for (const p of [PACKS.es, PACKS.en, PACKS.pt]) {
+    for (const m of (p.saludo.plantilla.match(/\{(\w+)\}/g) || [])) {
+      if (!conocidas.includes(m.slice(1, -1))) throw new Error(p.codigo + ' usa ' + m + ', que nadie rellena');
+    }
+  }
+});
+t('los tips son de clima: breves, cotidianos y sin pinta de consultorio', () => {
+  const claves = ['despejado', 'parcial', 'nublado', 'niebla', 'llovizna', 'lluvia', 'tormenta', 'nieve', 'calor', 'frio', 'noche'];
+  const medico = {
+    es: /\bagua\b|beb(?:e|er|ida)|hidrat|salud|m[ée]dic|doctor|protector|enferm|consultorio/i,
+    en: /\bwater\b|drink|hydrat|health|doctor|sunscreen|sick/i,
+    pt: /\b[áa]gua\b|beb(?:a|er)|hidrat|sa[úu]de|m[ée]dic|doutor|protetor|doen[çc]/i,
+  };
+  for (const p of [PACKS.es, PACKS.en, PACKS.pt]) {
+    for (const k of claves) {
+      if (typeof p.saludo.tips[k] !== 'string' || !p.saludo.tips[k]) throw new Error(p.codigo + ': falta el tip ' + k);
+    }
+    for (const [k, v] of Object.entries(p.saludo.tips)) {
+      const max = p.codigo === 'es' ? 70 : 95;
+      if (v.length > max) throw new Error('tip largo (' + p.codigo + '/' + k + '): ' + v);
+      if (medico[p.codigo].test(v)) throw new Error('tip con tono médico (' + p.codigo + '/' + k + '): ' + v);
+    }
+  }
 });
 
 console.log('\n\x1b[36m  FLUJO DE DESCUBRIMIENTO\x1b[0m');
