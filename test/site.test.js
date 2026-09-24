@@ -353,8 +353,20 @@ const blobs = [];
 
   console.log('\n\x1b[36m  SEO Y ROBUSTEZ (puntos de la revisión)\x1b[0m');
   const htmlCrudo = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
-  t('el h1 tiene texto estático de respaldo (SEO y sin JS)',
-    /<h1 class="greet" id="saludo">[A-ZÁÉÍÓÚÑ][^<]{10,}<span class="cur" hidden>/.test(htmlCrudo));
+  t('el h1 es único y estático; el tipeo del saludo va a un h2 (no pisa el h1)',
+    /<h1 class="greet" id="titulo">[A-ZÁÉÍÓÚÑ][^<]{10,}<\/h1>/.test(htmlCrudo) &&
+    /<h2 class="greet-sub" id="saludo">[^<]{10,}<span class="cur" hidden>/.test(htmlCrudo) &&
+    (htmlCrudo.match(/<h1/g) || []).length === 1);
+  const mFund = htmlCrudo.match(/<section id="fundadoras"[\s\S]*?<\/section>/);
+  t('sección de empresas fundadoras: framing de selección, 3 lugares y devolución íntegra',
+    !!mFund &&
+    /Estamos seleccionando 3 empresas fundadoras/.test(mFund[0]) &&
+    /Solo hay 3 lugares/.test(mFund[0]) &&
+    /te devolvemos el 100%/.test(mFund[0]) &&
+    !/USD|\$/.test(mFund[0]));
+  t('captura de email opcional en #contacto (segunda puerta junto a WhatsApp)',
+    /id="form-email"/.test(htmlCrudo) && /id="campo-email" type="email"/.test(htmlCrudo) &&
+    /wa\.me\/529834066179/.test(htmlCrudo));
   t('con urlPublica configurada, canonical y og:url son absolutos',
     /rel="canonical" href="https:\/\/sinaptia\.vercel\.app\/"/.test(htmlCrudo) && /property="og:url" content="https:\/\/sinaptia\.vercel\.app\/"/.test(htmlCrudo));
   t('og:image y twitter:card presentes siempre',

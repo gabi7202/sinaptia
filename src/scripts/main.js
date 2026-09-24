@@ -697,6 +697,29 @@ if (ctaEscribir) ctaEscribir.addEventListener('click', () => {
   bd.registrar('cta', { evento2: 'chat_texto' });
   setTimeout(() => { try { entrada.focus(); } catch (_) {} }, 160);
 });
+
+/* Captura de email opcional: segunda puerta para quien no usa WhatsApp.
+   Valida, registra en el funnel (local + remoto si hay backend) y confirma. */
+const formEmail = $('form-email');
+if (formEmail) formEmail.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const campo = $('campo-email');
+  const valor = (campo.value || '').trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valor)) {
+    campo.setAttribute('aria-invalid', 'true');
+    campo.focus();
+    return;
+  }
+  campo.removeAttribute('aria-invalid');
+  funnel.marcar('email', { email: valor });
+  bd.registrar('lead:email', { email: valor });
+  campo.value = '';
+  const ok = $('email-ok');
+  if (ok) ok.hidden = false;
+  campo.closest('.captura-row').hidden = true;
+  const etiqueta = formEmail.querySelector('label');
+  if (etiqueta) etiqueta.hidden = true;
+});
 $('enviar').onclick = () => enviar();
 $('pdfbtn').onclick = generarPdf;
 entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } });

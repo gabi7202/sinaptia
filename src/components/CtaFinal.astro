@@ -16,5 +16,15 @@ import { CONFIG } from '../config.js';
       <a class="btn s" href={`${CONFIG.marca.waLink}?text=${encodeURIComponent('Hola, quiero hablar sobre IA para mi negocio')}`} target="_blank" rel="noopener">WhatsApp directo: {CONFIG.marca.whatsappLegible}</a>
     </div>
     <p class="cta-micro">Si al final de la llamada no vemos un caso claro de retorno, te lo diremos directamente.</p>
+    <form class="captura-email" id="form-email" novalidate>
+      <label for="campo-email">¿Prefieres correo? Déjanos tu email y te enviamos por ahí el resumen
+        de la conversación. Opcional — WhatsApp sigue siendo la vía rápida.</label>
+      <div class="captura-row">
+        <input id="campo-email" type="email" name="email" placeholder="tu@empresa.com" autocomplete="email" />
+        <button class="btn s" type="submit">Guardar mi email</button>
+      </div>
+      <p class="captura-ok" id="email-ok" role="status" hidden>✓ Listo, quedó guardado. Solo lo usamos para
+        enviarte lo que pidas, y puedes pedir que se borre cuando quieras.</p>
+    </form>
   </div>
 </section>

@@ -1,0 +1,51 @@
+---
+/**
+ * Fundadoras.astro — Programa de empresas fundadoras.
+ * Framing de selección, no de pedido: SINAPTIA elige 3 empresas cuyos casos
+ * se puedan documentar, y a cambio da condiciones que no se vuelven a ofrecer.
+ * Sin precios visibles (regla de marca) y sin plazos: el diagnóstico se paga,
+ * se descuenta del proyecto completo y se devuelve íntegro si no hay caso claro.
+ */
+import CtaStrip from './CtaStrip.astro';
+---
+<section id="fundadoras" class="alt">
+  <div class="wrap wrap-narrow">
+    <div class="sec-head" style="text-align:center;margin-left:auto;margin-right:auto">
+      <div class="eyebrow" style="justify-content:center"><i></i> programa fundador · selección abierta</div>
+      <h2>Estamos seleccionando 3 empresas fundadoras</h2>
+      <p class="sec-lead">No pedimos que nos des una oportunidad: estamos construyendo nuestros casos
+        de referencia y <b>elegimos con quién</b>. Si tu operación se puede documentar y mostrar,
+        entras a condiciones que no volveremos a ofrecer.</p>
+    </div>
+    <div class="fund-grid">
+      <div class="fund-card">
+        <h3>Lo que recibes</h3>
+        <ul>
+          <li>Condiciones fundadoras cerradas por escrito, sin letra pequeña.</li>
+          <li>Acceso directo a quien construye tu agente: sin capas intermedias.</li>
+          <li>Todo lo que inviertas en el diagnóstico se descuenta del proyecto completo si continúas.</li>
+        </ul>
+      </div>
+      <div class="fund-card">
+        <h3>Lo que pedimos a cambio</h3>
+        <ul>
+          <li>Que el caso se pueda documentar: números reales, antes y después.</li>
+          <li>Ser la referencia de tu sector cuando esos resultados estén sobre la mesa.</li>
+        </ul>
+      </div>
+      <div class="fund-card">
+        <h3>Cómo funciona</h3>
+        <ul>
+          <li>El diagnóstico se paga: es trabajo real y deja fuera a quien no va en serio.</li>
+          <li>Si no encontramos un caso claro de retorno, te devolvemos el 100%.</li>
+          <li>Solo hay 3 lugares. Cuando se llenan, esta sección desaparece del sitio.</li>
+        </ul>
+      </div>
+    </div>
+    <CtaStrip
+      titulo="¿Tu operación podría ser uno de los 3 casos fundadores?"
+      nexa="Quiero postular mi empresa como fundadora. ¿Cómo es la selección?"
+      whatsapp="Hola, quiero postular mi empresa como fundadora de SINAPTIA"
+    />
+  </div>
+</section>
