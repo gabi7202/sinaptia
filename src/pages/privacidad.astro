@@ -11,7 +11,7 @@ import Base from '../layouts/Base.astro';
     <p>El agente conversa, guarda la conversación y genera tu brief en PDF dentro de tu navegador. Mientras no configures un destino remoto, esos datos viven solo en tu dispositivo (almacenamiento local) y puedes borrarlos cuando quieras desde tu navegador.</p>
 
     <h3 style="margin:26px 0 8px">2 · Lo que se consulta a servicios externos</h3>
-    <p>Para saludarte con tu ciudad y tu clima se consulta tu dirección IP a un servicio de geolocalización y el clima a Open-Meteo. Si fallan, el sitio degrada a una ciudad de referencia sin reintentar. Si prefieres no exponer tu IP, puedes navegar con el navegador en modo privado o bloquear esas peticiones: el sitio sigue funcionando.</p>
+    <p>Para saludarte con tu ciudad y mantener el panel de contexto en vivo (reloj local y cielo) se consulta tu dirección IP a un servicio de geolocalización y el clima a Open-Meteo. Si fallan, el sitio degrada a una ciudad de referencia sin reintentar. Si prefieres no exponer tu IP, puedes navegar con el navegador en modo privado o bloquear esas peticiones: el sitio sigue funcionando.</p>
 
     <h3 style="margin:26px 0 8px">3 · La voz</h3>
     <p>El reconocimiento de voz usa la función nativa del navegador. En Chrome de escritorio el audio se procesa en los servidores de Google (no es una integración nuestra, pero tampoco es 100% local); en Safari el procesamiento es local. El micrófono nunca se enciende sin un gesto tuyo, y puedes colgar en cualquier momento.</p>

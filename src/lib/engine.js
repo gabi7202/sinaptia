@@ -55,9 +55,13 @@
     };
 
     function vars() {
-      const t = S.saludo.tips[ctx.tipKey] || S.saludo.tips.nublado;
+      // tips: ningún pack los trae ya (la bienvenida no es del clima); se toleran
+      // por si un pack propio los define. El placeholder {tip} ya no se usa.
+      const tips = (S.saludo && S.saludo.tips) || {};
+      const t = tips[ctx.tipKey] || tips.nublado || '';
       return {
-        saludo: ctx.saludo || 'Hola', ciudad: ctx.ciudad || 'tu ciudad',
+        saludo: ctx.saludo || 'Hola',
+        ciudad: ctx.ciudad || (S.saludo && S.saludo.ciudadFallback) || 'tu ciudad',
         temp: ctx.temp != null ? ctx.temp : '—', clima: ctx.clima || 'cielo variable',
         hora: ctx.hora || '—', tip: t, nombre: S.identidad.nombre,
         empresa: S.identidad.empresa, nombreUsuario: lead.nombre || '',

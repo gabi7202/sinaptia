@@ -28,20 +28,22 @@ function nuevo() { const a = crearAgente(SKILL, CTX); a.iniciar(); return a; }
 console.log('\n\x1b[1m  SINAPTIA · Test del motor conversacional\x1b[0m\n');
 
 console.log('\x1b[36m  SALUDO Y CONTEXTO\x1b[0m');
-t('el saludo usa ciudad, hora, temperatura y clima reales', () => {
-  const a = nuevo(); const g = a.responder('hola'); // primer turno tras iniciar
+t('el saludo usa la ciudad real para vender valor local de IA', () => {
   // iniciar() devuelve el saludo; lo comprobamos directamente
   const a2 = crearAgente(SKILL, CTX); const saludo = a2.iniciar();
-  incluye(saludo, 'Bogotá'); incluye(saludo, '14:32'); incluye(saludo, '24');
-  incluye(saludo, 'parcialmente nublado'); incluye(saludo, 'Buenas tardes');
+  incluye(saludo, 'Bogotá'); incluye(saludo, 'Buenas tardes');
+  incluye(saludo, 'competencia'); incluye(saludo, 'marketing'); incluye(saludo, 'logística');
 });
 t('el saludo termina con la primera pregunta de descubrimiento', () => {
   const a = crearAgente(SKILL, CTX); const s = a.iniciar();
   incluye(s, '¿a qué se dedica tu empresa?');
 });
-t('el tip de contexto aparece en el saludo', () => {
-  const a = crearAgente(SKILL, { ...CTX, temp: 33, tipKey: 'calor' });
-  incluye(a.iniciar(), 'sombra');
+t('la bienvenida NO es del clima: sin hora, temperatura, fenómeno ni tips', () => {
+  const a = crearAgente(SKILL, { ...CTX, temp: 33, clima: 'cielo despejado', tipKey: 'calor' });
+  const s = a.iniciar();
+  noIncluye(s, '14:32', 'sin hora'); noIncluye(s, '33', 'sin temperatura');
+  noIncluye(s, 'despejado', 'sin fenómeno'); noIncluye(s, 'sombra', 'sin tip de clima');
+  noIncluye(s, 'parcialmente nublado', 'sin clima del contexto');
 });
 t('plantillas sin placeholders huérfanos (regresión {greeting})', () => {
   const conocidas = ['saludo', 'ciudad', 'temp', 'clima', 'hora', 'tip', 'nombre', 'empresa'];
@@ -51,23 +53,31 @@ t('plantillas sin placeholders huérfanos (regresión {greeting})', () => {
     }
   }
 });
-t('los tips son de clima: breves, cotidianos y sin pinta de consultorio', () => {
-  const claves = ['despejado', 'parcial', 'nublado', 'niebla', 'llovizna', 'lluvia', 'tormenta', 'nieve', 'calor', 'frio', 'noche'];
-  const medico = {
-    es: /\bagua\b|beb(?:e|er|ida)|hidrat|salud|m[ée]dic|doctor|protector|enferm|consultorio/i,
-    en: /\bwater\b|drink|hydrat|health|doctor|sunscreen|sick/i,
-    pt: /\b[áa]gua\b|beb(?:a|er)|hidrat|sa[úu]de|m[ée]dic|doutor|protetor|doen[çc]/i,
+t('packs limpios: sin tips de clima, sin plazos prometidos y sin cifras inventadas', () => {
+  // Regla de marca: CERO PLAZOS (también con letra) y nada de claims de dinero
+  // sin fuente. Se escanea TODO el texto de los tres packs, no solo el español.
+  const plazo = /\b(one|two|three|four|five|six|seven|eight|nine|ten|un|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|\d+)\s+(days?|weeks?|months?|d[ií]as?|semanas?|meses?)\b/i;
+  const diaFijo = /\b(d[ií]a|day|dia)\s*14\b/i;
+  const dinero = /25\s*(a|to|–|-)\s*40\s*(mil|thousand)|entre 25 y 40/i;
+  // modismos que no son promesas: "de un día para otro" = overnight
+  const MODISMOS = ['de un día para otro'];
+  const hallazgos = [];
+  const scan = (o, ruta) => {
+    if (typeof o === 'string') {
+      const s = MODISMOS.reduce((acc, f) => acc.split(f).join('«»'), o);
+      for (const [rx, etiqueta] of [[plazo, 'plazo'], [diaFijo, 'fecha fija'], [dinero, 'dinero inventado']]) {
+        const m = s.match(rx);
+        if (m) hallazgos.push(ruta + ' → ' + etiqueta + ': «' + m[0] + '»');
+      }
+    } else if (o && typeof o === 'object' && !(o instanceof RegExp)) {
+      for (const [k, v] of Object.entries(o)) scan(v, ruta + '.' + k);
+    }
   };
   for (const p of [PACKS.es, PACKS.en, PACKS.pt]) {
-    for (const k of claves) {
-      if (typeof p.saludo.tips[k] !== 'string' || !p.saludo.tips[k]) throw new Error(p.codigo + ': falta el tip ' + k);
-    }
-    for (const [k, v] of Object.entries(p.saludo.tips)) {
-      const max = p.codigo === 'es' ? 70 : 95;
-      if (v.length > max) throw new Error('tip largo (' + p.codigo + '/' + k + '): ' + v);
-      if (medico[p.codigo].test(v)) throw new Error('tip con tono médico (' + p.codigo + '/' + k + '): ' + v);
-    }
+    if (p.saludo.tips !== undefined) hallazgos.push(p.codigo + ': aún trae saludo.tips');
+    scan(p, p.codigo);
   }
+  if (hallazgos.length) throw new Error(hallazgos.join(' · '));
 });
 
 console.log('\n\x1b[36m  FLUJO DE DESCUBRIMIENTO\x1b[0m');

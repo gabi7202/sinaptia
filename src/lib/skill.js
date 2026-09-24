@@ -10,7 +10,7 @@
  * pide algo mal planteado. Corrige porque es lo útil, no porque quede bien.
  *
  * Los textos admiten placeholders entre {llaves} que el motor rellena:
- *   {ciudad} {temp} {clima} {tip} {saludo} {nombre} {empresa} {sector} {dolor}
+ *   {ciudad} {saludo} {nombre} {empresa} {sector} {dolor}
  */
 export const SKILL = {
 
@@ -44,31 +44,24 @@ export const SKILL = {
   },
 
   // ── Saludo inicial: se construye con los datos reales del visitante ─────────
-  // Saludo de VOZ: una línea y directo al motivo. Sin clima, sin ciudad, sin
-  // recitar el sitio: en una llamada, cada segundo de rodeo es distracción.
+  // Saludo de VOZ: una línea y directo al motivo. Sin ciudad ni recitados: en
+  // una llamada, cada segundo de rodeo es distracción.
   saludoVoz: 'Hola, soy Nexa. Dime en una frase qué necesitas y te llevo directo.',
 
-  // Formato de sitio del tiempo oficial: ciudad, hora, temperatura, fenómeno
-  // y una nota práctica de una línea. Nada de consejo médico ni de salud.
+  // La bienvenida NO es del tiempo: el sitio es de implementar IA, no de clima.
+  // La ciudad se usa para aterrizar el valor local de la IA (competencia,
+  // marketing, ofertas por eventos, logística). El cielo en vivo sigue en el
+  // panel de contexto: demuestra que el sitio lee datos reales, sin ser pronóstico.
   saludo: {
+    ciudadFallback: 'tu ciudad',
     plantilla:
-      '{saludo}. {ciudad}: {hora}, {temp}° y {clima}. {tip}\n\n' +
+      '{saludo}. En {ciudad}, la IA ya puede trabajar por tu negocio.\n\n' +
+      'Ahí donde estás puede analizar a tu competencia, darte análisis e ideas de marketing, ' +
+      'armar ofertas para el mercado local —o personalizadas por eventos de la zona— y ' +
+      'optimizar tu logística local: rutas, entregas y demanda.\n\n' +
       'Soy {nombre}, asistente de {empresa}. Con un par de preguntas entiendo tu operación y te dejo ' +
       'un brief en PDF con lo que conviene automatizar — y lo que no.\n\n' +
       'Empiezo yo: ¿a qué se dedica tu empresa?',
-    tips: {
-      despejado: 'Cielo despejado: luz pareja todo el día.',
-      parcial:   'Sol y nubes por turnos.',
-      nublado:   'Cielo cubierto, sin lluvia a la vista.',
-      niebla:    'Niebla: visibilidad baja en carretera.',
-      llovizna:  'Llovizna intermitente: paraguas por si acaso.',
-      lluvia:    'Lluvia en la zona: paraguas a la mano.',
-      tormenta:  'Tormenta eléctrica: mejor quedarse dentro.',
-      nieve:     'Nieve: trayectos con calma.',
-      calor:     'Calor fuerte: salidas cortas y con sombra.',
-      frio:      'Frío a esta hora: abrigo listo antes de salir.',
-      noche:     'De noche el clima sigue aquí: se actualiza solo.',
-    },
   },
 
   // ── Correcciones: el corazón de la skill ───────────────────────────────────
@@ -280,6 +273,6 @@ export const SKILL = {
                   'rango de inversión y — importante — lo que recomendamos NO automatizar. ' +
                   'Si quieres retomarlo con un humano, responde este correo o agenda desde el sitio.',
     despedidaNo: 'Sin problema. Cuando quieras retomarlo, estoy aquí y tu conversación queda guardada en este ' +
-                 'navegador. Suerte con {dolor}, y acuérdate de {tip}',
+                 'navegador. Suerte con {dolor}.',
   },
 };

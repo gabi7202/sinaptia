@@ -3,8 +3,9 @@
  *   node test/clima.test.js
  *
  * Verifica el vocabulario visual tipo sitio oficial del tiempo: cada código WMO
- * cae en un fenómeno válido, los tips casan con las claves de los packs, y las
- * traducciones de la descripción existen en los tres idiomas.
+ * cae en un fenómeno válido, las traducciones de la descripción existen en los
+ * tres idiomas, y la bienvenida del agente YA NO es del clima: la ciudad se usa
+ * para vender valor local de IA (el cielo queda solo en el panel de contexto).
  */
 import { CLIMA, CLIMA_EN, CLIMA_PT, cieloDe, tip, descripcion, refrescar, horaDe, saludoPor } from '../src/lib/weather.js';
 import { SKILL } from '../src/lib/skill.js';
@@ -38,14 +39,19 @@ t('los símbolos casan con el vocabulario oficial', () => {
   eq(cieloDe(95), 'tormenta'); eq(cieloDe(96), 'tormenta'); eq(cieloDe(99), 'tormenta');
 });
 
-t('el tip siempre existe en los tres idiomas', () => {
-  const casos = [[22, 0, false], [33, 1, false], [4, 3, false], [18, 45, false], [18, 53, false],
-    [18, 63, false], [18, 75, false], [18, 95, false], [22, 2, true], [33, 2, false], [4, 2, false], [22, 3, false]];
-  for (const [temp, code, noche] of casos) {
-    const k = tip(temp, code, noche);
-    for (const p of [PACKS.es, PACKS.en, PACKS.pt]) {
-      if (!p.saludo.tips[k]) throw new Error(p.codigo + ' no tiene tip «' + k + '» (temp=' + temp + ' code=' + code + ' noche=' + noche + ')');
+t('la bienvenida ya no es del tiempo: ningún pack trae tips de clima', () => {
+  for (const p of [PACKS.es, PACKS.en, PACKS.pt]) {
+    if (p.saludo.tips !== undefined) throw new Error(p.codigo + ' todavía carga saludo.tips');
+    if (typeof p.saludo.plantilla !== 'string' || !p.saludo.plantilla) throw new Error(p.codigo + ' sin plantilla');
+    // la plantilla no rellena ningún dato meteorológico
+    for (const ph of ['{temp}', '{clima}', '{hora}', '{tip}']) {
+      if (p.saludo.plantilla.includes(ph)) throw new Error(p.codigo + ' aún expone ' + ph + ' en el saludo');
     }
+  }
+  // weather.js sigue vivo para el panel de contexto: tip() conserva su vocabulario
+  const casos = [[22, 0, false], [33, 1, false], [18, 63, false], [18, 95, false], [22, 2, true]];
+  for (const [temp, code, noche] of casos) {
+    if (typeof tip(temp, code, noche) !== 'string') throw new Error('tip() roto para ' + code);
   }
 });
 
@@ -81,10 +87,22 @@ t('hora local y saludo por franja siguen vivos', () => {
   eq(saludoPor('07:10'), 'Buenos días'); eq(saludoPor('14:32'), 'Buenas tardes'); eq(saludoPor('22:00'), 'Buenas noches');
 });
 
-t('el saludo del motor lleva ciudad, hora, temperatura y clima (formato ficha)', () => {
-  // la plantilla ES expone todos los datos como ficha de sitio del tiempo
-  for (const ph of ['{saludo}', '{ciudad}', '{hora}', '{temp}', '{clima}', '{tip}']) {
-    if (!SKILL.saludo.plantilla.includes(ph)) throw new Error('la plantilla perdió ' + ph);
+t('el saludo lleva ciudad y valor local de IA (competencia, marketing, logística)', () => {
+  // la ciudad sigue siendo el ancla del saludo, pero para hablar de IA aplicada
+  for (const p of [PACKS.es, PACKS.en, PACKS.pt]) {
+    for (const ph of ['{saludo}', '{ciudad}']) {
+      if (!p.saludo.plantilla.includes(ph)) throw new Error(p.codigo + ': la plantilla perdió ' + ph);
+    }
+  }
+  const valor = {
+    es: ['competencia', 'marketing', 'logística'],
+    en: ['competition', 'marketing', 'logistics'],
+    pt: ['concorrência', 'marketing', 'logística'],
+  };
+  for (const p of [PACKS.es, PACKS.en, PACKS.pt]) {
+    for (const palabra of valor[p.codigo]) {
+      if (!p.saludo.plantilla.toLowerCase().includes(palabra)) throw new Error(p.codigo + ': falta «' + palabra + '»');
+    }
   }
   const primera = SKILL.saludo.plantilla.split('\n\n')[0];
   if (primera.length > 130) throw new Error('primera línea del saludo demasiado larga: ' + primera.length);

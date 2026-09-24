@@ -17,24 +17,15 @@ const en = {
   saludoVoz: "Hi, I'm Nexa. Tell me in one sentence what you need and I'll take you straight there.",
 
   saludo: {
+    ciudadFallback: 'your city',
     plantilla:
-      '{saludo}. {ciudad}: {hora}, {temp}° with {clima}. {tip}\n\n' +
+      '{saludo}. In {ciudad}, AI can already work for your business.\n\n' +
+      'Right where you are it can analyze your competition, give you marketing analysis and ideas, ' +
+      'build offers for the local market —or tailored to events in your area— and optimize your ' +
+      'local logistics: routes, deliveries and demand.\n\n' +
       "I'm {nombre}, {empresa}'s assistant. A couple of questions about your operation and I'll leave you " +
       'a one-page PDF brief with what is worth automating — and what is not.\n\n' +
       'I will start: what does your company do?',
-    tips: {
-      despejado: 'Clear sky: even daylight all day.',
-      parcial: 'Sun and clouds taking turns.',
-      nublado: 'Overcast, no rain in sight.',
-      niebla: 'Fog: low visibility on the road.',
-      llovizna: 'Light drizzle on and off: umbrella just in case.',
-      lluvia: 'Rain in the area: keep an umbrella handy.',
-      tormenta: 'Thunderstorm nearby: better to stay in.',
-      nieve: 'Snow: take it slow on the road.',
-      calor: 'Hot out: short trips, walk in the shade.',
-      frio: 'Cold right now: grab a coat before heading out.',
-      noche: 'Night where you are: the weather keeps updating on its own.',
-    },
   },
   correcciones: [
     { id: 'todo_automatico',
@@ -82,15 +73,15 @@ const en = {
       retoma: 'Then: which repetitive tasks do you want off your team this week?' },
     { id: 'para_ayer',
       cuando: [/(by yesterday|by tomorrow|this week|in a week|urgently|right now)/i],
-      decir: 'I understand the urgency, and one part can go fast: a real pilot in two weeks is perfectly possible. ' +
-             'What does not exist is a complete, reliable system in seven days, and whoever sells you that will ' +
-             'deliver it broken. I would rather give you something that truly works in the first phase than something fast and broken.',
+      decir: 'I understand the urgency, and one part can go fast: the first real piece can be up and running soon. ' +
+             'What does not exist is a complete, reliable system overnight, and whoever sells you that will ' +
+             'deliver it broken. I would rather give you something that truly works inside the first phase than something fast and broken.',
       porque: 'Asked for impossible deadlines; we offered a first piece inside the first phase, without promising dates.',
       retoma: 'With that in mind: which process would you like to see working first?' },
     { id: 'es_caro',
       cuando: [/(too expensive|very expensive|no budget|can'?t afford|no money)/i],
-      decir: 'Fair. Put it in perspective: an office hire costs 25 to 40 thousand dollars a year and works eight ' +
-             'hours. A well-built system costs that once and works always. If it still is not the moment, the ' +
+      decir: 'Fair. Put it in perspective: an office hire costs you every month and works eight hours. ' +
+             'A well-built system is paid for once and works always. If it still is not the moment, the ' +
              'diagnosis still helps: it tells you what to fix for free and when to come back.',
       porque: 'Price objection; reframed against the cost of a hire and offered an entry path.',
       retoma: 'What holds you back more: the amount, or not being sure of the return?' },
@@ -174,8 +165,8 @@ const en = {
     ],
     porDefecto: {
       titulo: 'Automation diagnosis',
-      que: 'An audited lift of your processes with impact-vs-viability scoring, and a real pilot in production before ' +
-           'day 14 to validate with data, not opinions.',
+      que: 'An audited lift of your processes with impact-vs-viability scoring, and a real pilot in production ' +
+           'inside the first phase to validate with data, not opinions.',
       fases: 'Phase 1: diagnosis + pilot. Phase 2: the winning process to full production. Phase 3: continuous ' +
              'operation and improvement.',
       inversion: '1,800 USD for the diagnosis, deducted from the next project',
@@ -207,24 +198,15 @@ const pt = {
   saludoVoz: 'Oi, sou a Nexa. Me diga em uma frase o que você precisa e eu te levo direto.',
 
   saludo: {
+    ciudadFallback: 'sua cidade',
     plantilla:
-      '{saludo}. {ciudad}: {hora}, {temp}° com {clima}. {tip}\n\n' +
+      '{saludo}. Em {ciudad}, a IA já pode trabalhar pelo seu negócio.\n\n' +
+      'Aí onde você está ela pode analisar sua concorrência, dar análises e ideias de marketing, ' +
+      'criar ofertas para o mercado local —ou personalizadas por eventos da sua região— e otimizar ' +
+      'a logística da sua zona: rotas, entregas e demanda.\n\n' +
       'Sou {nombre}, assistente da {empresa}. Com algumas perguntas entendo sua operação e deixo um brief ' +
       'em PDF com o que vale automatizar — e o que não vale.\n\n' +
       'Começo eu: o que sua empresa faz?',
-    tips: {
-      despejado: 'Céu limpo: luz igual o dia todo.',
-      parcial: 'Sol e nuvens se revezando.',
-      nublado: 'Céu encoberto, sem chuva à vista.',
-      niebla: 'Neblina: visibilidade baixa na estrada.',
-      llovizna: 'Garoa de vez em quando: guarda-chuva por precaução.',
-      lluvia: 'Chuva na região: guarda-chuva à mão.',
-      tormenta: 'Tempestade por perto: melhor ficar dentro.',
-      nieve: 'Neve: vá com calma no trajeto.',
-      calor: 'Calor forte: saídas curtas e pela sombra.',
-      frio: 'Frio agora: casaco pronto antes de sair.',
-      noche: 'Noite por aí: o clima segue atualizando sozinho.',
-    },
   },
   correcciones: [
     { id: 'todo_automatico',
@@ -300,7 +282,7 @@ const pt = {
     porDefecto: {
       titulo: 'Diagnóstico de automação',
       que: 'Um levantamento auditado dos seus processos com pontuação de impacto contra viabilidade, e um piloto real ' +
-           'em produção antes do dia 14 para validar com dados, não com opiniões.',
+           'em produção dentro da primeira fase para validar com dados, não com opiniões.',
       fases: 'Fase 1: diagnóstico + piloto. Fase 2: o processo vencedor em produção completa. Fase 3: operação ' +
              'contínua e melhoria.',
       inversion: '1.800 USD pelo diagnóstico, descontados do projeto seguinte',
