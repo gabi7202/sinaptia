@@ -230,3 +230,10 @@ Comprueba en este orden:
 
 Regla práctica: `git ls-tree --name-only HEAD` en tu clon debe listar `src` y `package.json`.
 Si no los lista, GitHub tiene el commit equivocado y Vercel heredó el 404.
+
+**Error ya vivido (2026-09-24):** el build terminaba `Complete!` y luego moría con
+`ERR_MODULE_NOT_FOUND`. Causa: `scripts/postbuild.mjs` importa `esbuild`, que en local existía
+como dependencia transitiva de Astro pero **no estaba declarada** en `package.json`, así que el
+`npm ci` de Vercel no lo instalaba. Arreglo aplicado: `esbuild` es dependencia directa
+(commit `2393f10`) y el postbuild degrada sin romper si falta. Ojo: **no** añadir `nodeVersion`
+a `vercel.json` — Vercel rechaza esa clave y falla el deploy antes de compilar (`761a2b0`).
