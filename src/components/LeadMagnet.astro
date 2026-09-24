@@ -1,0 +1,52 @@
+<section id="auditoria" class="lm">
+  <div class="wrap lm-grid">
+    <div>
+      <div class="eyebrow"><i></i> recurso gratuito</div>
+      <h2>¿Prefieres comprobarlo tú mismo antes de hablar con nadie?</h2>
+      <p class="sec-lead">Publicamos la auditoría que usamos en la primera fase de cada diagnóstico.
+        Son 24 preguntas sobre tu operación, sin reloj y a tu ritmo. Al terminar sabes exactamente
+        qué procesos te conviene automatizar, cuáles no, y cuánto te está costando cada uno.</p>
+      <ul class="lm-list">
+        <li>6 bloques: velocidad de respuesta, tareas repetitivas, datos y sistemas, procesos documentados, adopción del equipo y riesgo</li>
+        <li>Puntuación inmediata con 4 bandas de resultado y qué hacer en cada una</li>
+        <li>Los 5 procesos que casi siempre conviene automatizar primero — y los 3 que no</li>
+        <li>Los 4 errores que hunden la mayoría de proyectos de IA</li>
+        <li>Sin registro, sin seguimiento por correo y sin letra pequeña</li>
+      </ul>
+      <p class="lm-honest">Si al terminarla tu puntuación es baja, te lo diremos: significará que no te
+        compensa invertir en esto ahora. Preferimos eso a venderte un proyecto que no necesitas.</p>
+    </div>
+    <div class="lm-card">
+      <h3>Auditoría IA sin reloj</h3>
+      <div class="lm-price">Gratuita · descargable</div>
+      <div class="lm-facts">
+        <div><b>24</b><span>preguntas</span></div>
+        <div><b>sin reloj</b><span>a tu ritmo</span></div>
+        <div><b>72</b><span>puntos máx.</span></div>
+      </div>
+      <form class="lm-form" id="lmform">
+        <input type="email" name="email" id="lm-email" placeholder="Tu email de trabajo" aria-label="Email" />
+        <button type="submit" class="btn p">Abrir la auditoría</button>
+      </form>
+      <p class="lm-note" id="lmnote">Te enviamos el documento y nada más. Sin secuencias de correo automáticas.<br />
+        ¿No quieres dejar tu email? <a href="./auditoria.html">Ábrela directamente aquí</a>.</p>
+    </div>
+  </div>
+  <script>
+    import { CONFIG } from '../config.js';
+    const form = document.getElementById('lmform');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = (document.getElementById('lm-email') as HTMLInputElement).value.trim();
+        const ir = () => { location.href = './auditoria.html'; };
+        if (email && CONFIG.webhookUrl) {
+          fetch(CONFIG.webhookUrl, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ origen: 'lead-magnet', evento: 'solicitud_auditoria', email, ts: new Date().toISOString() }),
+          }).then(ir).catch(ir);
+        } else { ir(); }
+      });
+    }
+  </script>
+</section>

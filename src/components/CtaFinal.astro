@@ -1,0 +1,20 @@
+---
+import { CONFIG } from '../config.js';
+---
+<section id="contacto" class="cta-final">
+  <div class="wrap" style="text-align:center">
+    <div class="eyebrow" style="justify-content:center"><i></i> siguiente paso</div>
+    <h2>Una conversación para saber si la IA te sirve<br />y por dónde empezar</h2>
+    <p class="cta-lead">Sin presentación de ventas y sin compromiso. Revisamos tu operación, te decimos
+      con honestidad qué procesos valen la pena automatizar y cuáles no — y cuánto costaría cada uno.</p>
+    <div class="cta-row" style="justify-content:center">
+      {CONFIG.marca.agenda && !CONFIG.marca.agenda.includes('tu-usuario') ? (
+        <a class="btn p" href={CONFIG.marca.agenda}>Agendar llamada gratuita</a>
+      ) : (
+        <button class="btn p" id="cta-agendar">Agendar hablando con Nexa</button>
+      )}
+      <a class="btn s" href={`mailto:${CONFIG.marca.email}`}>{CONFIG.marca.email}</a>
+    </div>
+    <p class="cta-micro">Si al final de la llamada no vemos un caso claro de retorno, te lo diremos directamente.</p>
+  </div>
+</section>

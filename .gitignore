@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+*.log
+.DS_Store
+
+# Documentación interna de negocio: NUNCA publicar.
+# Viaja con el repo en local pero git la excluye del commit.
+docs-internos/

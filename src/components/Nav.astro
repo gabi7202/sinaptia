@@ -1,0 +1,23 @@
+---
+import { CONFIG } from '../config.js';
+---
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#">
+      <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true">
+        <g transform="translate(20,21)">
+          <path d="M0 0 L-11 -11" stroke="#1450A3" stroke-width="3.4" stroke-linecap="round"/>
+          <path d="M0 0 L12 -9" stroke="#1450A3" stroke-width="3.4" stroke-linecap="round"/>
+          <path d="M0 0 L0 12" stroke="#1D6FE0" stroke-width="3.4" stroke-linecap="round"/>
+          <circle cx="-11" cy="-11" r="3.4" fill="#1450A3"/><circle cx="12" cy="-9" r="3.4" fill="#1450A3"/>
+          <circle cx="0" cy="12" r="3.8" fill="#1D6FE0"/><circle cx="0" cy="0" r="6.4" fill="#1D6FE0"/>
+          <circle cx="0" cy="0" r="2.3" fill="#F4F7F9"/>
+        </g>
+      </svg>
+      <span>{CONFIG.marca.nombre}</span>
+    </a>
+    <div class="nav-id" id="nav-id" role="group" aria-label="Idioma"></div>
+    <div class="nav-live resolviendo" id="nav-live"><i></i><span id="nav-live-txt">resolviendo tu contexto…</span></div>
+    <button class="nav-cta" id="nav-agente">Hablar con el agente</button>
+  </div>
+</nav>

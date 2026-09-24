@@ -1,0 +1,31 @@
+{
+  "name": "sinaptia-prospect-agent",
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/postbuild.mjs",
+    "preview": "astro preview",
+    "test": "node test/engine.test.js && node test/pdf.test.js && node test/voz.test.js && node test/bd.test.js && node test/ia.test.js",
+    "test:engine": "node test/engine.test.js",
+    "test:pdf": "node test/pdf.test.js",
+    "test:site": "node test/site.test.js",
+    "test:all": "node test/engine.test.js && node test/pdf.test.js && node test/voz.test.js && node test/bd.test.js && node test/ia.test.js && node test/negocio.test.js && node test/funnel.test.js && node test/site.test.js",
+    "test:voz": "node test/voz.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Sitio Astro que saluda con tu ciudad y tu clima, conversa como consultor, corrige planteamientos malos y entrega un brief en PDF. Estático: se aloja en GitHub Pages.",
+  "dependencies": {
+    "astro": "^5.18.2",
+    "qrcode": "^1.5.4"
+  },
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  }
+}

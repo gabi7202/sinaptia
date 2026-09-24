@@ -1,0 +1,59 @@
+---
+/**
+ * /panel — Panel privado de embudo. Sin login: lee SOLO el localStorage de este
+ * navegador, así que es una vista de desarrollo/verificación, no la analítica
+ * real de todos los visitantes. La agregación real vive en tu remoto
+ * (webhook/Supabase), donde llegan los mismos eventos desde todos los navegadores.
+ */
+import Base from '../layouts/Base.astro';
+---
+<Base title="Panel de embudo — SINAPTIA" description="Vista local de eventos de embudo.">
+  <main class="wrap wrap-narrow" style="padding:56px 26px">
+    <div class="eyebrow"><i></i> panel local · sin cookies</div>
+    <h1 class="sec-title">Embudo de este navegador</h1>
+    <p class="sec-lead">Estos son los eventos de embudo guardados en este navegador. La analítica
+      real de todos tus visitantes se agrega en tu remoto configurado; aquí verificas que los
+      eventos se disparen correctamente.</p>
+
+    <div class="calc" style="margin-top:26px">
+      <div class="calc-head">
+        <h3>Pasos del embudo</h3>
+        <p>visita → calculadora → CTA → lead → llamada</p>
+      </div>
+      <div class="calc-out" id="panel-pasos"></div>
+      <p class="calc-sup" id="panel-tasas"></p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn s" id="panel-exportar">Exportar eventos (JSON)</button>
+        <button class="btn s" id="panel-limpiar">Borrar eventos locales</button>
+      </div>
+      <p class="calc-sup" id="panel-pendientes"></p>
+    </div>
+  </main>
+
+  <script>
+    import { BD } from '../lib/bd.js';
+    import { Funnel, PASOS } from '../lib/funnel.js';
+
+    const bd = new BD({});
+    const funnel = new Funnel(bd);
+
+    function pintar() {
+      const c = funnel.recuento();
+      const caja = document.getElementById('panel-pasos');
+      caja.innerHTML = PASOS.map((p) =>
+        `<div class="co"><span>${p}</span><strong>${c[p] || 0}</strong></div>`).join('') +
+        `<div class="co"><span>invitación mostrada</span><strong>${c.invitacion || 0}</strong></div>`;
+      const tasas = funnel.tasas();
+      document.getElementById('panel-tasas').textContent =
+        'Tasas: ' + tasas.map((t) => `${t.de} → ${t.a}: ${(t.tasa * 100).toFixed(0)}%`).join(' · ');
+      const r = funnel.resumen();
+      document.getElementById('panel-pendientes').textContent =
+        `Tasa global visita → llamada: ${(r.tasaGlobal * 100).toFixed(1)}% · ` +
+        `pendientes de sincronizar: ${r.pendientes}`;
+    }
+    pintar();
+
+    document.getElementById('panel-exportar').addEventListener('click', () => bd.exportar('sinaptia-eventos.json'));
+    document.getElementById('panel-limpiar').addEventListener('click', () => { bd.borrar(); pintar(); });
+  </script>
+</Base>
