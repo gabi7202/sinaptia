@@ -12,7 +12,10 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import esbuild from 'esbuild';
+// esbuild es dependencia declarada, pero si falta (p. ej. install parcial) el
+// sitio sigue siendo publicable: se omite el inlineado y solo se relativizan URLs.
+let esbuild = null;
+try { esbuild = (await import('esbuild')).default; } catch { /* sin inlineado */ }
 
 const DIST = path.resolve(new URL('../dist/', import.meta.url).pathname);
 let htmlTocados = 0, bundlesInlineados = 0;
@@ -44,6 +47,7 @@ async function procesar(f) {
     const rel = m[1].replace(/^\.\//, '').replace(/^\//, '');
     const file = path.join(path.dirname(f), rel);
     if (!fs.existsSync(file)) continue;
+    if (!esbuild) continue;
     const out = await esbuild.build({
       entryPoints: [file],
       bundle: true,
@@ -73,4 +77,6 @@ async function procesar(f) {
 }
 
 await walk(DIST);
-console.log(`  postbuild: ${htmlTocados} html · ${bundlesInlineados} bundle(s) inlineado(s)`);
+console.log(esbuild
+  ? `  postbuild: ${htmlTocados} html · ${bundlesInlineados} bundle(s) inlineado(s)`
+  : `  postbuild: ${htmlTocados} html · esbuild no disponible, sin inlinear (ok para servidor)`);
