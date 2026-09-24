@@ -34,7 +34,12 @@ export const CONFIG = {
 
   // IA real como cerebro. endpoint = URL de tu proxy (infra/worker-ia.js).
   // Sin endpoint, el agente sigue vivo con el motor determinista: degrada, no se rompe.
-  ia: { endpoint: '' },
+  //
+  // voz = backend completo de conversación (fusión A+B): Claude en streaming +
+  // memoria de clientes en Supabase + resumen automático a lead. Rutas en
+  // api/voz/* (solo Vercel; ver DEPLOY.md §6). En '/voz' activa el paso de
+  // consentimiento y la memoria en servidor. Vacío = todo local, como siempre.
+  ia: { endpoint: '', voz: '' },   // ej. voz: '/api/voz' desplegado en Vercel con las claves
 
   ui: { abrirAgenteSolo: false, efectoEscritura: true },
 };

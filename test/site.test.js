@@ -410,6 +410,13 @@ const blobs = [];
   t('la ruta /voz existe y abre directo, sin el resto del sitio',
     !dv.getElementById('nav-id') && !!dv.getElementById('orb') && !!dv.getElementById('idiomas'));
   t('ofrece elegir idioma: español, inglés y portugués', dv.querySelectorAll('#idiomas button').length === 3);
+  t('el paso de consentimiento viaja en el build (oculto hasta que aplica)', (() => {
+    const c = dv.getElementById('consent');
+    return !!c && c.hidden === true && !!dv.getElementById('consent-si') && !!dv.getElementById('consent-no');
+  })());
+  t('el paso de consentimiento queda horneado en el bundle', /sinaptia:consentVoz/.test(htmlConBundle('voz/index.html')));
+  t('con el backend apagado (default), el bundle NO incluye llamadas remotas: dead-code elimination',
+    !/backend_no_disponible/.test(htmlConBundle('voz/index.html')) && !/\/api\/voz/.test(htmlConBundle('voz/index.html')));
   dv.getElementById('orb').click();
   await esperar(500);
   t('saluda por voz en cuanto tocas el orbe', domV.window.__habladas.length >= 1,
@@ -432,6 +439,12 @@ const blobs = [];
   t('cambiar de idioma reinicia la conversación limpia',
     dv.getElementById('respuesta').textContent === '' && dv.getElementById('transcripcion').textContent === '');
   domV.window.close();
+
+  console.log('\n\x1b[36m  PÁGINA /panel: EMBUDO LOCAL + ANALÍTICA REAL DEL SERVIDOR\x1b[0m');
+  const panelHtml = fs.readFileSync(path.join(DIST, 'panel/index.html'), 'utf8');
+  t('/panel conserva el embudo local y las búsquedas', /panel-pasos/.test(panelHtml) && /panel-busquedas/.test(panelHtml));
+  t('/panel estrena el bloque de analítica del servidor', /panel-conectar/.test(panelHtml) && /x-panel-clave/.test(panelHtml));
+  t('la clave del panel se pide al vuelo: no viaja horneada en el HTML', /sessionStorage/.test(panelHtml) && !/x-panel-clave['"]?\s*:\s*['"][A-Za-z0-9]{8,}/.test(panelHtml));
 
   console.log('\n  \x1b[90m' + '─'.repeat(46) + '\x1b[0m');
   const total = ok + fallos.length;

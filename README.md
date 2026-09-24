@@ -39,10 +39,17 @@ sinaptia/                      ← esta carpeta ES el repositorio
 │   ├── config.js              ← LO ÚNICO QUE EDITAS PARA PERSONALIZAR
 │   ├── layouts/  components/  páginas y secciones
 │   ├── lib/                   skill.js (cerebro) · engine.js · weather.js · pdf.js
+│   │                          voz.js (habla+streaming) · remoto.js (cliente backend)
 │   ├── scripts/main.js        arranque: contexto, cielo, saludo, agente, animaciones
 │   └── styles/global.css
 ├── infra/worker-ia.js         proxy de IA (Cloudflare Worker) que guarda las claves
-├── test/                      194 tests (motor 30 · pdf 8 · voz 24 · bd 12 · ia 10 · negocio 21 · funnel 8 · sitio 81)
+├── api/ia.js                  función Vercel del proxy (mismo cerebro que el Worker)
+├── api/voz/                   ★ backend real (fusión A+B): session · chat (streaming)
+│                              end (resumen al colgar) · cron (rescate) · panel (analítica)
+├── server/                    núcleo del backend: claude.js (REST+SSE) · agente.js
+│                              resumen.js · nucleo.js (Supabase REST) · langs.js · schema.sql
+├── test/                      349 tests (motor 34 · pdf 8 · voz 42 · bd 12 · ia 10 · negocio 21
+│                              · funnel 8 · memoria 10 · sitio 94 · backend 89 · remoto 21)
 └── docs-internos/             TU PLAYBOOK DE NEGOCIO — ignorado por git, nunca se publica
 ```
 
@@ -54,12 +61,16 @@ sinaptia/                      ← esta carpeta ES el repositorio
 npm install
 npm run dev          # http://localhost:4321
 npm run build        # astro build + postbuild → dist/ portable
-npm run test:all     # 58 tests, incluida integración del BUILD con red real
+npm run test:all     # 349 tests, incluida integración del BUILD con red real
 ```
 
 La suite `test/site.test.js` carga `dist/index.html` tal cual sale de Astro en un DOM con red
 verdadera y recorre el flujo completo hasta el PDF. Es la que encontró los bugs reales
 (entre ellos que `new Blob([stringBinario])` codifica UTF-8 y rompía acentos y xref).
+
+`test/backend.test.js` prueba el cerebro del servidor sin red ni claves: un Supabase en
+memoria (PostgREST simulado) y un Claude falso que habla SSE. Cubre matching fuerte/débil
+de clientes, rate limit, normalización de historial, pipeline de resumen y las cinco rutas.
 
 ---
 
@@ -297,6 +308,37 @@ velocidad, tono y si el bucle de escucha está activo.
 
 Soporte: Chrome, Edge y Safari (escritorio y móvil). Firefox no implementa reconocimiento
 de voz web: ahí la llamada degrada a texto con aviso.
+
+## Backend real (opcional): Claude + Supabase — la fusión A+B
+
+La página `/voz` puede conectarse a un cerebro conversacional de verdad (rutas
+`api/voz/*` + núcleo en `server/`, todo **sin dependencias nuevas**: fetch plano contra
+PostgREST y la API SSE de Anthropic). Se activa con `src/config.js → ia.voz = '/api/voz'`
+y requiere desplegar en Vercel con claves (guía completa: `DEPLOY.md §6`, schema en
+`server/schema.sql`, referencia de variables en `.env.ejemplo`).
+
+Qué gana `/voz` cuando lo activas:
+
+- **Claude en streaming**: la primera frase suena antes de que el modelo termine de
+  escribir (`voz.js` encola frases que llegan por red; el barge-in las cancela igual).
+- **Memoria de clientes en servidor**: cookie httpOnly `vid` + tabla `leads` con matching
+  **fuerte** (teléfono / email / nombre+negocio → "¡Hola de nuevo, José!") y **débil**
+  (solo nombre → el agente pide confirmar SIN revelar qué tiene guardado). Multidispositivo
+  y privacy-aware, con tool use real (`buscar_cliente`).
+- **Consentimiento explícito y versionado** antes de grabar nada; sin aceptar, la
+  conversación sigue en modo local (nada viaja al servidor).
+- **Conversación → lead estructurado** al colgar (`/api/voz/end`): Haiku extrae intención,
+  urgencia, **frases textuales**, objeciones, herramientas actuales y siguiente paso.
+- **Cron de rescate** (diario): resume llamadas cortadas por batería o crash (>20 min).
+- **Higiene de producción**: rate limit 60 mensajes/hora/visitante, UUID estrictos,
+  mismo origen, system prompt anti prompt-injection y regla *cero plazos* heredada de A.
+- **`/panel` con analítica real**: totales, intenciones, urgencias, objeciones y frases
+  textuales de TODAS las conversaciones (protegido con `PANEL_SECRET`, que se pide al
+  vuelo y nunca se hornea en el sitio).
+
+Y lo más importante: **degrada, no se rompe**. Con `ia.voz` vacío el código remoto ni entra
+en el bundle (lo verifica `site.test.js`); con el backend caído, `/voz` avisa y sigue con
+el motor local sin cortar la llamada.
 
 ## Voz multilingüe y QR "escanea y habla"
 

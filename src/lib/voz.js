@@ -24,18 +24,25 @@ export class Voz {
   /**
    * @param {object} opts
    * @param {Function} opts.responder   (texto) => { texto, ... }  · el agente
+   * @param {Function} [opts.responderStream] (texto, emitir) => Promise<{texto,error}>
+   *        Backend en streaming (remoto.js): emitir(frase) encola cada frase
+   *        completa en cuanto llega, y la voz empieza a hablar ANTES de que la
+   *        respuesta termine. Si existe, tiene prioridad sobre responder.
    * @param {Function} opts.onEstado    (estado) => void
    * @param {Function} opts.onTranscripcion (texto, esFinal) => void
    * @param {Function} opts.onRespuesta (texto, r) => void
    * @param {Function} [opts.onPatron]  (intencion) => void · patrón detectado en el turno
+   * @param {Function} [opts.onError]   (error, r) => void · p.ej. 'limit' (rate limit)
    * @param {object}  [opts.conf]       { lang, autoEscucha, velocidad, tono, prefVoz }
    */
-  constructor({ responder, onEstado, onTranscripcion, onRespuesta, onPatron, fusionar, conf = {} }) {
+  constructor({ responder, responderStream, onEstado, onTranscripcion, onRespuesta, onPatron, onError, fusionar, conf = {} }) {
     this.responder = responder;
+    this.responderStream = responderStream || null;
     this.onEstado = onEstado || (() => {});
     this.onTranscripcion = onTranscripcion || (() => {});
     this.onRespuesta = onRespuesta || (() => {});
     this.onPatron = onPatron || (() => {});
+    this.onError = onError || (() => {});
     this.conf = {
       lang: conf.lang || 'es-ES',
       autoEscucha: conf.autoEscucha !== false,
@@ -51,6 +58,10 @@ export class Voz {
     this.fullResponseText = '';
     this.spokenSoFar = '';
     this.fusionar = fusionar || null;   // (payload) => texto fusionado
+    // Streaming remoto: la respuesta llega por frases mientras se habla.
+    // _streamGen invalida deltas de turnos viejos (p. ej. tras un barge-in).
+    this._streamActivo = false;
+    this._streamGen = 0;
     this._rec = null;
     this._vozElegida = null;
     this._reiniciarEn = null;
@@ -124,6 +135,8 @@ export class Voz {
 
   detener() {
     this.activa = false;
+    this._streamActivo = false;
+    this._streamGen++;   // invalida deltas y callbacks del turno en vuelo
     clearTimeout(this._reiniciarEn);
     if (this._rec) { try { this._rec.abort(); } catch (e) {} this._rec = null; }
     if (typeof window.speechSynthesis !== 'undefined') window.speechSynthesis.cancel();
@@ -138,6 +151,8 @@ export class Voz {
   interrumpirYEscuchar() {
     if (this.estado !== ESTADOS.HABLANDO) return false;
     this._cola = [];   // cancela las frases que aún no se dijeron
+    this._streamActivo = false;   // y las que aún no llegaron del backend
+    this._streamGen++;
     if (typeof window.speechSynthesis !== 'undefined') window.speechSynthesis.cancel();
     this._setEstado(ESTADOS.ESCUCHANDO);
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -158,6 +173,9 @@ export class Voz {
   /** Manda el contexto de corte y habla la respuesta fusionada como un solo audio. */
   async _procesarInterrupcion(textoCliente) {
     if (!this.activa) return;
+    // Con backend en streaming no hace falta fusión especial: el servidor ve la
+    // transcripción completa y responde al corte como un turno más.
+    if (this.responderStream) { this._turnoStream(textoCliente); return; }
     this._setEstado(ESTADOS.PENSANDO);
     const payload = {
       respuesta_incompleta: this.fullResponseText,
@@ -247,6 +265,7 @@ export class Voz {
   // ── razonamiento ───────────────────────────────────────────
   _procesar(texto) {
     if (!this.activa) return;
+    if (this.responderStream) { this._turnoStream(texto); return; }
     this._setEstado(ESTADOS.PENSANDO);
     // el motor es síncrono y local: el "pensando" dura milisegundos
     setTimeout(() => {
@@ -258,6 +277,59 @@ export class Voz {
         this._hablar(this._paraVoz(this._resumir(r.texto)));
       });
     }, 60);
+  }
+
+  // ── turno en streaming (backend real: Claude frase a frase) ──
+  /**
+   * La respuesta se habla MIENTRAS llega: cada frase completa que emite el
+   * backend entra a la cola TTS. El barge-in sigue funcionando igual: cancelar
+   * la cola + _streamGen invalida los deltas que aún venían en camino.
+   */
+  async _turnoStream(texto) {
+    if (!this.activa) return;
+    this._setEstado(ESTADOS.PENSANDO);
+    const gen = ++this._streamGen;
+    this._streamActivo = true;
+    this.fullResponseText = '';
+    this.spokenSoFar = '';
+    this._cola = [];
+    this._offset = 0;
+
+    let r = null;
+    try {
+      r = await this.responderStream(texto, (frase) => {
+        if (this.activa && this._streamActivo && this._streamGen === gen) this._encolarFrase(frase);
+      });
+    } catch (e) {
+      r = { texto: '', error: String((e && e.message) || e) };
+    }
+    if (!this.activa || this._streamGen !== gen) return;   // otro turno tomó el control
+    this._streamActivo = false;
+    if (r && r.error) this.onError(r.error, r);
+    if (r && r.texto) {
+      this.onRespuesta(r.texto, r);
+      if (r.guion && r.guion.intencion) this.onPatron(r.guion.intencion);
+    }
+    if (this.silenciada) {
+      this._cola = [];
+      if (this.conf.autoEscucha) this._reiniciarEn = setTimeout(() => this._escuchar(), 500);
+      else this._setEstado(ESTADOS.INACTIVA);
+      return;
+    }
+    // si nada quedó hablando (respuesta vacía o error), el bucle sigue igual
+    if ((!this._cola || !this._cola.length) && this.estado !== ESTADOS.HABLANDO) this._hablarSiguiente();
+  }
+
+  /** Encola una frase del stream (la parte en oraciones si viene pegada). */
+  _encolarFrase(texto) {
+    const limpio = this._paraVoz(texto);
+    const frases = this._frases(limpio);
+    if (!frases.length) return;
+    for (const fr of frases) {
+      this.fullResponseText += (this.fullResponseText ? ' ' : '') + fr;
+      this._cola.push(fr);
+    }
+    if (this.estado !== ESTADOS.HABLANDO) this._hablarSiguiente();
   }
 
   /** En voz, como mucho dos ideas: lo demás se ve en pantalla, no se escucha. */
@@ -287,6 +359,7 @@ export class Voz {
 
   _hablar(texto) {
     if (!this.activa) return;
+    this._streamActivo = false;   // el texto ya está completo: no se espera nada
     this.fullResponseText = texto;
     this.spokenSoFar = '';
     this._cola = this._frases(texto);
@@ -295,9 +368,13 @@ export class Voz {
   }
 
   _hablarSiguiente() {
-    if (!this.activa || !this._cola || !this._cola.length) {
-      if (this.activa && this.conf.autoEscucha) this._escuchar();
-      else if (this.activa) this._setEstado(ESTADOS.INACTIVA);
+    if (!this.activa) return;
+    if (!this._cola || !this._cola.length) {
+      // con el stream abierto, la cola puede vaciarse entre frases: se espera
+      // la siguiente en "pensando" en vez de ponerse a escuchar prematuramente
+      if (this._streamActivo) { this._setEstado(ESTADOS.PENSANDO); return; }
+      if (this.conf.autoEscucha) this._escuchar();
+      else this._setEstado(ESTADOS.INACTIVA);
       return;
     }
     const frase = this._cola.shift();
@@ -305,6 +382,7 @@ export class Voz {
     this._offset += frase.length + 1;
     if (this.silenciada) {
       // sin voz: se muestra y se vuelve a escuchar
+      if (this._streamActivo) return;   // el bucle sigue al cerrar el stream
       if (this.conf.autoEscucha) this._reiniciarEn = setTimeout(() => this._escuchar(), 700);
       else this._setEstado(ESTADOS.INACTIVA);
       return;

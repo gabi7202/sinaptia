@@ -125,7 +125,61 @@ Y en `src/config.js`: `ia.endpoint = 'https://sinaptia-ia.TU_SUBDOMINIO.workers.
 - [ ] `urlPublica`, `marca.email`, `marca.agenda` configurados y commiteados
 - [ ] `bd.url` o `bd.supabase` configurado para que los leads aterricen en tu base
 - [ ] Prueba de extremo a extremo: QR → llamada en inglés → lead en tu BD → resumen en `/interprete`
+- [ ] (Opcional, §6) Backend real: schema en Supabase + secretos en Vercel + `ia.voz = '/api/voz'`
+- [ ] (Opcional, §6) Streaming en `/voz` verificado + lead resumido en Supabase + `/panel` remoto con tu `PANEL_SECRET`
 
 Cuando las ocho casillas estén marcadas, el negocio está en línea de verdad: un prospecto en
 cualquier idioma puede encontrarte, hablar con tu agente, ver su propio dinero en la
 calculadora y dejar sus datos — mientras tú operas todo desde el español.
+
+---
+
+## 6 · Backend real (opcional): Claude + Supabase en Vercel
+
+La fusión A+B le da a `/voz` un cerebro conversacional de verdad:
+
+- **Claude en streaming**: la primera frase se habla antes de que el modelo termine de escribir.
+- **Memoria de clientes en servidor** (Supabase + cookie httpOnly): el visitante vuelve y lo
+  reconocen ("¡Hola de nuevo, José!") aunque haya pasado días, con coincidencia fuerte
+  (teléfono/email/nombre+negocio) y débil (solo nombre → confirma sin revelar datos).
+- **Conversación → lead estructurado** al colgar (`/api/voz/end`): intención, urgencia,
+  frases textuales, objeciones, herramientas actuales y siguiente paso.
+- **Cron de rescate** (diario 09:00 UTC): resume llamadas cortadas por batería o crash.
+- **`/panel` con analítica real** de todas las conversaciones, no solo las del navegador.
+
+El sitio **sigue siendo estático**: si no activas esto, nada cambia (el código remoto ni
+siquiera entra en el bundle). Solo funciona en **Vercel** (GitHub Pages/Firebase sirven el
+estático; las rutas `api/voz/*` necesitan servidor).
+
+### Pasos
+
+1. **Supabase** (plan Free alcanza): crea un proyecto → *SQL Editor* → pega
+   `server/schema.sql` → *Run*. Crea las 4 tablas (`visitors`, `sessions`, `messages`,
+   `leads`) con RLS activado y sin políticas: solo tu servidor las toca.
+2. **Anthropic**: crea una API key en console.anthropic.com (con facturación activa).
+3. **Vercel** → tu proyecto → *Settings → Environment Variables* (referencia: `.env.ejemplo`):
+   ```
+   SUPABASE_URL=https://tu-proyecto.supabase.co
+   SUPABASE_SERVICE_KEY=<service_role key>   ← SOLO servidor; jamás al cliente ni a git
+   ANTHROPIC_API_KEY=sk-ant-...
+   CRON_SECRET=<cadena larga al azar>        ← autentica el cron diario de vercel.json
+   PANEL_SECRET=<otra cadena al azar>        ← protege la analítica de /panel
+   # opcionales: CHAT_MODEL (default claude-sonnet-5) · EXTRACT_MODEL (default claude-haiku-4-5-20251001)
+   ```
+4. **`src/config.js`**: `ia: { voz: '/api/voz' }` → commit → deploy.
+5. **Verifica**:
+   - `/voz` → primer toque pide **consentimiento** → aceptar → saludo del servidor.
+   - Habla → la respuesta **empieza a sonar antes de terminar** (streaming).
+   - Termina la llamada → en Supabase aparece el `lead` con resumen y frases textuales.
+   - Mismo navegador, más tarde → "¡Hola de nuevo, …" (recall por cookie).
+   - `/panel` → *Conectar con el servidor* → ingresa tu `PANEL_SECRET` → totales reales.
+   - `curl -H "Authorization: Bearer $CRON_SECRET" https://tu-dominio.com/api/voz/cron` → `ok 0/0`.
+6. **Costos**: Supabase Free para empezar; Claude se paga por token (Sonnet conversa, Haiku
+   resume). Hay techo de 60 mensajes/hora/visitante contra abuso.
+
+### Si el backend se cae o no lo activas
+
+Con `ia.voz` vacío, todo funciona 100% local como siempre. Con `ia.voz` configurado pero el
+backend caído, `/voz` avisa una vez y **degrada al motor local sin cortar la llamada**:
+degrada, no se rompe. Las conversaciones en modo local no viajan a Supabase (no hay
+consentimiento de por medio): el recall vuelve a ser por `localStorage`.

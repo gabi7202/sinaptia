@@ -265,6 +265,101 @@ await (async () => {
   v.detener();
 })();
 
+// ── STREAMING: el backend real habla frase a frase mientras responde ──
+console.log('\n\x1b[36m  VOZ CON BACKEND EN STREAMING (fusión A+B)\x1b[0m');
+
+await (async () => {
+  const { tts, habladas } = mundo();
+  let resolver;
+  const respuestas = [];
+  const v = new Voz({
+    responder: () => { throw new Error('con responderStream no debe usarse el responder local'); },
+    responderStream: async (texto, emitir) => {
+      emitir('Primera frase.');
+      await new Promise((r) => { resolver = r; });
+      emitir('Segunda frase.');
+      return { texto: 'Primera frase. Segunda frase.' };
+    },
+    onRespuesta: (tx) => respuestas.push(tx),
+  });
+  v.iniciar();
+  mundo.ultimoSR.di('hola');
+  await esperar(30);
+  t('habla la primera frase SIN que el backend haya terminado', habladas.length === 1 && habladas[0].text === 'Primera frase.' && v.estado === ESTADOS.HABLANDO, habladas.map((h) => h.text).join('|'));
+  tts.terminarUltima();
+  await esperar(20);
+  t('entre frases no escucha prematuramente: sigue "pensando"', v.estado === ESTADOS.PENSANDO, v.estado);
+  resolver();
+  await esperar(30);
+  t('la segunda frase entra a la cola y se habla en el mismo turno', habladas.length === 2 && habladas[1].text === 'Segunda frase.');
+  t('onRespuesta recibe el texto completo al cerrar el stream', respuestas[0] === 'Primera frase. Segunda frase.');
+  for (let i = 0; i < 6 && v.estado === ESTADOS.HABLANDO; i++) { tts.terminarUltima(); await esperar(10); }
+  t('al terminar el stream vuelve a escuchar (el bucle sigue)', v.estado === ESTADOS.ESCUCHANDO, v.estado);
+  v.detener();
+})();
+
+await (async () => {
+  const { tts, habladas } = mundo();
+  let emitirViejo = null, resolverViejo = null;
+  const v = new Voz({
+    responder: () => ({ texto: 'local' }),
+    responderStream: async (texto, emitir) => {
+      if (!emitirViejo) {   // primer turno: se quedará colgado a propósito
+        emitirViejo = emitir;
+        emitir('Estaba diciendo esto.');
+        return await new Promise((r) => { resolverViejo = r; });
+      }
+      emitir('Respuesta a: ' + texto + '.');
+      return { texto: 'Respuesta a: ' + texto + '.' };
+    },
+  });
+  v.iniciar();
+  mundo.ultimoSR.di('hola');
+  await esperar(20);
+  t('barge-in durante el streaming: se calla y escucha', v.interrumpirYEscuchar() === true && v.estado === ESTADOS.ESCUCHANDO && tts.cancelados >= 1);
+  emitirViejo('Esta frase llega tarde.');   // deltas rezagados del turno interrumpido
+  resolverViejo({ texto: 'Estaba diciendo esto. Esta frase llega tarde.' });
+  await esperar(30);
+  t('lo que llegó del turno viejo NO se habla (generaciones de turno)', habladas.length === 1 && habladas[0].text === 'Estaba diciendo esto.', habladas.map((h) => h.text).join('|'));
+  mundo.ultimoSR.di('mejor dime otra cosa');
+  await esperar(40);
+  t('el turno siguiente habla con normalidad', habladas.length === 2 && habladas[1].text === 'Respuesta a: mejor dime otra cosa.', habladas.map((h) => h.text).join('|'));
+  v.detener();
+})();
+
+await (async () => {
+  const { habladas } = mundo();
+  const errores = [];
+  const v = new Voz({
+    responder: () => ({ texto: 'x' }),
+    responderStream: async () => ({ texto: '', error: 'limit' }),
+    onError: (e) => errores.push(e),
+  });
+  v.iniciar();
+  mundo.ultimoSR.di('hola');
+  await esperar(40);
+  t('rate limit: onError avisa y no se habla nada', errores[0] === 'limit' && habladas.length === 0);
+  t('tras el error el bucle no queda colgado: vuelve a escuchar', v.estado === ESTADOS.ESCUCHANDO, v.estado);
+  v.detener();
+})();
+
+await (async () => {
+  const { habladas } = mundo();
+  const respuestas = [];
+  const v = new Voz({
+    responder: () => ({ texto: 'x' }),
+    responderStream: async (tx, emitir) => { emitir('Una.'); emitir('Dos.'); return { texto: 'Una. Dos.' }; },
+    onRespuesta: (t2) => respuestas.push(t2),
+  });
+  v.iniciar();
+  v.alternarSilencio();
+  mundo.ultimoSR.di('hola');
+  await esperar(700);
+  t('silenciada: el stream no habla pero tampoco se cuelga', habladas.length === 0 && v.estado === ESTADOS.ESCUCHANDO, v.estado);
+  t('silenciada: el texto completo llega igual a la pantalla', respuestas[0] === 'Una. Dos.');
+  v.detener();
+})();
+
 console.log('\n  \x1b[90m' + '─'.repeat(46) + '\x1b[0m');
 const total = ok + fallos.length;
 if (!fallos.length) console.log('  \x1b[32m' + ok + '/' + total + ' EN VERDE (100%)\x1b[0m · conversación por voz verificada');

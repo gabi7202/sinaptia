@@ -4,8 +4,16 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "api/ia.js": { "maxDuration": 30 }
+    "api/ia.js": { "maxDuration": 30 },
+    "api/voz/session.js": { "maxDuration": 30 },
+    "api/voz/chat.js": { "maxDuration": 60 },
+    "api/voz/end.js": { "maxDuration": 60 },
+    "api/voz/cron.js": { "maxDuration": 60 },
+    "api/voz/panel.js": { "maxDuration": 30 }
   },
+  "crons": [
+    { "path": "/api/voz/cron", "schedule": "0 9 * * *" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
