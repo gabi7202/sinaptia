@@ -28,6 +28,16 @@ import Base from '../layouts/Base.astro';
       </div>
       <p class="calc-sup" id="panel-pendientes"></p>
     </div>
+    <div class="calc" style="margin-top:20px">
+      <div class="calc-head">
+        <h3>Qué busca la gente y cómo lo busca</h3>
+        <p>Los patrones que más se repiten en las conversaciones: intenciones detectadas y las
+          palabras exactas con las que la gente pide lo que pide. Esto es el oro: te dice qué
+          vender y con qué palabras.</p>
+      </div>
+      <div class="calc-out" id="panel-busquedas"></div>
+      <p class="calc-sup" id="panel-palabras"></p>
+    </div>
   </main>
 
   <script>
@@ -51,7 +61,29 @@ import Base from '../layouts/Base.astro';
         `Tasa global visita → llamada: ${(r.tasaGlobal * 100).toFixed(1)}% · ` +
         `pendientes de sincronizar: ${r.pendientes}`;
     }
+    function pintarBusquedas() {
+      const turnos = bd.todos().filter((r) => r.evento === 'turno' && r.usuario);
+      const intenciones = {};
+      const palabras = {};
+      const STOP = new Set(['de','la','el','los','las','un','una','y','a','en','con','por','para','que','me','mi','su','se','lo','es','quiero','necesito','como','cómo','cuánto','cuanto','hola','gracias']);
+      for (const t of turnos) {
+        const i = (t.guion && t.guion.intencion) || 'sin patrón';
+        intenciones[i] = (intenciones[i] || 0) + 1;
+        for (const w of String(t.usuario).toLowerCase().split(/[^a-záéíóúñü0-9]+/)) {
+          if (w.length > 3 && !STOP.has(w)) palabras[w] = (palabras[w] || 0) + 1;
+        }
+      }
+      const topI = Object.entries(intenciones).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      const topP = Object.entries(palabras).sort((a, b) => b[1] - a[1]).slice(0, 12);
+      document.getElementById('panel-busquedas').innerHTML = topI.length
+        ? topI.map(([k, v]) => `<div class="co"><span>${k}</span><strong>${v}</strong></div>`).join('')
+        : '<div class="co"><span>sin conversaciones aún</span><strong>0</strong></div>';
+      document.getElementById('panel-palabras').textContent = topP.length
+        ? 'Palabras con las que piden: ' + topP.map(([w, v]) => w + ' (' + v + ')').join(' · ')
+        : 'Aún no hay palabras suficientes: cada conversación suma.';
+    }
     pintar();
+    pintarBusquedas();
 
     document.getElementById('panel-exportar').addEventListener('click', () => bd.exportar('sinaptia-eventos.json'));
     document.getElementById('panel-limpiar').addEventListener('click', () => { bd.borrar(); pintar(); });

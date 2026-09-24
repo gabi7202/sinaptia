@@ -1,0 +1,174 @@
+---
+/**
+ * /voz — La puerta corta. Sin sitio, sin scroll, sin rollo:
+ * un popup a media pantalla, eliges idioma, tocas, y hablas.
+ *
+ * Guarda historial de cada conversación (memoria de cliente + eventos de embudo)
+ * para el análisis posterior: qué busca la gente y cómo lo busca.
+ */
+import Base from '../layouts/Base.astro';
+import { IDIOMAS } from '../lib/i18n.js';
+---
+<Base title="Habla con Nexa — SINAPTIA" description="Conversación por voz con el agente de IA. Elige tu idioma y habla.">
+  <style>
+    .voz-fondo{min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(900px 600px at 50% 12%,#12325C 0%,#0A1626 72%);padding:24px}
+    .voz-card{width:min(520px,100%);background:rgba(13,32,54,.92);border:1px solid rgba(124,196,250,.28);
+      border-radius:22px;padding:34px 30px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+    .voz-card h1{color:#fff;font-size:26px;margin:14px 0 6px}
+    .voz-card p.sub{color:#C7D6E8;font-size:14px;margin-bottom:22px}
+    .idiomas{display:flex;gap:10px;justify-content:center;margin-bottom:22px}
+    .idiomas button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:#C7D6E8;
+      font-size:14px;font-weight:700;padding:10px 20px;border-radius:99px;cursor:pointer;font-family:inherit;transition:.2s}
+    .idiomas button:hover{border-color:#7CC4FA;color:#7CC4FA}
+    .idiomas button.activo{background:#7CC4FA;border-color:#7CC4FA;color:#0A1626}
+    .orb{width:120px;height:120px;margin:6px auto 18px;border-radius:50%;position:relative;
+      background:linear-gradient(145deg,#1D6FE0,#0E2A4D);display:flex;align-items:center;justify-content:center;
+      color:#BBD4F2;cursor:pointer;border:none;box-shadow:0 0 46px rgba(29,111,224,.4);transition:.25s}
+    .orb:hover{transform:scale(1.05)}
+    .orb .ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(124,196,250,.45);opacity:0}
+    .voz-card[data-estado="escuchando"] .orb{color:#6EE7B7}
+    .voz-card[data-estado="escuchando"] .r1{animation:onda 1.8s ease-out infinite}
+    .voz-card[data-estado="escuchando"] .r2{animation:onda 1.8s ease-out .5s infinite}
+    .voz-card[data-estado="hablando"] .orb{color:#7CC4FA;animation:respira 1.6s ease-in-out infinite}
+    .voz-card[data-estado="hablando"] .r1{animation:onda 1.5s ease-out infinite}
+    @keyframes onda{0%{transform:scale(.62);opacity:.9}100%{transform:scale(1.4);opacity:0}}
+    @keyframes respira{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+    .estado{font-family:var(--mono,monospace);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+      color:#7CC4FA;min-height:16px;margin-bottom:14px}
+    .transcripcion{min-height:70px;color:#EAF2FB;font-size:15px;line-height:1.5;margin-bottom:14px}
+    .respuesta{min-height:44px;color:#9FB4C8;font-size:13.5px;line-height:1.5;white-space:pre-wrap;margin-bottom:16px}
+    .nota{font-size:11px;color:#7A8FA3;line-height:1.5}
+    .controles{display:flex;gap:10px;justify-content:center;margin-top:14px}
+    .controles button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:#C7D6E8;
+      font-size:12px;padding:8px 16px;border-radius:99px;cursor:pointer;font-family:inherit}
+    .controles button.colgar{border-color:rgba(248,113,113,.45);color:#FCA5A5}
+    @media (prefers-reduced-motion: reduce){ .orb,.ring{animation:none!important} }
+  </style>
+
+  <main class="voz-fondo">
+    <div class="voz-card" id="voz-card" data-estado="inactivo">
+      <div class="idiomas" id="idiomas" role="group" aria-label="Idioma">
+        <button data-lang="es" class="activo">Español</button>
+        <button data-lang="en">English</button>
+        <button data-lang="pt">Português</button>
+      </div>
+      <button class="orb" id="orb" aria-label="Toca para hablar">
+        <span class="ring r1"></span><span class="ring r2"></span>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4"/>
+        </svg>
+      </button>
+      <div class="estado" id="estado">elige idioma y toca para hablar</div>
+      <div class="transcripcion" id="transcripcion"></div>
+      <div class="respuesta" id="respuesta"></div>
+      <div class="controles">
+        <button id="pausar">pausar y hablar</button>
+        <button id="colgar" class="colgar">terminar</button>
+      </div>
+      <p class="nota">El micrófono solo se enciende cuando tocas. La conversación se guarda para
+        que la próxima vez no empieces de cero, y puedes pedir que se borre cuando quieras.</p>
+    </div>
+  </main>
+
+  <script>
+    import { CONFIG } from '../config.js';
+    import { SKILL } from '../lib/skill.js';
+    import { PACKS, packPor } from '../lib/i18n.js';
+    import { crearAgente } from '../lib/engine.js';
+    import { Voz, ESTADOS } from '../lib/voz.js';
+    import { BD } from '../lib/bd.js';
+    import { Funnel } from '../lib/funnel.js';
+    import { Memoria, textoRecuerdo } from '../lib/memoria.js';
+
+    const $ = (id) => document.getElementById(id);
+    const bd = new BD({});
+    const funnel = new Funnel(bd);
+    const memoria = new Memoria();
+    let pack = packPor('es');
+    let agente = crearAgente(pack, { ciudad: '', temp: null, clima: '', hora: '', saludo: '', tipKey: 'nublado', dispositivo: 'voz' });
+    let voz = null;
+    let saludoDado = false;
+    let recordado = false;
+
+    const TEXTO_ESTADO = {
+      [ESTADOS.ESCUCHANDO]: { es: 'te escucho', en: 'listening', pt: 'ouvindo' },
+      [ESTADOS.PENSANDO]: { es: 'pensando…', en: 'thinking…', pt: 'pensando…' },
+      [ESTADOS.HABLANDO]: { es: 'hablando', en: 'speaking', pt: 'falando' },
+      [ESTADOS.INACTIVA]: { es: 'toca para hablar', en: 'tap to talk', pt: 'toque para falar' },
+    };
+
+    function estadoTxt(e) { const m = TEXTO_ESTADO[e] || TEXTO_ESTADO[ESTADOS.INACTIVA]; return m[pack.codigo] || m.es; }
+
+    function responderConMemoria(texto) {
+      if (!recordado) {
+        const hit = memoria.recordar(texto);
+        if (hit) {
+          recordado = true;
+          const p = hit.perfil;
+          if (agente.precargar) agente.precargar(p);
+          const t2 = textoRecuerdo(p, pack.codigo);
+          bd.registrar('turno', { canal: 'voz', pagina: '/voz', memoria: 'recall', usuario: texto, respuesta: t2, idioma: pack.codigo });
+          funnel.marcar('recall');
+          return { texto: t2, guion: { intencion: 'cliente recurrente' } };
+        }
+      }
+      const r = agente.responder(texto);
+      bd.registrar('turno', { canal: 'voz', pagina: '/voz', usuario: texto, respuesta: r.texto, idioma: pack.codigo, guion: r.guion });
+      return r;
+    }
+
+    function asegurarVoz() {
+      if (voz) return voz;
+      voz = new Voz({
+        responder: responderConMemoria,
+        onEstado: (e) => { $('voz-card').dataset.estado = e; $('estado').textContent = estadoTxt(e); },
+        onTranscripcion: (t, final) => { $('transcripcion').textContent = t; if (final) funnel.marcar('voz_turno'); },
+        onRespuesta: (t) => { $('respuesta').textContent = t; },
+        conf: { lang: pack.stt, genero: (CONFIG.voz && CONFIG.voz.genero) || 'auto', prefVoz: pack.voz },
+      });
+      return voz;
+    }
+
+    // idioma
+    document.querySelectorAll('#idiomas button').forEach((b) => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#idiomas button').forEach((x) => x.classList.remove('activo'));
+        b.classList.add('activo');
+        pack = packPor(b.dataset.lang);
+        agente = crearAgente(pack, { ciudad: '', temp: null, clima: '', hora: '', saludo: '', tipKey: 'nublado', dispositivo: 'voz' });
+        saludoDado = false; recordado = false;
+        if (voz) { voz.detener(); voz = null; }
+        $('transcripcion').textContent = ''; $('respuesta').textContent = '';
+        $('estado').textContent = estadoTxt(ESTADOS.INACTIVA);
+        funnel.marcar('voz_idioma', { idioma: pack.codigo });
+      });
+    });
+
+    $('orb').addEventListener('click', () => {
+      const v = asegurarVoz();
+      funnel.marcar('voz_inicio', { idioma: pack.codigo });
+      if (!saludoDado) { saludoDado = true; v.iniciar(pack.saludoVoz); }
+      else v.reanudar();
+    });
+    $('pausar').addEventListener('click', () => {
+      const v = asegurarVoz();
+      if (v.estado === ESTADOS.HABLANDO) v.interrumpirYEscuchar();
+      else if (v.estado === ESTADOS.ESCUCHANDO) v.pausar();
+      else v.reanudar();
+    });
+    $('colgar').addEventListener('click', () => {
+      if (voz) {
+        memoria.guardar({
+          nombre: agente.lead.nombre, negocio: agente.lead.sector,
+          necesidad: agente.lead.dolor, idioma: pack.codigo,
+          resumen: (agente.lead.dolor || '').slice(0, 200),
+        });
+        voz.detener();
+      }
+      $('voz-card').dataset.estado = 'inactivo';
+      $('estado').textContent = estadoTxt(ESTADOS.INACTIVA);
+      bd.sincronizar();
+    });
+  </script>
+</Base>

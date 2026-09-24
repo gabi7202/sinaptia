@@ -13,7 +13,9 @@ import { CONFIG } from '../config.js';
 
 const base = import.meta.env.BASE_URL || '/';
 const sitio = CONFIG.urlPublica || (Astro.site ? String(Astro.site).replace(/\/$/, '') + base : '');
-const urlQr = (sitio || 'https://tu-dominio.com/') + '?voz=1';
+const raiz = (sitio || 'https://tu-dominio.com').replace(/\/$/, '');
+// El QR lleva a /voz: la puerta corta. Popup a media pantalla, idioma y a hablar.
+const urlQr = raiz + '/voz';
 const svg = await QRCode.toString(urlQr, {
   type: 'svg', margin: 1, width: 232, errorCorrectionLevel: 'M',
   color: { dark: '#0E1B2A', light: '#FFFFFF' },
@@ -32,6 +34,10 @@ const svg = await QRCode.toString(urlQr, {
         <li><b>2.</b> Tocas <em>toca para hablar</em>. El micrófono siempre pide tu permiso: nunca se enciende solo.</li>
         <li><b>3.</b> El agente te saluda en tu idioma y la conversación sigue sola, hasta resolver lo tuyo.</li>
       </ul>
+      <p class="crece-nota"><b>Y si ya hablamos antes, te reconoce.</b> Dices "soy José, el de la pastelería"
+        y el agente busca en su historial, encuentra tu caso y sigue desde donde quedó: no te vuelve a
+        preguntar lo que ya le contaste.</p>
+      <p class="crece-nota"><a class="qr-id" href="/voz">abrir /voz directo →</a></p>
       <p class="crece-nota">¿Tienes un negocio y quieres escuchar cómo sonaría tu propio agente de voz?
         Prueba el demo adaptado a tu sector: suena distinto para una clínica, un taller o una inmobiliaria,
         porque cada negocio habla de lo suyo.</p>

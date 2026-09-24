@@ -32,8 +32,8 @@ if (!fs.existsSync(path.join(DIST, 'index.html'))) {
 }
 
 // inlinea el bundle de Astro como script clásico (jsdom no ejecuta type=module)
-function htmlConBundle() {
-  let h = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
+function htmlConBundle(file = 'index.html') {
+  let h = fs.readFileSync(path.join(DIST, file), 'utf8');
   h = h.replace(/<script[^>]*src="([^"]+)"[^>]*>\s*<\/script>/g, (m, src) => {
     const rel = src.replace(/^\//, '');
     const f = path.join(DIST, rel);
@@ -354,6 +354,84 @@ const blobs = [];
     habladas4.length >= 1 && /Cl[ií]nica Dental Sonrisa/.test(habladas4[0].text), habladas4[0] && habladas4[0].text.slice(0, 60));
   t('y el indicador muestra que es una demo adaptada',
     /demo adaptada/.test(d4.getElementById('nav-live-txt').textContent), d4.getElementById('nav-live-txt').textContent);
+
+  console.log('\n\x1b[36m  PÁGINA /voz: POPUP DIRECTO CON MEMORIA DE CLIENTE\x1b[0m');
+  const domV = new JSDOM(htmlConBundle('voz/index.html'), {
+    url: 'http://localhost:4321/voz/',
+    runScripts: 'dangerously', pretendToBeVisual: true,
+    beforeParse(wv) {
+      wv.__habladas = [];
+      wv.fetch = () => Promise.reject(new Error('sin red'));
+      wv.URL.createObjectURL = () => 'blob:x'; wv.URL.revokeObjectURL = () => {};
+      wv.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+      wv.speechSynthesis = {
+        getVoices: () => [{ lang: 'es-ES', name: 'Voz' }],
+        speak(u) {
+          wv.__habladas.push(u);
+          u.onstart && u.onstart();
+          setTimeout(() => { u.onend && u.onend(); }, 30);   // el saludo termina → pasa a escuchar
+        },
+        cancel() {},
+      };
+      wv.__turno = 0;
+      wv.SpeechRecognition = class {
+        constructor() { this.lang = 'es'; this.continuous = false; this.interimResults = true; }
+        start() {
+          const guion = [
+            'soy José, te hablé la semana pasada de mi pastelería',
+            'sí, sigamos desde ahí',
+          ];
+          const texto = guion[wv.__turno++];
+          if (!texto) return;
+          setTimeout(() => {
+            const ev = { resultIndex: 0, results: [{ 0: { transcript: texto }, isFinal: true, length: 1 }] };
+            this.onresult && this.onresult(ev);
+            this.onend && this.onend();
+          }, 80);
+        }
+        stop() { this.onend && this.onend(); }
+        abort() { this.onend && this.onend(); }
+      };
+      wv.localStorage.setItem('sinaptia:memoria', JSON.stringify([{
+        id: 'p1', nombre: 'José Pérez', negocio: 'pastelería', necesidad: 'implementar IA',
+        ultimo: new Date().toISOString(), veces: 1, resumen: 'quiere automatizar pedidos',
+      }]));
+    },
+  });
+  await esperar(700);
+  const dv = domV.window.document;
+  const wv = domV.window;
+  wv.__respuestas = [];
+  const obs = new wv.MutationObserver(() => {
+    const txt = dv.getElementById('respuesta').textContent.trim();
+    if (txt && wv.__respuestas[wv.__respuestas.length - 1] !== txt) wv.__respuestas.push(txt);
+  });
+  obs.observe(dv.getElementById('respuesta'), { childList: true, characterData: true, subtree: true });
+  t('la ruta /voz existe y abre directo, sin el resto del sitio',
+    !dv.getElementById('nav-id') && !!dv.getElementById('orb') && !!dv.getElementById('idiomas'));
+  t('ofrece elegir idioma: español, inglés y portugués', dv.querySelectorAll('#idiomas button').length === 3);
+  dv.getElementById('orb').click();
+  await esperar(500);
+  t('saluda por voz en cuanto tocas el orbe', domV.window.__habladas.length >= 1,
+    domV.window.__habladas[0] && domV.window.__habladas[0].text.slice(0, 50));
+  dv.getElementById('orb').click();   // segundo toque: arranca la escucha
+  await esperar(1600);
+  const primera = wv.__respuestas[0] || '';
+  t('reconoce al cliente recurrente y NO empieza de cero',
+    /Jos[eé]/.test(primera) && /pasteler/i.test(primera) && /no empezamos de cero/i.test(primera),
+    primera.slice(0, 90));
+  t('ninguna respuesta vuelve a preguntar datos que ya tenía',
+    wv.__respuestas.length > 0 && !wv.__respuestas.some((r) => /a qu[eé] se dedica|qu[eé] proceso te quita/i.test(r)),
+    wv.__respuestas.map((r) => r.slice(0, 40)).join(' | '));
+  t('el recall quedó guardado en el historial (el oro del análisis)', (() => {
+    const raw = JSON.parse(domV.window.localStorage.getItem('sinaptia:bd') || '{}');
+    return (raw.registros || []).some((r) => r.memoria === 'recall');
+  })());
+  dv.querySelectorAll('#idiomas button')[1].click();
+  await esperar(200);
+  t('cambiar de idioma reinicia la conversación limpia',
+    dv.getElementById('respuesta').textContent === '' && dv.getElementById('transcripcion').textContent === '');
+  domV.window.close();
 
   console.log('\n  \x1b[90m' + '─'.repeat(46) + '\x1b[0m');
   const total = ok + fallos.length;

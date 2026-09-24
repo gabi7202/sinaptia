@@ -14,6 +14,7 @@ import { BD } from '../lib/bd.js';
 import { razonar } from '../lib/ia.js';
 import { perfilPor, motorNegocio } from '../lib/negocio.js';
 import { Funnel } from '../lib/funnel.js';
+import { Memoria, textoRecuerdo } from '../lib/memoria.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -121,6 +122,8 @@ const bd = new BD({
   supabase: (CONFIG.bd && CONFIG.bd.supabase) || null,
 });
 const funnel = new Funnel(bd);
+const memoria = new Memoria();
+let recordadoEnSesion = false;
 setInterval(() => bd.sincronizar(), 20000);
 window.addEventListener('beforeunload', () => bd.sincronizar());
 
@@ -138,6 +141,19 @@ async function razonarFusion(endpoint, payload) {
 
 /* Responder con IA si hay proxy; si no, motor. Siempre dejando registro. */
 async function responderAgente(texto, canal, historial) {
+  // Memoria: si reconoce al cliente, retoma en vez de empezar de cero
+  if (!recordadoEnSesion) {
+    const hit = memoria.recordar(texto);
+    if (hit) {
+      recordadoEnSesion = true;
+      const p = hit.perfil;
+      if (agente && agente.precargar) agente.precargar(p);
+      const texto2 = textoRecuerdo(p, pack.codigo);
+      bd.registrar('turno', { canal, memoria: 'recall', usuario: texto, respuesta: texto2, guion: { intencion: 'cliente recurrente' } });
+      funnel.marcar('recall');
+      return { texto: texto2, guion: { intencion: 'cliente recurrente', memoria: p } };
+    }
+  }
   if (motorActivo) {
     const rn = motorActivo.responder(texto);
     bd.registrar('turno', { canal, negocio: NEGOCIO.id, usuario: texto, intencion: rn.guion.intencion, respuesta: rn.texto, guion: rn.guion });
@@ -231,6 +247,11 @@ function enviar(texto) {
     if (r.listoParaPdf) {
       $('pdfbtn').style.display = 'block'; enviarLead(); quick([]);
       funnel.marcar('lead');
+      memoria.guardar({
+        nombre: agente.lead.nombre, negocio: agente.lead.sector,
+        necesidad: agente.lead.dolor, idioma: pack.codigo,
+        resumen: (agente.lead.dolor || '').slice(0, 200),
+      });
       bd.registrar('lead', { lead: agente.lead, correcciones: agente.estado.correcciones });
       bd.registrar('pdf', { lead: agente.lead });
       bd.sincronizar();

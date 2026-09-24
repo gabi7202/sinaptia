@@ -9,7 +9,7 @@
     "test:engine": "node test/engine.test.js",
     "test:pdf": "node test/pdf.test.js",
     "test:site": "node test/site.test.js",
-    "test:all": "node test/engine.test.js && node test/pdf.test.js && node test/voz.test.js && node test/bd.test.js && node test/ia.test.js && node test/negocio.test.js && node test/funnel.test.js && node test/site.test.js",
+    "test:all": "node test/engine.test.js && node test/pdf.test.js && node test/voz.test.js && node test/bd.test.js && node test/ia.test.js && node test/negocio.test.js && node test/funnel.test.js && node test/memoria.test.js && node test/site.test.js",
     "test:voz": "node test/voz.test.js"
   },
   "keywords": [],

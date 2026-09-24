@@ -248,6 +248,36 @@ t('pregunta de privacidad se responde sin perder la etapa', () => {
   eq(a.estado.etapa, 'dolor', 'no avanza de etapa por una pregunta');
 });
 
+console.log('\n\x1b[36m  MEMORIA: CLIENTE RECURRENTE (precargar)\x1b[0m');
+const PERFIL = { nombre: 'José Pérez', negocio: 'pastelería', necesidad: 'implementar IA' };
+
+t('precargar trae nombre, negocio y necesidad al lead', () => {
+  const a = nuevo();
+  a.precargar(PERFIL);
+  return a.lead.nombre === 'José Pérez' && a.lead.sector === 'pastelería' && a.lead.dolor === 'implementar IA';
+});
+
+t('avanza la etapa al primer dato que FALTA de verdad', () => {
+  const a = nuevo();
+  a.precargar(PERFIL);
+  return a.estado.etapa === 'volumen';
+});
+
+t('nunca vuelve a preguntar el sector de un cliente recordado', () => {
+  const a = nuevo();
+  a.precargar(PERFIL);
+  const r1 = a.responder('sí, sigamos desde ahí');
+  const r2 = a.responder('unas 300 consultas al mes');
+  const todo = r1.texto + ' ' + r2.texto;
+  return !/a qu[eé] se dedica tu empresa/i.test(todo);
+});
+
+t('sin memoria, sí pregunta desde cero (control)', () => {
+  const a = nuevo();
+  const r = a.responder('hola, quiero automatizar cosas');
+  return /a qu[eé] se dedica|qu[eé] proceso te quita/i.test(r.texto);
+});
+
 // ── resumen ──
 console.log('\n  \x1b[90m' + '─'.repeat(46) + '\x1b[0m');
 const total = ok + fallos.length;

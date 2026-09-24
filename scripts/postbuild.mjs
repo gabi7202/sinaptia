@@ -29,8 +29,13 @@ async function walk(dir) {
 async function procesar(f) {
   let h = fs.readFileSync(f, 'utf8');
 
-  // 1 · URLs absolutas → relativas
-  h = h.replace(/(src|href)="\/([^"]*)"/g, (m, attr, rest) => `${attr}="./${rest}"`);
+  // 1 · URLs absolutas → relativas A LA PROFUNDIDAD DE LA PÁGINA
+  //    dist/index.html → ./_astro/…   ·   dist/voz/index.html → ../_astro/…
+  //    (sin esto, las páginas anidadas apuntan a una carpeta que no existe)
+  const relDir = path.relative(DIST, path.dirname(f));
+  const profundidad = relDir ? relDir.split(path.sep).length : 0;
+  const pref = profundidad ? '../'.repeat(profundidad) : './';
+  h = h.replace(/(src|href)=\"\/([^"]*)\"/g, (m, attr, rest) => `${attr}="${pref}${rest}"`);
 
   // 2 · cada entry ESM → IIFE autocontenido inlineado
   const encontrados = [...h.matchAll(/<script[^>]*type="module"[^>]*src="([^"]+)"[^>]*>\s*<\/script>/g)];

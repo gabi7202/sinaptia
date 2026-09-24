@@ -311,6 +311,24 @@
       },
     };
 
+    /**
+     * precargar(perfil) — Trae lo que ya sabemos del cliente desde la memoria.
+     * No es un adorno: mueve la etapa al primer dato que FALTA de verdad, para
+     * que nadie vuelva a escuchar "¿a qué se dedica tu empresa?" cuando ya lo
+     * dijimos la semana pasada.
+     */
+    agente.precargar = function (perfil) {
+      if (!perfil) return agente;
+      if (perfil.nombre) lead.nombre = perfil.nombre;
+      if (perfil.empresa) lead.empresa = perfil.empresa;
+      if (perfil.negocio || perfil.sector) lead.sector = perfil.negocio || perfil.sector;
+      if (perfil.necesidad || perfil.dolor) lead.dolor = perfil.necesidad || perfil.dolor;
+      if (perfil.volumen) lead.volumen = perfil.volumen;
+      estado.etapa = !lead.sector ? 'sector' : !lead.dolor ? 'dolor' : !lead.volumen ? 'volumen' : 'contacto';
+      estado.iniciado = true;
+      return agente;
+    };
+
     function resumenContacto() {
       const t = [];
       if (lead.nombre) t.push('nombre ' + lead.nombre);
