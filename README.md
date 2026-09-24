@@ -173,6 +173,15 @@ es uno solo.
 > pero tampoco es 100% on-device). En Safari sí es local. Si un cliente exige procesamiento
 > estrictamente local, ofrécele Safari o deja la voz desactivada y usa el chat.
 
+## El asistente de voz: decisiones abiertas (`docs-internos/debate-voz.md`)
+
+Cuatro decisiones con trade-offs y recomendación: voz gratuita vs neuronal (recomendado híbrido:
+neuronal para el saludo, navegador para el resto), identidad de voz (femenina por defecto con
+toggle), turno automático vs pulsar (recomendado turno automático con endpointing de 1,8 s, aún
+no construido) y barge-in real vs botón (recomendado quedarse con el botón: la fusión ya da el
+80% del beneficio con el 10% del riesgo). En esta ronda quedó implementada la selección de voz
+por calidad y género, y el habla por frases con pausas naturales y cola cancelable.
+
 ## Voz adaptable a cualquier negocio (`src/lib/negocio.js`)
 
 La misma capa de voz —escuchar → detectar → analizar → responder— sirve para cualquier

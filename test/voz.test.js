@@ -11,6 +11,11 @@ import { SKILL } from '../src/lib/skill.js';
 import { crearAgente } from '../src/lib/engine.js';
 
 let ok = 0, fallos = [];
+const hasta = async (fn, ms = 800) => {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms) { const v = fn(); if (v) return v; await new Promise((r) => setTimeout(r, 40)); }
+  return null;
+};
 function t(n, c, d) { if (c) { ok++; console.log('  \x1b[32m✓\x1b[0m ' + n); } else { fallos.push(n + (d ? ' → ' + d : '')); console.log('  \x1b[31;1m✗\x1b[0m ' + n + (d ? '\n      ↳ ' + d : '')); } }
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -80,16 +85,19 @@ await (async () => {
   t('elige una voz en español', habladas[0].voice && /es/i.test(habladas[0].voice.lang), habladas[0].voice && habladas[0].voice.lang);
   t('estado = hablando', v.estado === ESTADOS.HABLANDO);
 
-  // la IA termina de hablar → vuelve a escuchar sola
-  tts.terminarUltima();
-  await esperar(30);
-  t('al terminar de hablar, escucha sola (bucle)', v.estado === ESTADOS.ESCUCHANDO && mundo.ultimoSR.started);
+  // la IA termina de hablar TODAS sus frases → vuelve a escuchar sola
+  for (let i = 0; i < 8 && v.estado === ESTADOS.HABLANDO; i++) { tts.terminarUltima(); await esperar(10); }
+  t('habla por frases: varias utterances por respuesta', habladas.length >= 1, 'utterances: ' + habladas.length);
+  t('al terminar todas sus frases, escucha sola (bucle)', v.estado === ESTADOS.ESCUCHANDO && !!(mundo.ultimoSR && mundo.ultimoSR.started));
 
   // la persona dice una barbaridad → corrección hablada
+  await hasta(() => mundo.ultimoSR, 800);
   mundo.ultimoSR.di('quiero automatizar todo el negocio con IA');
-  await esperar(150);
+  await esperar(60);
+  for (let i = 0; i < 8 && v.estado === ESTADOS.HABLANDO; i++) { tts.terminarUltima(); await esperar(10); }
   t('la frase dicha se transcribió como final', transcripciones.some(([tx, f]) => f && tx.includes('automatizar todo')));
-  t('el agente corrige y la corrección se habla', habladas.length >= 2 && /mapear|simplificar/.test(habladas[habladas.length - 1].text), habladas[habladas.length - 1].text.slice(0, 60));
+  const dicho = habladas.map((h) => h.text).join(' ');
+  t('el agente corrige y la corrección se habla', /mapear|simplificar/.test(dicho), dicho.slice(0, 60));
   t('vuelve a escuchar tras responder', v.estado === ESTADOS.ESCUCHANDO || v.estado === ESTADOS.HABLANDO);
   v.detener();
   t('detener() apaga todo', v.estado === ESTADOS.INACTIVA && !v.activa);

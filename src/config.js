@@ -21,7 +21,9 @@ export const CONFIG = {
     pie: 'Documento generado automáticamente por el agente de diagnóstico de Sinaptia.',
   },
   voz: {
-    lang: 'es-ES',          // o 'es-MX', 'es-AR'… cambia también la voz elegida
+    lang: 'es-ES',
+    genero: 'auto',        // 'femenina' | 'masculina' | 'auto'
+    prefVoz: '',           // ej: 'es-MX' o el nombre exacto de una voz de tu sistema          // o 'es-MX', 'es-AR'… cambia también la voz elegida
     autoEscucha: true,      // bucle de conversación: la IA habla y vuelve a escuchar
     prefVoz: '',            // ej: 'es-MX' para forzar acento; vacío = la mejor 'es' disponible
     velocidad: 1.04,

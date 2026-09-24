@@ -42,6 +42,7 @@ export class Voz {
       velocidad: conf.velocidad || 1.04,
       tono: conf.tono || 1,
       prefVoz: conf.prefVoz || '',
+      genero: conf.genero || 'auto',
     };
     this.estado = ESTADOS.INACTIVA;
     this.activa = false;
@@ -63,15 +64,37 @@ export class Voz {
 
   _setEstado(e) { this.estado = e; this.onEstado(e); }
 
+  /**
+   * Elige la mejor voz disponible, no la primera. Criterios, en orden:
+   *  1. preferencia exacta (conf.prefVoz)
+   *  2. género pedido (conf.genero), por heurística de nombres conocidos
+   *  3. voces neurales/naturales (suenan humanas) antes que las robóticas
+   *  4. coincidencia de idioma más específica (es-MX antes que es-)
+   */
   _vozes() {
     const todas = window.speechSynthesis.getVoices() || [];
     if (!todas.length) return null;
+    const lang = (this.conf.lang || 'es').toLowerCase();
+    const delIdioma = todas.filter((v) => v.lang && v.lang.toLowerCase().startsWith(lang.split('-')[0]));
     const pref = this.conf.prefVoz;
+    if (pref) {
+      const p = delIdioma.find((v) => v.lang.toLowerCase().startsWith(pref.toLowerCase())) ||
+                todas.find((v) => v.lang && v.lang.toLowerCase().startsWith(pref.toLowerCase()));
+      if (p) return p;
+    }
+    const genero = this.conf.genero || 'auto';
+    const FEM = /helena|m[oó]nica|monica|paulina|luc[ií]a|lucia|pen[eé]lope|penelope|paloma|marisol|carmen|google espa|microsoft sabina|microsoft elvira|female|mujer/i;
+    const MAS = /jorge|carlos|diego|pablo|raul|raúl|andres|andr[eé]s|miguel|male|hombre|george|david/i;
+    const porGenero = genero === 'femenina' ? delIdioma.filter((v) => FEM.test(v.name))
+                    : genero === 'masculina' ? delIdioma.filter((v) => MAS.test(v.name))
+                    : [];
+    const NEURAL = /natural|neural|google|microsoft|enhanced|premium|online/i;
+    const lista = porGenero.length ? porGenero : delIdioma;
     return (
-      (pref && todas.find((v) => v.lang && v.lang.toLowerCase().startsWith(pref.toLowerCase()))) ||
-      todas.find((v) => v.lang && v.lang.toLowerCase() === this.conf.lang.toLowerCase()) ||
-      todas.find((v) => v.lang && v.lang.toLowerCase().startsWith('es-')) ||
-      todas.find((v) => v.lang && v.lang.toLowerCase().startsWith('es')) ||
+      lista.find((v) => NEURAL.test(v.name)) ||
+      lista.find((v) => v.lang && v.lang.toLowerCase() === lang) ||
+      lista[0] ||
+      todas.find((v) => NEURAL.test(v.name)) ||
       todas[0] || null
     );
   }
@@ -104,6 +127,7 @@ export class Voz {
    */
   interrumpirYEscuchar() {
     if (this.estado !== ESTADOS.HABLANDO) return false;
+    this._cola = [];   // cancela las frases que aún no se dijeron
     if (typeof window.speechSynthesis !== 'undefined') window.speechSynthesis.cancel();
     this._setEstado(ESTADOS.ESCUCHANDO);
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -246,33 +270,45 @@ export class Voz {
   }
 
   // ── habla ──────────────────────────────────────────────────
+  /** Divide en frases para pausas naturales y para poder cancelar la cola al interrumpir. */
+  _frases(texto) {
+    return String(texto).split(/(?<=[.!?])\s+/).map((f) => f.trim()).filter(Boolean);
+  }
+
   _hablar(texto) {
     if (!this.activa) return;
     this.fullResponseText = texto;
     this.spokenSoFar = '';
+    this._cola = this._frases(texto);
+    this._offset = 0;
+    this._hablarSiguiente();
+  }
+
+  _hablarSiguiente() {
+    if (!this.activa || !this._cola || !this._cola.length) {
+      if (this.activa && this.conf.autoEscucha) this._escuchar();
+      else if (this.activa) this._setEstado(ESTADOS.INACTIVA);
+      return;
+    }
+    const frase = this._cola.shift();
+    const offset = this._offset;
+    this._offset += frase.length + 1;
     if (this.silenciada) {
       // sin voz: se muestra y se vuelve a escuchar
       if (this.conf.autoEscucha) this._reiniciarEn = setTimeout(() => this._escuchar(), 700);
       else this._setEstado(ESTADOS.INACTIVA);
       return;
     }
-    const u = new SpeechSynthesisUtterance(texto);
+    const u = new SpeechSynthesisUtterance(frase);
     if (this._vozElegida) u.voice = this._vozElegida;
     u.lang = this.conf.lang;
     u.rate = this.conf.velocidad;
     u.pitch = this.conf.tono;
     // hasta dónde alcanzó a hablar, palabra por palabra, sin pause()/resume()
-    u.onboundary = (e) => { if (typeof e.charIndex === 'number') this.spokenSoFar = texto.slice(0, e.charIndex); };
+    u.onboundary = (e) => { if (typeof e.charIndex === 'number') this.spokenSoFar = this.fullResponseText.slice(0, offset + e.charIndex); };
     u.onstart = () => this._setEstado(ESTADOS.HABLANDO);
-    u.onend = () => {
-      if (!this.activa) return;
-      if (this.conf.autoEscucha) this._escuchar();
-      else this._setEstado(ESTADOS.INACTIVA);
-    };
-    u.onerror = () => {
-      if (!this.activa) return;
-      if (this.conf.autoEscucha) this._escuchar();
-    };
+    u.onend = () => { if (!this.activa) return; this._hablarSiguiente(); };
+    u.onerror = () => { if (!this.activa) return; this._cola = []; this._hablarSiguiente(); };
     this._setEstado(ESTADOS.HABLANDO);
     window.speechSynthesis.speak(u);
   }
