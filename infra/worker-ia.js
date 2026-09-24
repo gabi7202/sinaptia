@@ -2,8 +2,8 @@
  * worker-ia.js — Cloudflare Worker: wrapper fino sobre infra/ia-core.js.
  *
  * Despliegue: wrangler deploy infra/worker-ia.js --name sinaptia-ia
- * Secretos: OPENAI_KEY o ANTHROPIC_KEY (+ opcionales OPENAI_MODEL, ANTHROPIC_MODEL,
- * ORIGEN_PERMITIDO).
+ * Secretos: XAI_API_KEY (Grok) u OPENAI_KEY (+ opcionales GROK_MODEL, GROK_EFFORT,
+ * OPENAI_MODEL, XAI_BASE_URL, ORIGEN_PERMITIDO).
  */
 import { manejarCuerpo, cors } from './ia-core.js';
 

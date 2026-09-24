@@ -1,5 +1,5 @@
 /**
- * api/voz/session.js — Abre una sesión de voz con el backend real (Claude+Supabase).
+ * api/voz/session.js — Abre una sesión de voz con el backend real (Grok+Supabase).
  *
  * POST { consent: true, lang: 'es'|'en'|'pt' }
  *   · cookie httpOnly `vid` (UUID, 1 año): memoria multidispositivo del navegador

@@ -43,7 +43,7 @@ import Base from '../layouts/Base.astro';
       <div class="calc-head">
         <h3>Analítica real del servidor</h3>
         <p>Todas las conversaciones, no solo las de este navegador: sesiones, leads y lo que
-          Claude resume al cerrar cada llamada (intención, urgencia, frases textuales, objeciones).
+          Grok resume al cerrar cada llamada (intención, urgencia, frases textuales, objeciones).
           Necesita el backend desplegado y la clave <code>PANEL_SECRET</code>.</p>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -105,7 +105,7 @@ import Base from '../layouts/Base.astro';
     document.getElementById('panel-exportar').addEventListener('click', () => bd.exportar('sinaptia-eventos.json'));
     document.getElementById('panel-limpiar').addEventListener('click', () => { bd.borrar(); pintar(); });
 
-    /* ── Analítica real: backend de voz (Claude + Supabase) ──
+    /* ── Analítica real: backend de voz (Grok + Supabase) ──
        La clave NO se hornea en el sitio: se pide al vuelo y vive en
        sessionStorage. Sin CONFIG.ia.voz, el bloque explica qué falta. */
     const CLAVE_KEY = 'sinaptia:panelClave';
@@ -152,7 +152,7 @@ import Base from '../layouts/Base.astro';
     }
 
     if (!BASE) {
-      msg.textContent = 'Backend sin configurar: define CONFIG.ia.voz (p. ej. \'/api/voz\') y despliega en Vercel con Supabase + Anthropic (DEPLOY.md §6). Aquí arriba ves los datos locales de este navegador.';
+      msg.textContent = 'Backend sin configurar: define CONFIG.ia.voz (p. ej. \'/api/voz\') y despliega en Vercel con Supabase + xAI/Grok (DEPLOY.md §6). Aquí arriba ves los datos locales de este navegador.';
     } else {
       btnConectar.hidden = false;
       let clave = null;

@@ -1,5 +1,5 @@
 /**
- * api/voz/chat.js — Un turno de conversación con Claude, en streaming real.
+ * api/voz/chat.js — Un turno de conversación con Grok (xAI), en streaming real.
  *
  * POST { sessionId, text } · cookie vid
  *   → text/plain en stream: el cliente habla la primera frase antes de que el
@@ -11,7 +11,7 @@
  * en messages para el resumen de cierre.
  */
 import { crearSupabase, isUUID, mismoOrigen, leerCookies, leerCuerpo, json, eq } from '../../server/nucleo.js';
-import { claude, MODELO_CHAT } from '../../server/claude.js';
+import { grok, MODELO_CHAT } from '../../server/grok.js';
 import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA, RONDAS_TOOLS } from '../../server/agente.js';
 
 export default async function handler(req, res) {
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
   await db.insertar('messages', { session_id: s.id, visitor_id: vid, role: 'user', content: text, lang: s.lang });
   await db.actualizar('sessions', eq('id', s.id), { needs_summary: true, last_msg_at: now });
 
-  // historial: últimos 30 mensajes, normalizado para Claude (empieza en user, alterna)
+  // historial: últimos 30 mensajes, normalizado para Grok (empieza en user, alterna)
   const { data: hist } = await db.select('messages',
     `select=role,content&${eq('session_id', s.id)}&order=created_at.desc&limit=30`);
   const msgs = normalizarHistorial((hist || []).slice().reverse());
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     : null;
   const system = buildSystem(s.lang, lead);
 
-  // ── stream ── (la cabecera 200 sale con el primer delta: si Claude falla
+  // ── stream ── (la cabecera 200 sale con el primer delta: si Grok falla
   //    antes de producir nada, aún podemos responder un 502 JSON limpio)
   const CABECERAS = {
     'Content-Type': 'text/plain; charset=utf-8',
@@ -73,7 +73,7 @@ export default async function handler(req, res) {
 
   try {
     for (let ronda = 0; ronda < RONDAS_TOOLS; ronda++) {
-      const final = await claude(env, {
+      const r = await grok(env, {
         model: env.CHAT_MODEL || MODELO_CHAT,
         max_tokens: 350,
         system,
@@ -82,17 +82,22 @@ export default async function handler(req, res) {
         stream: true,
         onTexto: (t) => { full += t; push(t); },
       });
-      if (final.stop_reason !== 'tool_use') break;
+      if (r.finish !== 'tool_calls' || !r.tools.length) break;
 
-      msgs.push({ role: 'assistant', content: final.content });
-      const resultados = [];
-      for (const bloque of final.content) {
-        if (bloque.type === 'tool_use') {
-          const out = await runTool(db, bloque.name, bloque.input, { visitorId: vid });
-          resultados.push({ type: 'tool_result', tool_use_id: bloque.id, content: JSON.stringify(out) });
-        }
+      // el turno del asistente viaja completo (texto + tool_calls) y cada
+      // resultado vuelve como mensaje role:'tool' con su tool_call_id
+      msgs.push({
+        role: 'assistant',
+        content: r.texto || null,
+        tool_calls: r.tools.map((tc) => ({
+          id: tc.id, type: 'function',
+          function: { name: tc.name, arguments: JSON.stringify(tc.input || {}) },
+        })),
+      });
+      for (const tc of r.tools) {
+        const out = await runTool(db, tc.name, tc.input, { visitorId: vid });
+        msgs.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(out) });
       }
-      msgs.push({ role: 'user', content: resultados });
       if (full && !/\s$/.test(full)) { full += ' '; push(' '); }
     }
   } catch (e) {

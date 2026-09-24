@@ -3,7 +3,7 @@
  *
  * Ventaja sobre el Worker externo: el endpoint es /api/ia del mismo dominio,
  * así que no hay CORS y los secretos viven en Vercel (Settings → Environment
- * Variables: OPENAI_KEY o ANTHROPIC_KEY).
+ * Variables: XAI_API_KEY (Grok) u OPENAI_KEY).
  *
  * En el sitio: CONFIG.ia.endpoint = '/api/ia'
  */

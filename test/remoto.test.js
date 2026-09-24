@@ -3,7 +3,7 @@
  *   node test/remoto.test.js
  *
  * fetch simulado: verifica el protocolo completo (session → chat en stream →
- * end) y el fraccionador que permite hablar la primera frase mientras Claude
+ * end) y el fraccionador que permite hablar la primera frase mientras Grok
  * sigue escribiendo.
  */
 import { crearRemoto, fraccionar } from '../src/lib/remoto.js';

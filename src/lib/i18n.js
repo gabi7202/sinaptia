@@ -47,7 +47,7 @@ const en = {
       porque: 'Asked for an unsupervised bot; we defined mandatory human handoff at critical points.',
       retoma: 'Tell me: what share of your enquiries is always the same question?' },
     { id: 'un_gpt_para_mi_empresa',
-      cuando: [/(buy|get|put) (a |an )?(chatgpt|gpt|claude|gemini) for my (company|business)/i],
+      cuando: [/(buy|get|put) (a |an )?(chatgpt|gpt|grok|claude|gemini) for my (company|business)/i],
       decir: 'Important nuance: you do not need "a ChatGPT", you need a system. The model is only the engine; ' +
              'the value is connecting it to YOUR data, your processes and your rules, with validations so it ' +
              'cannot invent prices or policies. That is engineering, not a subscription.',
@@ -232,7 +232,7 @@ const pt = {
       porque: 'Pediu bot sem supervisão; definimos passagem humana obrigatória nos pontos críticos.',
       retoma: 'Me diz: que parte das suas consultas é sempre a mesma pergunta?' },
     { id: 'un_gpt_para_mi_empresa',
-      cuando: [/(comprar|colocar|por) (um |o )?(chatgpt|gpt|claude|gemini) (para|na) (minha|empresa)/i],
+      cuando: [/(comprar|colocar|por) (um |o )?(chatgpt|gpt|grok|claude|gemini) (para|na) (minha|empresa)/i],
       decir: 'Nuance importante: você não precisa de "um ChatGPT", precisa de um sistema. O modelo é só o motor; ' +
              'o valor está em conectá-lo aos SEUS dados, seus processos e suas regras, com validações para não ' +
              'inventar preços nem políticas. Isso é engenharia, não assinatura.',

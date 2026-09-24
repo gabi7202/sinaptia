@@ -2,7 +2,7 @@
  * remoto.js — Cliente del backend real de voz (/api/voz/*, el cerebro de B).
  *
  * Qué aporta sobre el motor local:
- *   · Claude conversando en STREAMING: la primera frase se habla antes de que
+ *   · Grok (xAI) conversando en STREAMING: la primera frase se habla antes de que
  *     el modelo termine (enviar() va entregando deltas por onDelta).
  *   · Memoria de clientes EN SERVIDOR: la cookie httpOnly `vid` viaja sola; el
  *     saludo de inicio ya reconoce al cliente ("¡Hola de nuevo!") aunque cambie
@@ -114,7 +114,7 @@ export function crearRemoto({ base, idioma = 'es', fetchImpl } = {}) {
  * push(trozo) devuelve las frases COMPLETAS que se cerraron (terminan en
  * . ! ? seguidos de espacio); lo incompleto queda en el búfer hasta flush().
  * Es lo que permite que la voz empiece a hablar con la primera frase mientras
- * Claude sigue escribiendo la segunda.
+ * Grok sigue escribiendo la segunda.
  */
 export function fraccionar() {
   let buf = '';

@@ -10,7 +10,7 @@
  *   { traducir: { texto, de, a } }                       → { traducido }
  *   { resumir: { conversacion, idioma } }                → { resumen }
  *
- * Las claves viven como secretos del entorno (OPENAI_KEY / ANTHROPIC_KEY),
+ * Las claves viven como secretos del entorno (XAI_API_KEY / OPENAI_KEY),
  * nunca en el cliente.
  */
 
@@ -39,26 +39,34 @@ async function conOpenAI(env, sistema, mensajes, json = true) {
   return j.choices && j.choices[0] ? j.choices[0].message.content : null;
 }
 
-async function conAnthropic(env, sistema, mensajes) {
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
+/** Grok (xAI): endpoint OpenAI-compatible. Sin temperature/stop (modelo de razonamiento). */
+async function conGrok(env, sistema, mensajes, json = true) {
+  const r = await fetch((env.XAI_BASE_URL || 'https://api.x.ai/v1') + '/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': env.ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${env.XAI_API_KEY || env.GROK_API_KEY || ''}`,
+    },
     body: JSON.stringify({
-      model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-5',
-      max_tokens: 400,
-      temperature: 0.4,
-      system: sistema,
-      messages: mensajes.map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content })),
+      model: env.GROK_MODEL || env.XAI_MODEL || 'grok-4.7',
+      max_completion_tokens: 400,
+      reasoning_effort: env.GROK_EFFORT || 'low',
+      ...(json ? { response_format: { type: 'json_object' } } : {}),
+      messages: [
+        { role: 'system', content: sistema },
+        ...mensajes.map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content })),
+      ],
     }),
   });
-  if (!r.ok) throw new Error(`anthropic ${r.status}`);
+  if (!r.ok) throw new Error(`grok ${r.status}`);
   const j = await r.json();
-  return (j.content || []).filter((c) => c.type === 'text').map((c) => c.text).join('');
+  const msg = (j.choices && j.choices[0] && j.choices[0].message) || {};
+  return typeof msg.content === 'string' ? msg.content : null;
 }
 
 async function llamar(env, sistema, mensajes, json = true) {
+  if (env.XAI_API_KEY || env.GROK_API_KEY) return conGrok(env, sistema, mensajes, json);
   if (env.OPENAI_KEY) return conOpenAI(env, sistema, mensajes, json);
-  if (env.ANTHROPIC_KEY) return conAnthropic(env, sistema, mensajes);
   return null;
 }
 

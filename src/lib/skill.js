@@ -92,7 +92,7 @@ export const SKILL = {
     },
     {
       id: 'un_gpt_para_mi_empresa',
-      cuando: [/(un|comprar|meter)\s+(gpt|chatgpt|claude|gemini)\s+(para|en)\s+mi/i,
+      cuando: [/(un|comprar|meter)\s+(gpt|chatgpt|grok|claude|gemini)\s+(para|en)\s+mi/i,
                /ponerle (un )?chatgpt/i],
       decir: 'Matiz importante: no necesitas "un ChatGPT", necesitas un sistema. El modelo es solo el motor; ' +
              'el valor está en conectarlo a TUS datos, tus procesos y tus reglas, con validaciones para que ' +

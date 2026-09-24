@@ -110,7 +110,7 @@ import { IDIOMAS } from '../lib/i18n.js';
     let saludoDado = false;
     let recordado = false;
 
-    /* ── Backend real (fusión A+B): Claude en streaming + memoria en Supabase.
+    /* ── Backend real (fusión A+B): Grok en streaming + memoria en Supabase.
        Sin CONFIG.ia.voz, todo sigue 100% local: ni se intenta. Si el backend
        falla al iniciar, se degrada al motor local sin romper la experiencia. */
     const REMOTO_BASE = (CONFIG.ia && CONFIG.ia.voz) || '';
@@ -198,7 +198,7 @@ import { IDIOMAS } from '../lib/i18n.js';
         conf: { lang: pack.stt, genero: (CONFIG.voz && CONFIG.voz.genero) || 'femenina', prefVoz: pack.voz },
       };
       if (REMOTO_BASE) {
-        /* Turno en streaming: la primera frase se habla mientras Claude sigue
+        /* Turno en streaming: la primera frase se habla mientras Grok sigue
            escribiendo. Sin sesión remota activa, degrada al motor local. */
         opts.responderStream = async (texto, emitir) => {
           if (!remoto) {

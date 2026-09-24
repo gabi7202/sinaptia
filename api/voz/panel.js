@@ -3,7 +3,7 @@
  *
  * B guardaba el oro en Supabase pero no tenía dónde verlo; A tenía el panel
  * pero solo con datos del navegador local. Esta ruta une las dos puntas:
- * agrega sesiones, mensajes y los análisis de Claude (intenciones, urgencias,
+ * agrega sesiones, mensajes y los análisis de Grok (intenciones, urgencias,
  * frases textuales, objeciones) y los sirve al panel.
  *
  * Protegida con PANEL_SECRET (header x-panel-clave). El panel la pide al vuelo

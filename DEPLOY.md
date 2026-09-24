@@ -58,7 +58,7 @@ no hay ningún archivo con claves en el repo; viven como secretos del entorno.
 1. En vercel.com → *Add New… → Project* → importa el repo `sinaptia`.
 2. Vercel detecta Astro solo. Verifica: Build `npm run build`, Output `dist`.
    (`vercel.json` ya lo fija, incluido el header de seguridad y la función `api/ia.js`.)
-3. *Settings → Environment Variables*: añade `OPENAI_KEY` (o `ANTHROPIC_KEY`) y, si quieres
+3. *Settings → Environment Variables*: añade `XAI_API_KEY` (Grok) u `OPENAI_KEY` y, si quieres
    restringir el origen, `ORIGEN_PERMITIDO=https://tu-dominio.com`.
 4. *Deploy*. Tu URL temporal: `https://sinaptia.vercel.app`.
 5. En `src/config.js` pon `ia.endpoint = '/api/ia'` (mismo origen, sin CORS) y haz commit.
@@ -119,7 +119,7 @@ Y en `src/config.js`: `ia.endpoint = 'https://sinaptia-ia.TU_SUBDOMINIO.workers.
 
 - [ ] Repo en GitHub con el commit inicial
 - [ ] Proyecto en Vercel (o Firebase) con deploy verde
-- [ ] `OPENAI_KEY` (o `ANTHROPIC_KEY`) como secreto del entorno
+- [ ] `XAI_API_KEY` (Grok) u `OPENAI_KEY` como secreto del entorno
 - [ ] `ia.endpoint` apuntando a `/api/ia` (Vercel) o al Worker (Firebase)
 - [ ] Dominio propio conectado y SSL activo
 - [ ] `urlPublica`, `marca.email`, `marca.agenda` configurados y commiteados
@@ -134,11 +134,11 @@ calculadora y dejar sus datos — mientras tú operas todo desde el español.
 
 ---
 
-## 6 · Backend real (opcional): Claude + Supabase en Vercel
+## 6 · Backend real (opcional): Grok (xAI) + Supabase en Vercel
 
 La fusión A+B le da a `/voz` un cerebro conversacional de verdad:
 
-- **Claude en streaming**: la primera frase se habla antes de que el modelo termine de escribir.
+- **Grok en streaming**: la primera frase se habla antes de que el modelo termine de escribir.
 - **Memoria de clientes en servidor** (Supabase + cookie httpOnly): el visitante vuelve y lo
   reconocen ("¡Hola de nuevo, José!") aunque haya pasado días, con coincidencia fuerte
   (teléfono/email/nombre+negocio) y débil (solo nombre → confirma sin revelar datos).
@@ -156,15 +156,25 @@ estático; las rutas `api/voz/*` necesitan servidor).
 1. **Supabase** (plan Free alcanza): crea un proyecto → *SQL Editor* → pega
    `server/schema.sql` → *Run*. Crea las 4 tablas (`visitors`, `sessions`, `messages`,
    `leads`) con RLS activado y sin políticas: solo tu servidor las toca.
-2. **Anthropic**: crea una API key en console.anthropic.com (con facturación activa).
+2. **xAI**: crea una API key en console.x.ai (con créditos/facturación activa).
+   Verifica clave y modelo en 10 segundos (debe contestar algo en español):
+   ```bash
+   curl -s https://api.x.ai/v1/chat/completions \
+     -H "Content-Type: application/json" -H "Authorization: Bearer $XAI_API_KEY" \
+     -d '{"model":"grok-4.7","max_completion_tokens":40,"reasoning_effort":"low",
+          "messages":[{"role":"user","content":"Di hola en español, 3 palabras."}]}'
+   ```
+   Si responde `401` → clave mal copiada. Si responde `model not found` → tu cuenta no tiene
+   `grok-4.7`: usa el modelo que sí aparezca en console.x.ai y fíjalo con `CHAT_MODEL`.
 3. **Vercel** → tu proyecto → *Settings → Environment Variables* (referencia: `.env.ejemplo`):
    ```
    SUPABASE_URL=https://tu-proyecto.supabase.co
    SUPABASE_SERVICE_KEY=<service_role key>   ← SOLO servidor; jamás al cliente ni a git
-   ANTHROPIC_API_KEY=sk-ant-...
+   XAI_API_KEY=xai-...
    CRON_SECRET=<cadena larga al azar>        ← autentica el cron diario de vercel.json
    PANEL_SECRET=<otra cadena al azar>        ← protege la analítica de /panel
-   # opcionales: CHAT_MODEL (default claude-sonnet-5) · EXTRACT_MODEL (default claude-haiku-4-5-20251001)
+   # opcionales: CHAT_MODEL (default grok-4.7) · EXTRACT_MODEL (default grok-4.7)
+   #             GROK_EFFORT (default low: latencia de voz; medium/high para resumir mejor)
    ```
 4. **`src/config.js`**: `ia: { voz: '/api/voz' }` → commit → deploy.
 5. **Verifica**:
@@ -174,8 +184,15 @@ estático; las rutas `api/voz/*` necesitan servidor).
    - Mismo navegador, más tarde → "¡Hola de nuevo, …" (recall por cookie).
    - `/panel` → *Conectar con el servidor* → ingresa tu `PANEL_SECRET` → totales reales.
    - `curl -H "Authorization: Bearer $CRON_SECRET" https://tu-dominio.com/api/voz/cron` → `ok 0/0`.
-6. **Costos**: Supabase Free para empezar; Claude se paga por token (Sonnet conversa, Haiku
-   resume). Hay techo de 60 mensajes/hora/visitante contra abuso.
+6. **Costos**: Supabase Free para empezar; Grok se paga por token (grok-4.7: ~$2 entrada /
+   ~$6 salida por millón, y el razonamiento se factura aparte). `GROK_EFFORT=low` mantiene la
+   latencia de voz y el gasto bajo; `EXTRACT_MODEL` puede apuntar a un modelo más barato para
+   los resúmenes. Hay techo de 60 mensajes/hora/visitante contra abuso.
+
+> **Nota técnica**: usamos `POST https://api.x.ai/v1/chat/completions` (compatible con OpenAI,
+> cero SDK). xAI lo marca como endpoint *legacy*: sigue funcionando igual, y si algún día lo
+> retiran la migración a `/v1/responses` toca solo `server/grok.js` (nadie más habla con xAI).
+> El `reasoning_content` que devuelve Grok se descarta: nunca se habla ni se guarda.
 
 ### Si el backend se cae o no lo activas
 

@@ -279,7 +279,7 @@ export class Voz {
     }, 60);
   }
 
-  // ── turno en streaming (backend real: Claude frase a frase) ──
+  // ── turno en streaming (backend real: Grok frase a frase) ──
   /**
    * La respuesta se habla MIENTRAS llega: cada frase completa que emite el
    * backend entra a la cola TTS. El barge-in sigue funcionando igual: cancelar

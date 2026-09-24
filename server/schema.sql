@@ -57,7 +57,7 @@ create table if not exists sessions (
   user_agent      text,
   needs_summary   boolean not null default false,   -- true en cuanto habla el usuario
   last_msg_at     timestamptz,                      -- lo usa el cron de rescate (>20 min)
-  analisis        jsonb,                            -- JSON estructurado de Haiku al cerrar
+  analisis        jsonb,                            -- JSON estructurado de Grok al cerrar
   summarized_at   timestamptz,
   created_at      timestamptz not null default now()
 );

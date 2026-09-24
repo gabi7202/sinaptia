@@ -2,10 +2,11 @@
  * resumen.js — Conversación → lead estructurado (el oro del análisis).
  *
  * Pipeline heredado de B: al cerrar la sesión (o por el cron de rescate),
- * Claude Haiku lee la transcripción completa y devuelve SOLO un JSON con
+ * Grok lee la transcripción completa y devuelve SOLO un JSON con
  * intención, urgencia, frases textuales, objeciones, herramientas actuales y
- * siguiente paso. Si el JSON llega roto, la sesión queda needs_summary=true y
- * el cron reintenta: nunca se pierde una conversación.
+ * siguiente paso. Pide el JSON con response_format json_object y, si aun así
+ * llega roto, la sesión queda needs_summary=true y el cron reintenta: nunca se
+ * pierde una conversación.
  *
  * El lead solo se crea/actualiza si hay al menos un dato identificador
  * (nombre, negocio, teléfono o email), y los campos nuevos se fusionan con el
@@ -13,7 +14,7 @@
  */
 
 import { norm, digits, eq } from './nucleo.js';
-import { claude, MODELO_EXTRACT } from './claude.js';
+import { grok, MODELO_EXTRACT } from './grok.js';
 import { MARCA } from './langs.js';
 
 const SYS = `Analizas conversaciones de ventas de ${MARCA}. Devuelve SOLO un JSON válido, sin texto extra ni backticks, con este esquema:
@@ -46,17 +47,18 @@ export async function resumirSesion(db, env, sessionId, fetchImpl) {
     .map((m) => `${m.role === 'user' ? 'USUARIO' : 'ASISTENTE'}: ${m.content}`)
     .join('\n');
 
-  const r = await claude(env, {
+  const r = await grok(env, {
     model: (env && env.EXTRACT_MODEL) || MODELO_EXTRACT,
     max_tokens: 900,
     system: SYS,
+    json: true,          // response_format: json_object → el JSON llega limpio
     messages: [{
       role: 'user',
       content: `${prev && prev.resumen ? `Resumen previo: ${prev.resumen}\n\n` : ''}Conversación:\n${transcript}`,
     }],
   }, fetchImpl);
 
-  const txt = (r.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
+  const txt = r.texto || '';
   let a;
   try {
     a = JSON.parse(txt.replace(/```json|```/g, '').trim());

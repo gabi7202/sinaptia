@@ -3,13 +3,13 @@
  *   node test/backend.test.js
  *
  * Sin red y sin dependencias: un simulador en memoria de PostgREST (Supabase)
- * y un Claude falso que habla SSE. Cubre lo que B no tenía testeado:
+ * y un Grok (xAI) falso que habla SSE. Cubre lo que B no tenía testeado:
  * utilidades, cliente REST, normalización de historial, system prompt,
  * matching fuerte/débil de buscar_cliente, parser SSE, pipeline de resumen,
  * rate limit y las cinco rutas (session, chat, end, cron, panel).
  */
 import { isUUID, norm, digits, mismoOrigen, leerCookies, crearSupabase, eq, ilikeContiene } from '../server/nucleo.js';
-import { claude, parsearSSE, MODELO_CHAT } from '../server/claude.js';
+import { grok, parsearSSE, MODELO_CHAT } from '../server/grok.js';
 import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA } from '../server/agente.js';
 import { resumirSesion } from '../server/resumen.js';
 import { LANGS, MARCA, AGENTE } from '../server/langs.js';
@@ -24,7 +24,7 @@ function t(n, c, d) { if (c) { ok++; console.log('  \x1b[32m✓\x1b[0m ' + n); }
 
 console.log('\n\x1b[1m  SINAPTIA · Test del backend de voz (fusión A+B)\x1b[0m\n');
 
-/* ══════════ dobles: PostgREST en memoria + Claude SSE ══════════ */
+/* ══════════ dobles: PostgREST en memoria + Grok SSE ══════════ */
 
 let semillaId = 1;
 function uuidFake() {
@@ -111,37 +111,65 @@ function simuladorSupabase(tablas = {}) {
   return { fetch: fetchSim, llamadas, tablas };
 }
 
-/** Claude falso: guion por llamada (texto a deltas o tool_use), en SSE real. */
-function simuladorClaude(guiones) {
-  const llamadas = [];
+/** Grok falso: guion por llamada, en SSE real de chat.completion.chunk. */
+function simuladorGrok(guiones) {
+  const llamadas = [];      // cuerpos parseados (lo que auditan los tests)
+  const peticiones = [];    // { url, headers, body } — para revisar cabeceras
   const enc = new TextEncoder();
   const fetchSim = async (url, opts = {}) => {
     const body = JSON.parse(opts.body);
     llamadas.push(body);
+    peticiones.push({ url: String(url), headers: opts.headers || {}, body });
     const script = guiones.length > 1 ? guiones.shift() : guiones[0];
-    if (!body.stream) {
-      return { ok: true, status: 200, json: async () => ({ content: [{ type: 'text', text: script.texto ?? script.deltas?.join('') ?? '' }], stop_reason: 'end_turn' }) };
+    const finish = script.stop_reason === 'tool_use' ? 'tool_calls'
+      : (script.stop_reason === 'length' ? 'length' : 'stop');
+
+    if (script.error) {
+      return { ok: false, status: script.error, text: async () => `{"error":"fallo ${script.error}"}` };
     }
+    if (!body.stream) {
+      const mensaje = { role: 'assistant', content: script.texto ?? script.deltas?.join('') ?? null };
+      if (script.toolUse) {
+        mensaje.tool_calls = [{
+          id: script.toolUse.id || 'call_1', type: 'function',
+          function: {
+            name: script.toolUse.name || 'buscar_cliente',
+            arguments: JSON.stringify(script.toolUse.input || {}),
+          },
+        }];
+      }
+      return {
+        ok: true, status: 200,
+        json: async () => ({
+          object: 'chat.completion', model: body.model,
+          choices: [{ index: 0, message: mensaje, finish_reason: finish }],
+          usage: { prompt_tokens: 120, completion_tokens: 20, total_tokens: 140 },
+        }),
+      };
+    }
+
     let sse = '';
-    const push = (o) => { sse += `event: ${o.type}\ndata: ${JSON.stringify(o)}\n\n`; };
-    push({ type: 'message_start', message: { id: 'msg_test', role: 'assistant', content: [] } });
-    let idx = 0;
+    const push = (delta, extra = {}) => {
+      sse += `data: ${JSON.stringify({
+        id: 'cmpl_test', object: 'chat.completion.chunk', model: body.model,
+        choices: [{ index: 0, delta, ...(extra.finish ? { finish_reason: extra.finish } : {}) }],
+        ...(extra.usage ? { usage: extra.usage } : {}),
+      })}\n\n`;
+    };
+    if (script.razonamiento) push({ role: 'assistant', reasoning_content: script.razonamiento });
+    else push({ role: 'assistant', content: '' });
     if (script.texto != null || script.deltas) {
-      push({ type: 'content_block_start', index: 0, content_block: { type: 'text', text: '' } });
-      for (const d of script.deltas || [script.texto]) push({ type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: d } });
-      push({ type: 'content_block_stop', index: 0 });
-      idx = 1;
+      for (const d of script.deltas || [script.texto]) push({ content: d });
     }
     if (script.toolUse) {
       const j = JSON.stringify(script.toolUse.input || {});
-      push({ type: 'content_block_start', index: idx, content_block: { type: 'tool_use', id: script.toolUse.id || 'toolu_1', name: script.toolUse.name || 'buscar_cliente', input: {} } });
       const mitad = Math.ceil(j.length / 2);
-      push({ type: 'content_block_delta', index: idx, delta: { type: 'input_json_delta', partial_json: j.slice(0, mitad) } });
-      push({ type: 'content_block_delta', index: idx, delta: { type: 'input_json_delta', partial_json: j.slice(mitad) } });
-      push({ type: 'content_block_stop', index: idx });
+      push({ tool_calls: [{ index: 0, id: script.toolUse.id || 'call_1', type: 'function', function: { name: script.toolUse.name || 'buscar_cliente', arguments: j.slice(0, mitad) } }] });
+      push({ tool_calls: [{ index: 0, function: { arguments: j.slice(mitad) } }] });
     }
-    push({ type: 'message_delta', delta: { stop_reason: script.stop_reason || 'end_turn' }, usage: {} });
-    push({ type: 'message_stop' });
+    push({}, { finish, usage: { prompt_tokens: 120, completion_tokens: 20, total_tokens: 140 } });
+    sse += 'data: [DONE]\n\n';
+
     const bytes = enc.encode(sse);
     const trozos = [];   // trozos de 37 bytes: parten UTF-8 y eventos a la mitad
     for (let i = 0; i < bytes.length; i += 37) trozos.push(bytes.slice(i, i + 37));
@@ -151,15 +179,28 @@ function simuladorClaude(guiones) {
       body: { getReader: () => ({ read: async () => (k < trozos.length ? { done: false, value: trozos[k++] } : { done: true, value: undefined }) }) },
     };
   };
-  return { fetch: fetchSim, llamadas };
+  return { fetch: fetchSim, llamadas, peticiones };
+}
+
+/** Cuerpo SSE crudo para probar parsearSSE en directo (sin pasar por grok()). */
+function cuerpoSSE(lineas, paso = 11) {
+  const bytes = new TextEncoder().encode(lineas.map((l) => l + '\n\n').join(''));
+  let k = 0;
+  return {
+    getReader: () => ({
+      read: async () => (k < bytes.length
+        ? { done: false, value: bytes.slice(k, (k += paso)) }
+        : { done: true, value: undefined }),
+    }),
+  };
 }
 
 function mundo({ tablas = {}, guiones = [{ deltas: ['Ok.'] }] } = {}) {
   const sim = simuladorSupabase(tablas);
-  const cld = simuladorClaude(guiones);
+  const grk = simuladorGrok(guiones);
   const fetchMundo = async (url, opts) =>
-    String(url).startsWith('https://api.anthropic.com') ? cld.fetch(url, opts) : sim.fetch(url, opts);
-  return { sim, cld, fetch: fetchMundo };
+    String(url).startsWith('https://api.x.ai') ? grk.fetch(url, opts) : sim.fetch(url, opts);
+  return { sim, grk, fetch: fetchMundo };
 }
 
 function fakeReq({ method = 'POST', body = null, headers = {} } = {}) {
@@ -180,7 +221,7 @@ const jsonDe = (res) => { try { return JSON.parse(res.cuerpo); } catch (e) { ret
 
 process.env.SUPABASE_URL = 'https://fake.supabase.co';
 process.env.SUPABASE_SERVICE_KEY = 'service-key-test';
-process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
+process.env.XAI_API_KEY = 'xai-test';
 process.env.CRON_SECRET = 'cron-test';
 process.env.PANEL_SECRET = 'panel-test';
 
@@ -223,7 +264,7 @@ console.log('\n\x1b[36m  2 · Cliente Supabase (cero dependencias)\x1b[0m');
   t('sin URL/clave el backend se declara no disponible (503, no rompe)', db2.disponible() === false && db.disponible() === true);
 }
 
-/* ══════════ 3 · historial normalizado para Claude ══════════ */
+/* ══════════ 3 · historial normalizado para Grok ══════════ */
 
 console.log('\n\x1b[36m  3 · Normalización de historial\x1b[0m');
 {
@@ -255,7 +296,7 @@ console.log('\n\x1b[36m  4 · System prompt (marca + reglas de A)\x1b[0m');
     return /<memoria_cliente>/.test(c) && /José/.test(c) && /no repitas preguntas/.test(c);
   })());
   t('responde en el idioma pedido (en/pt)', /responde siempre en English/.test(buildSystem('en', null)) && /responde siempre en português/.test(buildSystem('pt', null)));
-  t('la herramienta buscar_cliente está definida con su esquema', tools.length === 1 && tools[0].name === 'buscar_cliente' && tools[0].input_schema.properties.telefono);
+  t('la herramienta buscar_cliente viaja en formato function de Grok', tools.length === 1 && tools[0].type === 'function' && tools[0].function.name === 'buscar_cliente' && !!tools[0].function.parameters.properties.telefono);
 }
 
 /* ══════════ 5 · buscar_cliente: fuerte/débil, sin filtrar datos ══════════ */
@@ -293,27 +334,69 @@ console.log('\n\x1b[36m  5 · Memoria multidispositivo (runTool)\x1b[0m');
   t('herramienta desconocida → error controlado', r.error === 'herramienta desconocida');
 }
 
-/* ══════════ 6 · parser SSE de Claude ══════════ */
+/* ══════════ 6 · cliente Grok (xAI) y parser SSE ══════════ */
 
-console.log('\n\x1b[36m  6 · Streaming SSE (parser + deltas)\x1b[0m');
+console.log('\n\x1b[36m  6 · Streaming SSE de Grok (parser + deltas)\x1b[0m');
 {
   const deltas = [];
-  const m = mundo({ guiones: [{ deltas: ['¡Hola', ', José! ', 'Qué gusto.'], stop_reason: 'end_turn' }] });
-  const final = await claude(process.env, { model: MODELO_CHAT, system: 's', messages: [{ role: 'user', content: 'hola' }], stream: true, onTexto: (x) => deltas.push(x) }, m.fetch);
+  const m = mundo({ guiones: [{ deltas: ['¡Hola', ', José! ', 'Qué gusto.'], razonamiento: 'El usuario me saluda, respondo corto.' }] });
+  const r = await grok(process.env, { model: MODELO_CHAT, system: 's', messages: [{ role: 'user', content: 'hola' }], stream: true, onTexto: (x) => deltas.push(x) }, m.fetch);
   t('onTexto recibe cada delta del stream', deltas.length === 3 && deltas[0] === '¡Hola');
-  t('ensambla el mensaje final completo', final.content.length === 1 && final.content[0].text === '¡Hola, José! Qué gusto.' && final.stop_reason === 'end_turn');
-  t('trozos que parten UTF-8 a la mitad no corrompen el texto', /José/.test(final.content[0].text));
-  t('el body pide stream:true y la clave va en header', m.cld.llamadas[0].stream === true);
+  t('ensambla el texto final completo', r.texto === '¡Hola, José! Qué gusto.' && r.finish === 'stop');
+  t('el reasoning_content de Grok NO se habla ni se transcribe', !/saluda|respondo/.test(r.texto) && deltas.join('') === r.texto);
+  t('trozos que parten UTF-8 a la mitad no corrompen el texto', /José/.test(r.texto));
+  t('trae el usage de la llamada (para vigilar el costo)', r.uso && r.uso.total_tokens === 140);
+  t('pide stream:true y la clave viaja en Authorization Bearer',
+    m.grk.llamadas[0].stream === true && m.grk.peticiones[0].headers.Authorization === 'Bearer xai-test');
+  t('apunta a api.x.ai con system primero y límites de voz', (() => {
+    const b = m.grk.llamadas[0];
+    const url = m.grk.peticiones[0].url;
+    return url === 'https://api.x.ai/v1/chat/completions' && b.model === MODELO_CHAT &&
+      b.messages[0].role === 'system' && b.messages[1].content === 'hola' &&
+      b.max_completion_tokens === 350 && b.reasoning_effort === 'low';
+  })());
+  t('no manda stop ni penalties (los modelos de razonamiento los rechazan)', (() => {
+    const b = m.grk.llamadas[0];
+    return b.stop === undefined && b.presence_penalty === undefined && b.frequency_penalty === undefined;
+  })());
 
-  const m2 = mundo({ guiones: [{ deltas: ['Un momento.'], toolUse: { id: 'toolu_9', name: 'buscar_cliente', input: { nombre: 'José', negocio: 'pastelería' } }, stop_reason: 'tool_use' }] });
-  const f2 = await claude(process.env, { system: 's', messages: [{ role: 'user', content: 'ya hablé antes' }], stream: true, tools }, m2.fetch);
-  const tu = f2.content.find((b) => b.type === 'tool_use');
-  t('tool_use: acumula input_json_delta partido y lo parsea', tu && tu.id === 'toolu_9' && tu.name === 'buscar_cliente' && tu.input.negocio === 'pastelería');
-  t('stop_reason tool_use llega desde message_delta', f2.stop_reason === 'tool_use');
+  const m2 = mundo({ guiones: [{ deltas: ['Un momento.'], toolUse: { id: 'call_9', name: 'buscar_cliente', input: { nombre: 'José', negocio: 'pastelería' } }, stop_reason: 'tool_use' }] });
+  const r2 = await grok(process.env, { system: 's', messages: [{ role: 'user', content: 'ya hablé antes' }], stream: true, tools }, m2.fetch);
+  t('tool_calls: acumula los arguments partidos y los parsea', r2.tools.length === 1 && r2.tools[0].id === 'call_9' && r2.tools[0].name === 'buscar_cliente' && r2.tools[0].input.negocio === 'pastelería');
+  t('finish_reason tool_calls llega mapeado al vocabulario interno', r2.finish === 'tool_calls');
+  t('las tools viajan en formato function, sin llamadas paralelas', m2.grk.llamadas[0].tools[0].type === 'function' && m2.grk.llamadas[0].parallel_tool_calls === false && m2.grk.llamadas[0].tool_choice === 'auto');
 
   const m3 = mundo({ guiones: [{ texto: '{"ok":1}' }] });
-  const f3 = await claude(process.env, { model: 'claude-haiku-4-5-20251001', system: 's', messages: [{ role: 'user', content: 'x' }] }, m3.fetch);
-  t('modo no-stream (resumen) devuelve el JSON del texto', f3.content[0].text === '{"ok":1}');
+  const r3 = await grok(process.env, { model: 'grok-4.7', system: 's', json: true, messages: [{ role: 'user', content: 'x' }] }, m3.fetch);
+  t('modo no-stream (resumen) devuelve el texto y fuerza json_object',
+    r3.texto === '{"ok":1}' && r3.finish === 'stop' &&
+    m3.grk.llamadas[0].response_format.type === 'json_object' && m3.grk.llamadas[0].stream === undefined);
+
+  const m4 = mundo({ guiones: [{ error: 401 }] });
+  let err = null;
+  try { await grok(process.env, { system: 's', messages: [{ role: 'user', content: 'x' }] }, m4.fetch); } catch (e) { err = e; }
+  t('clave mala → error claro "grok 401" (no un crash mudo)', !!err && /grok 401/.test(err.message));
+
+  const m5 = mundo({ guiones: [{ deltas: ['Ok.'], stop_reason: 'length' }] });
+  const r5 = await grok(process.env, { max_tokens: 8, system: 's', messages: [{ role: 'user', content: 'x' }], stream: true }, m5.fetch);
+  t('finish_reason length se reporta (recorte por max_completion_tokens)', r5.finish === 'length' && m5.grk.llamadas[0].max_completion_tokens === 8);
+
+  const directo = await parsearSSE(cuerpoSSE([
+    'data: {"choices":[{"index":0,"delta":{"content":"ho"}}]}',
+    ': comentario keep-alive',
+    'data: esto-no-es-json',
+    'data: {"choices":[{"index":0,"delta":{"content":"la"},"finish_reason":"stop"}]}',
+    'data: [DONE]',
+  ]), null);
+  t('parsearSSE tolera [DONE], keep-alive y basura intermedia', directo.texto === 'hola' && directo.finish === 'stop' && directo.tools.length === 0);
+
+  const sinIndice = await parsearSSE(cuerpoSSE([
+    'data: {"choices":[{"index":0,"delta":{"tool_calls":[{"id":"c1","function":{"name":"buscar_cliente","arguments":"{\\\"nombre\\\":\\\"Ana\\\"}"}}]}}]}',
+    'data: {"choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}]}',
+    'data: [DONE]',
+  ]), null);
+  t('tool_call sin índice ni arguments fragmentados también se ensambla',
+    sinIndice.tools.length === 1 && sinIndice.tools[0].input.nombre === 'Ana' && sinIndice.finish === 'tool_calls');
 }
 
 /* ══════════ 7 · pipeline de resumen ══════════ */
@@ -359,7 +442,7 @@ console.log('\n\x1b[36m  7 · Conversación → lead estructurado\x1b[0m');
   m = mundo({ tablas: sinUsuario, guiones: [{ texto: ANALISIS }] });
   db = crearSupabase(process.env, m.fetch);
   r = await resumirSesion(db, process.env, 'S1', m.fetch);
-  t('sesión sin mensajes de usuario → se descarta sin gastar Claude', r.hecho === false && m.sim.tablas.sessions[0].needs_summary === false && m.cld.llamadas.length === 0);
+  t('sesión sin mensajes de usuario → se descarta sin gastar tokens', r.hecho === false && m.sim.tablas.sessions[0].needs_summary === false && m.grk.llamadas.length === 0);
 
   const anonimo = sembrado();
   m = mundo({ tablas: anonimo, guiones: [{ texto: JSON.stringify({ nombre: null, negocio: null, telefono: null, email: null, resumen: 'solo saludó', intencion: 'explorar', frases_textuales: [], objeciones: [], herramientas_actuales: [] }) }] });
@@ -454,7 +537,7 @@ console.log('\n\x1b[36m  9 · Ruta chat (streaming + rate limit + tools)\x1b[0m'
            msgs.some((x) => x.role === 'assistant' && x.content === '¡Claro que sí! Te cuento cómo.');
   })());
   t('marca la sesión needs_summary (red del cron/end)', m.sim.tablas.sessions[0].needs_summary === true && !!m.sim.tablas.sessions[0].last_msg_at);
-  t('manda a Claude el historial normalizado (empieza en user)', m.cld.llamadas[0].messages[0].role === 'user');
+  t('manda a Grok el system prompt y el historial normalizado (empieza en user)', m.grk.llamadas[0].messages[0].role === 'system' && m.grk.llamadas[0].messages[1].role === 'user');
 
   res = fakeRes();
   await handlerChat(fakeReq({ body: { sessionId: sid, text: 'hola' }, headers: { cookie: 'vid=no-uuid' } }), res);
@@ -475,9 +558,9 @@ console.log('\n\x1b[36m  9 · Ruta chat (streaming + rate limit + tools)\x1b[0m'
   globalThis.fetch = m.fetch;
   res = fakeRes();
   await handlerChat(fakeReq({ body: { sessionId: sid, text: 'otro más' }, headers: { cookie: `vid=${vid}` } }), res);
-  t('rate limit: 60 msgs/hora → 429 sin llamar a Claude', res.statusCode === 429 && jsonDe(res).error === 'limit' && m.cld.llamadas.length === 0);
+  t('rate limit: 60 msgs/hora → 429 sin llamar a Grok', res.statusCode === 429 && jsonDe(res).error === 'limit' && m.grk.llamadas.length === 0);
 
-  // bucle de tool use: Claude pide buscar_cliente y luego responde
+  // bucle de tool use: Grok pide buscar_cliente y luego responde
   m = mundo({
     tablas: {
       visitors: [{ id: vid, lead_id: null }],
@@ -486,19 +569,21 @@ console.log('\n\x1b[36m  9 · Ruta chat (streaming + rate limit + tools)\x1b[0m'
       leads: [{ id: 'L-JOSE', nombre: 'José Pérez', negocio: 'La Espiga', giro: 'pastelería', nombre_norm: 'jose perez', negocio_norm: 'la espiga', telefono_norm: '3001234567', updated_at: '2026-09-20' }],
     },
     guiones: [
-      { deltas: ['Déjame revisar.'], toolUse: { id: 'toolu_1', name: 'buscar_cliente', input: { nombre: 'José Pérez', telefono: '3001234567' } }, stop_reason: 'tool_use' },
+      { deltas: ['Déjame revisar.'], toolUse: { id: 'call_1', name: 'buscar_cliente', input: { nombre: 'José Pérez', telefono: '3001234567' } }, stop_reason: 'tool_use' },
       { deltas: ['¡José! Retomamos donde quedamos.'] },
     ],
   });
   globalThis.fetch = m.fetch;
   res = fakeRes();
   await handlerChat(fakeReq({ body: { sessionId: sid, text: 'soy José, ya hablé con ustedes' }, headers: { cookie: `vid=${vid}` } }), res);
-  t('bucle de tools: 2 llamadas a Claude, texto de ambas ruedas en el stream', m.cld.llamadas.length === 2 && /Déjame revisar/.test(res.cuerpo) && /retomamos/i.test(res.cuerpo));
+  t('bucle de tools: 2 llamadas a Grok, texto de ambas ruedas en el stream', m.grk.llamadas.length === 2 && /Déjame revisar/.test(res.cuerpo) && /retomamos/i.test(res.cuerpo));
   t('el tool_result viaja en la segunda llamada con estado confirmado', (() => {
-    const msgs2 = m.cld.llamadas[1].messages;
+    const msgs2 = m.grk.llamadas[1].messages;
     const ultimo = msgs2[msgs2.length - 1];
-    return ultimo.role === 'user' && Array.isArray(ultimo.content) &&
-      JSON.parse(ultimo.content[0].content).estado === 'confirmado';
+    const ante = msgs2[msgs2.length - 2];
+    return ultimo.role === 'tool' && ultimo.tool_call_id === 'call_1' &&
+      JSON.parse(ultimo.content).estado === 'confirmado' &&
+      ante.role === 'assistant' && ante.tool_calls[0].function.name === 'buscar_cliente';
   })());
   t('la rueda tool vincula visitante↔lead para la próxima cookie', m.sim.tablas.visitors[0].lead_id === 'L-JOSE');
 }
@@ -620,7 +705,7 @@ console.log('\n\x1b[36m  13 · Degradación (degrada, no se rompe)\x1b[0m');
 
 console.log('\n  \x1b[90m' + '─'.repeat(46) + '\x1b[0m');
 const total = ok + fallos.length;
-if (!fallos.length) console.log('  \x1b[32m' + ok + '/' + total + ' EN VERDE (100%)\x1b[0m · backend de voz (Claude+Supabase) verificado');
+if (!fallos.length) console.log('  \x1b[32m' + ok + '/' + total + ' EN VERDE (100%)\x1b[0m · backend de voz (Grok+Supabase) verificado');
 else { console.log('  \x1b[31;1m' + ok + '/' + total + ' — ' + fallos.length + ' FALLO(S)\x1b[0m'); fallos.forEach((f) => console.log('   · ' + f)); }
 console.log('');
 process.exit(fallos.length ? 1 : 0);

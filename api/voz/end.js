@@ -3,7 +3,7 @@
  *
  * El cron de B habla de "sesiones que nunca mandaron el end": esta es esa ruta.
  * Al colgar, el cliente la llama (fetch keepalive): resume la conversación AHÍ
- * MISMO con Haiku y actualiza/crea el lead. Si el cliente desaparece sin llamar
+ * MISMO con Grok y actualiza/crea el lead. Si el cliente desaparece sin llamar
  * (batería, crash, pestaña cerrada), el cron de rescate la recoge igual.
  *
  * POST { sessionId } · cookie vid → { ok: true, lead: bool }
