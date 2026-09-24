@@ -1,0 +1,88 @@
+---
+/**
+ * Crecimiento.astro — Para emprendedores y startups que necesitan atender a más
+ * clientes sin multiplicar la nómina. Termina donde toda conversación de negocio
+ * termina: en el dinero que hoy se queda en la mesa.
+ *
+ * La calculadora no inventa nada: el número sale de LOS DATOS DEL VISITANTE,
+ * con supuestos conservadores escritos en pantalla.
+ */
+---
+<section id="crecimiento" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow"><i></i> para emprendedores y startups</div>
+      <h2>Atiende a más clientes sin contratar más gente</h2>
+      <p class="sec-lead">Crecer no es añadir cabezas: es añadir capacidad. Cada consulta que
+        respondes en segundos, cada hora que tu equipo deja de transcribir y cada venta que
+        dejas de perder por llegar tarde son capacidad nueva — sin una sola contratación.</p>
+    </div>
+
+    <div class="crece-grid">
+      <div class="crece-palancas">
+        <div class="palanca">
+          <span class="pal-num">01</span>
+          <h4>Capacidad sin nómina</h4>
+          <p>Un agente atiende a 100 personas a la vez a las 3 de la mañana. Tu equipo humano
+            entra solo donde hace falta un cerebro: negociar, cuidar, decidir.</p>
+        </div>
+        <div class="palanca">
+          <span class="pal-num">02</span>
+          <h4>Velocidad que cierra</h4>
+          <p>El que responde primero se queda con el cliente. Pasar de horas a segundos no es
+            comodidad: es tasa de cierre.</p>
+        </div>
+        <div class="palanca">
+          <span class="pal-num">03</span>
+          <h4>Tu tiempo vuelto venta</h4>
+          <p>Las horas que tu equipo pasa transcribiendo y copiando datos son horas que no
+            vende. Libéralas y mándalaslas al ingreso.</p>
+        </div>
+        <p class="crece-nota">Esto no es una promesa: es aritmética con tus propios números.
+          Pruébala aquí al lado.</p>
+      </div>
+
+      <div class="calc" aria-label="Calculadora de dinero recuperado">
+        <div class="calc-head">
+          <h3>¿Cuánto dinero dejas en la mesa al año?</h3>
+          <p>Mueve tus números reales. El resultado se recalcula al instante.</p>
+        </div>
+        <div class="calc-in">
+          <label>Consultas al mes
+            <input type="number" id="c-consultas" value="300" min="10" max="100000" step="10" inputmode="numeric" />
+          </label>
+          <label>Valor promedio de una venta (USD)
+            <input type="number" id="c-valor" value="250" min="1" max="1000000" step="10" inputmode="numeric" />
+          </label>
+          <label>% de consultas que hoy quedan sin respuesta a tiempo
+            <input type="number" id="c-pierde" value="35" min="0" max="100" step="5" inputmode="numeric" />
+          </label>
+          <label>Horas/semana en tareas repetitivas
+            <input type="number" id="c-horas" value="15" min="0" max="80" step="1" inputmode="numeric" />
+          </label>
+          <label>Costo de una hora de tu equipo (USD)
+            <input type="number" id="c-costohora" value="8" min="1" max="500" step="1" inputmode="numeric" />
+          </label>
+        </div>
+        <div class="calc-out">
+          <div class="co">
+            <span>Ventas recuperadas / mes</span>
+            <strong id="o-ventas">—</strong>
+          </div>
+          <div class="co">
+            <span>Horas liberadas convertidas en dinero / mes</span>
+            <strong id="o-horas">—</strong>
+          </div>
+          <div class="co total">
+            <span>Al año, dinero que hoy se queda en la mesa</span>
+            <strong id="o-total">—</strong>
+          </div>
+        </div>
+        <p class="calc-sup">Supuestos conservadores, escritos para que los discutas: recuperas el
+          25% de las consultas que hoy pierdes, y el 70% del tiempo liberado vuelve a trabajo que
+          vende. Si tus números reales son mejores, el resultado también.</p>
+        <button class="btn p calc-cta" id="calc-cta">Quiero recuperar ese dinero</button>
+      </div>
+    </div>
+  </div>
+</section>

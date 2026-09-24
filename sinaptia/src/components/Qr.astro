@@ -1,0 +1,59 @@
+---
+/**
+ * Qr.astro — "Escanea y habla", escrito para quien necesita el servicio,
+ * no para quien lo vende. El visitante apunta, toca y conversa: sin formularios,
+ * sin teclado, sin espera.
+ *
+ * Además ofrece el demo adaptable: el mismo agente de voz sonando como SONARÍA
+ * en el negocio del visitante (clínica, taller, inmobiliaria…), para que escuche
+ * su propio caso antes de decidir nada.
+ */
+import QRCode from 'qrcode';
+import { CONFIG } from '../config.js';
+
+const base = import.meta.env.BASE_URL || '/';
+const sitio = CONFIG.urlPublica || (Astro.site ? String(Astro.site).replace(/\/$/, '') + base : '');
+const raiz = (sitio || 'https://tu-dominio.com').replace(/\/$/, '');
+// El QR lleva a /voz: la puerta corta. Popup a media pantalla, idioma y a hablar.
+const urlQr = raiz + '/voz';
+const svg = await QRCode.toString(urlQr, {
+  type: 'svg', margin: 1, width: 232, errorCorrectionLevel: 'M',
+  color: { dark: '#0E1B2A', light: '#FFFFFF' },
+});
+---
+<section id="qr" class="alt">
+  <div class="wrap qr-grid">
+    <div>
+      <div class="eyebrow"><i></i> escanea y habla</div>
+      <h2 class="sec-title">¿Escribir? Mejor habla.</h2>
+      <p class="sec-lead">Apunta con tu cámara o toca el botón, y conversa con el agente como si
+        llamaras a la empresa: te escucha, te entiende y te responde al instante, en tu idioma.
+        Sin formularios, sin teclado, sin esperar en línea.</p>
+      <ul class="qr-pasos">
+        <li><b>1.</b> Apuntas tu cámara al código, o tocas el micrófono si ya estás en el teléfono.</li>
+        <li><b>2.</b> Tocas <em>toca para hablar</em>. El micrófono siempre pide tu permiso: nunca se enciende solo.</li>
+        <li><b>3.</b> El agente te saluda en tu idioma y la conversación sigue sola, hasta resolver lo tuyo.</li>
+      </ul>
+      <p class="crece-nota"><b>Y si ya hablamos antes, te reconoce.</b> Dices "soy José, el de la pastelería"
+        y el agente busca en su historial, encuentra tu caso y sigue desde donde quedó: no te vuelve a
+        preguntar lo que ya le contaste.</p>
+      <p class="crece-nota"><a class="qr-id" href="/voz">abrir /voz directo →</a></p>
+      <p class="crece-nota">¿Tienes un negocio y quieres escuchar cómo sonaría tu propio agente de voz?
+        Prueba el demo adaptado a tu sector: suena distinto para una clínica, un taller o una inmobiliaria,
+        porque cada negocio habla de lo suyo.</p>
+      <div class="qr-idiomas">
+        <a class="qr-id" href="?voz=1&negocio=clinica"> demo clínica dental</a>
+        <a class="qr-id" href="?voz=1&negocio=taller">🔧 demo taller mecánico</a>
+        <a class="qr-id" href="?voz=1&negocio=inmobiliaria">🏠 demo inmobiliaria</a>
+      </div>
+      <p class="qr-url">
+        Este mismo código puedes imprimirlo donde quieras: cada conversación que empieza aquí
+        queda registrada con tu consentimiento, y puedes pedir que se borre cuando quieras.
+      </p>
+    </div>
+    <div class="qr-marco">
+      <div class="qr-svg" set:html={svg}></div>
+      <div class="qr-pie">toca o escanea<br /><span>conversación por voz</span></div>
+    </div>
+  </div>
+</section>

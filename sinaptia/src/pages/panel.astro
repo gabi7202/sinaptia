@@ -1,0 +1,175 @@
+---
+/**
+ * /panel — Panel privado de embudo. Sin login: lee SOLO el localStorage de este
+ * navegador, así que es una vista de desarrollo/verificación, no la analítica
+ * real de todos los visitantes. La agregación real vive en tu remoto
+ * (webhook/Supabase), donde llegan los mismos eventos desde todos los navegadores.
+ */
+import Base from '../layouts/Base.astro';
+---
+<Base title="Panel de embudo — SINAPTIA" description="Vista local de eventos de embudo.">
+  <main class="wrap wrap-narrow" style="padding:56px 26px">
+    <div class="eyebrow"><i></i> panel local · sin cookies</div>
+    <h1 class="sec-title">Embudo de este navegador</h1>
+    <p class="sec-lead">Estos son los eventos de embudo guardados en este navegador. La analítica
+      real de todos tus visitantes se agrega en tu remoto configurado; aquí verificas que los
+      eventos se disparen correctamente.</p>
+
+    <div class="calc" style="margin-top:26px">
+      <div class="calc-head">
+        <h3>Pasos del embudo</h3>
+        <p>visita → calculadora → CTA → lead → llamada</p>
+      </div>
+      <div class="calc-out" id="panel-pasos"></div>
+      <p class="calc-sup" id="panel-tasas"></p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn s" id="panel-exportar">Exportar eventos (JSON)</button>
+        <button class="btn s" id="panel-limpiar">Borrar eventos locales</button>
+      </div>
+      <p class="calc-sup" id="panel-pendientes"></p>
+    </div>
+    <div class="calc" style="margin-top:20px">
+      <div class="calc-head">
+        <h3>Qué busca la gente y cómo lo busca</h3>
+        <p>Los patrones que más se repiten en las conversaciones: intenciones detectadas y las
+          palabras exactas con las que la gente pide lo que pide. Esto es el oro: te dice qué
+          vender y con qué palabras.</p>
+      </div>
+      <div class="calc-out" id="panel-busquedas"></div>
+      <p class="calc-sup" id="panel-palabras"></p>
+    </div>
+
+    <div class="calc" style="margin-top:20px">
+      <div class="calc-head">
+        <h3>Analítica real del servidor</h3>
+        <p>Todas las conversaciones, no solo las de este navegador: sesiones, leads y lo que
+          Claude resume al cerrar cada llamada (intención, urgencia, frases textuales, objeciones).
+          Necesita el backend desplegado y la clave <code>PANEL_SECRET</code>.</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="btn s" id="panel-conectar" hidden>Conectar con el servidor</button>
+      </div>
+      <p class="calc-sup" id="panel-remoto-msg"></p>
+      <div class="calc-out" id="panel-remoto-stats" hidden></div>
+      <div class="calc-out" id="panel-remoto-frases" hidden></div>
+      <div class="calc-out" id="panel-remoto-leads" hidden></div>
+    </div>
+  </main>
+
+  <script>
+    import { BD } from '../lib/bd.js';
+    import { Funnel, PASOS } from '../lib/funnel.js';
+    import { CONFIG } from '../config.js';
+
+    const bd = new BD({});
+    const funnel = new Funnel(bd);
+
+    function pintar() {
+      const c = funnel.recuento();
+      const caja = document.getElementById('panel-pasos');
+      caja.innerHTML = PASOS.map((p) =>
+        `<div class="co"><span>${p}</span><strong>${c[p] || 0}</strong></div>`).join('') +
+        `<div class="co"><span>invitación mostrada</span><strong>${c.invitacion || 0}</strong></div>`;
+      const tasas = funnel.tasas();
+      document.getElementById('panel-tasas').textContent =
+        'Tasas: ' + tasas.map((t) => `${t.de} → ${t.a}: ${(t.tasa * 100).toFixed(0)}%`).join(' · ');
+      const r = funnel.resumen();
+      document.getElementById('panel-pendientes').textContent =
+        `Tasa global visita → llamada: ${(r.tasaGlobal * 100).toFixed(1)}% · ` +
+        `pendientes de sincronizar: ${r.pendientes}`;
+    }
+    function pintarBusquedas() {
+      const turnos = bd.todos().filter((r) => r.evento === 'turno' && r.usuario);
+      const intenciones = {};
+      const palabras = {};
+      const STOP = new Set(['de','la','el','los','las','un','una','y','a','en','con','por','para','que','me','mi','su','se','lo','es','quiero','necesito','como','cómo','cuánto','cuanto','hola','gracias']);
+      for (const t of turnos) {
+        const i = (t.guion && t.guion.intencion) || 'sin patrón';
+        intenciones[i] = (intenciones[i] || 0) + 1;
+        for (const w of String(t.usuario).toLowerCase().split(/[^a-záéíóúñü0-9]+/)) {
+          if (w.length > 3 && !STOP.has(w)) palabras[w] = (palabras[w] || 0) + 1;
+        }
+      }
+      const topI = Object.entries(intenciones).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      const topP = Object.entries(palabras).sort((a, b) => b[1] - a[1]).slice(0, 12);
+      document.getElementById('panel-busquedas').innerHTML = topI.length
+        ? topI.map(([k, v]) => `<div class="co"><span>${k}</span><strong>${v}</strong></div>`).join('')
+        : '<div class="co"><span>sin conversaciones aún</span><strong>0</strong></div>';
+      document.getElementById('panel-palabras').textContent = topP.length
+        ? 'Palabras con las que piden: ' + topP.map(([w, v]) => w + ' (' + v + ')').join(' · ')
+        : 'Aún no hay palabras suficientes: cada conversación suma.';
+    }
+    pintar();
+    pintarBusquedas();
+
+    document.getElementById('panel-exportar').addEventListener('click', () => bd.exportar('sinaptia-eventos.json'));
+    document.getElementById('panel-limpiar').addEventListener('click', () => { bd.borrar(); pintar(); });
+
+    /* ── Analítica real: backend de voz (Claude + Supabase) ──
+       La clave NO se hornea en el sitio: se pide al vuelo y vive en
+       sessionStorage. Sin CONFIG.ia.voz, el bloque explica qué falta. */
+    const CLAVE_KEY = 'sinaptia:panelClave';
+    const BASE = String((CONFIG.ia && CONFIG.ia.voz) || '').replace(/\/+$/, '');
+    const msg = document.getElementById('panel-remoto-msg');
+    const btnConectar = document.getElementById('panel-conectar');
+
+    function caja(id) { const el = document.getElementById(id); el.hidden = false; el.innerHTML = ''; return el; }
+    function fila(padre, etiqueta, valor) {
+      const d = document.createElement('div'); d.className = 'co';
+      const s = document.createElement('span'); s.textContent = etiqueta;
+      const b = document.createElement('strong'); b.textContent = String(valor);
+      d.appendChild(s); d.appendChild(b); padre.appendChild(d);
+    }
+    const top = (obj) => Object.entries(obj || {}).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+    function pintarRemoto(j) {
+      const stats = caja('panel-remoto-stats');
+      fila(stats, 'sesiones', j.sesiones);
+      fila(stats, 'mensajes', j.mensajes);
+      fila(stats, 'leads', j.leads);
+      fila(stats, 'pendientes de resumen', j.pendientes);
+      for (const [k, v] of top(j.intenciones)) fila(stats, 'intención: ' + k, v);
+      for (const [k, v] of top(j.urgencias)) fila(stats, 'urgencia ' + k, v);
+
+      const frases = caja('panel-remoto-frases');
+      (j.frases || []).slice(0, 12).forEach((f) => fila(frases, '“' + f.frase + '”', f.intencion || '—'));
+      for (const [k, v] of top(j.objeciones)) fila(frases, 'objeción: ' + k, v);
+      for (const [k, v] of top(j.herramientas)) fila(frases, 'usa hoy: ' + k, v);
+
+      const leads = caja('panel-remoto-leads');
+      (j.recientes || []).forEach((l) => fila(leads,
+        [l.nombre, l.negocio].filter(Boolean).join(' · ') || '(sin nombre)',
+        l.necesidad || l.resumen || ''));
+      msg.textContent = 'Datos del servidor · generado ' + new Date(j.generado || Date.now()).toLocaleString();
+    }
+
+    async function cargarRemoto(clave) {
+      const r = await fetch(BASE + '/panel', { headers: { 'x-panel-clave': clave } });
+      if (r.status === 401) { try { sessionStorage.removeItem(CLAVE_KEY); } catch (e) {} msg.textContent = 'Clave inválida: intenta de nuevo.'; return false; }
+      if (!r.ok) { msg.textContent = 'El servidor respondió ' + r.status + '.'; return false; }
+      pintarRemoto(await r.json());
+      return true;
+    }
+
+    if (!BASE) {
+      msg.textContent = 'Backend sin configurar: define CONFIG.ia.voz (p. ej. \'/api/voz\') y despliega en Vercel con Supabase + Anthropic (DEPLOY.md §6). Aquí arriba ves los datos locales de este navegador.';
+    } else {
+      btnConectar.hidden = false;
+      let clave = null;
+      try { clave = sessionStorage.getItem(CLAVE_KEY); } catch (e) { /* modo privado */ }
+      if (clave) cargarRemoto(clave).catch(() => { msg.textContent = 'No se pudo conectar con el servidor.'; });
+      btnConectar.addEventListener('click', async () => {
+        let c = null;
+        try { c = sessionStorage.getItem(CLAVE_KEY); } catch (e) { /* nada */ }
+        if (!c) c = window.prompt('Clave del panel (PANEL_SECRET del servidor):');
+        if (!c) return;
+        btnConectar.disabled = true;
+        msg.textContent = 'Consultando al servidor…';
+        try {
+          if (await cargarRemoto(c.trim())) { try { sessionStorage.setItem(CLAVE_KEY, c.trim()); } catch (e) { /* nada */ } }
+        } catch (e) { msg.textContent = 'No se pudo conectar con el servidor.'; }
+        btnConectar.disabled = false;
+      });
+    }
+  </script>
+</Base>

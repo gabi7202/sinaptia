@@ -1,0 +1,78 @@
+---
+import '../styles/global.css';
+interface P { title: string; description: string }
+const { title, description } = Astro.props as P;
+import { CONFIG } from '../config.js';
+
+// URL absoluta canónica: urlPublica configurada > Astro.site + base > origen relativo
+const base = import.meta.env.BASE_URL || '/';
+const origen = CONFIG.urlPublica
+  || (Astro.site ? String(Astro.site).replace(/\/$/, '') + base : '');
+const ruta = Astro.url.pathname;                       // p.ej. /privacidad/
+const urlAbsoluta = origen ? origen.replace(/\/$/, '') + ruta : ruta;
+const hayOrigen = !!origen;
+const ogImg = (origen ? origen.replace(/\/$/, '') : '') + base + 'og.png';
+
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': (origen || '/') + '#organizacion',
+      name: 'SINAPTIA',
+      slogan: 'IA que entra en operación',
+      url: origen || undefined,
+      logo: origen ? origen.replace(/\/$/, '') + ogImg : undefined,
+      contactPoint: { '@type': 'ContactPoint', email: CONFIG.marca.email, contactType: 'sales', availableLanguage: ['Spanish', 'English', 'Portuguese'] },
+    },
+    {
+      '@type': 'Service',
+      '@id': (origen || '/') + '#servicio',
+      serviceType: 'Implementación de inteligencia artificial para empresas',
+      provider: { '@id': (origen || '/') + '#organizacion' },
+      areaServed: 'Worldwide',
+      description: 'Diagnóstico de automatización con IA y una automatización real en producción dentro de la primera fase, para empresas medianas, emprendedores y startups.',
+      offers: { '@type': 'Offer', name: 'Diagnóstico de IA + piloto en la primera fase', price: '1800', priceCurrency: 'USD' },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': (origen || '/') + '#sitio',
+      url: origen || '/',
+      name: 'SINAPTIA',
+      inLanguage: ['es', 'en', 'pt'],
+      publisher: { '@id': (origen || '/') + '#organizacion' },
+    },
+  ],
+});
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    {hayOrigen && <meta property="og:url" content={urlAbsoluta} />}
+    <meta property="og:image" content={urlAbsoluta.replace(/\/$/, '') + ogImg} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Sinaptia — diagnóstico de IA y una automatización real en producción en tu operación" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={urlAbsoluta.replace(/\/$/, '') + ogImg} />
+    {hayOrigen && <link rel="canonical" href={urlAbsoluta} />}
+    <script type="application/ld+json" set:html={jsonLd} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

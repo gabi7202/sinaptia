@@ -1,0 +1,1286 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SINAPTIA — IA que entra en operación</title><meta name="description" content="Un agente de IA que te saluda por tu ciudad y tu clima, entiende tu operación en minutos, corrige lo que está mal planteado y te deja un brief en PDF con lo que de verdad conviene automatizar."><meta name="generator" content="Astro v5.18.2"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><meta property="og:title" content="SINAPTIA — IA que entra en operación"><meta property="og:description" content="Un agente de IA que te saluda por tu ciudad y tu clima, entiende tu operación en minutos, corrige lo que está mal planteado y te deja un brief en PDF con lo que de verdad conviene automatizar."><meta property="og:type" content="website"><meta property="og:image" content="/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Sinaptia — diagnóstico de IA y una automatización real en producción en tu operación"><meta property="og:locale" content="es_ES"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="pt_BR"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="SINAPTIA — IA que entra en operación"><meta name="twitter:description" content="Un agente de IA que te saluda por tu ciudad y tu clima, entiende tu operación en minutos, corrige lo que está mal planteado y te deja un brief en PDF con lo que de verdad conviene automatizar."><meta name="twitter:image" content="/og.png"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"/#organizacion","name":"SINAPTIA","slogan":"IA que entra en operación","contactPoint":{"@type":"ContactPoint","email":"hola@sinaptialabs.com","contactType":"sales","availableLanguage":["Spanish","English","Portuguese"]}},{"@type":"Service","@id":"/#servicio","serviceType":"Implementación de inteligencia artificial para empresas","provider":{"@id":"/#organizacion"},"areaServed":"Worldwide","description":"Diagnóstico de automatización con IA y una automatización real en producción dentro de la primera fase, para empresas medianas, emprendedores y startups.","offers":{"@type":"Offer","name":"Diagnóstico de IA + piloto en la primera fase","price":"1800","priceCurrency":"USD"}},{"@type":"WebSite","@id":"/#sitio","url":"/","name":"SINAPTIA","inLanguage":["es","en","pt"],"publisher":{"@id":"/#organizacion"}}]}</script><style>:root{--fondo:#F7FAFD;--blanco:#FFFFFF;--tinta:#0E1B2A;--tinta2:#3D5468;--tinta3:#566778;--azul:#1D6FE0;--azul-osc:#1450A3;--azul-suave:#E8F1FC;--azul-borde:#BBD4F2;--borde:#DCE6F0;--ambar:#B45309;--ambar-bg:#FEF3C7;--ambar-borde:#FCD34D;--ok:#047857;--ok-bg:#D1FAE5;--err:#B91C1C;--err-bg:#FEE2E2;--sombra:0 10px 30px rgba(14,27,42,.08);--sombra-alta:0 22px 55px rgba(14,27,42,.14);--mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Menlo,Consolas,monospace;--sans:"Inter","Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--r:14px}*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:var(--sans);background:var(--fondo);color:var(--tinta2);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}h1,h2,h3{line-height:1.13;letter-spacing:-.022em;color:var(--tinta)}a{color:var(--azul)}::selection{background:#1d6fe02e}.wrap{max-width:1180px;margin:0 auto;padding:0 26px}.wrap-narrow{max-width:860px}section{padding:72px 0}.alt{background:var(--blanco)}.nav{position:sticky;top:0;z-index:60;background:#f7fafddb;backdrop-filter:blur(14px);border-bottom:1px solid var(--borde)}.nav-in{max-width:1180px;margin:0 auto;padding:12px 26px;display:flex;align-items:center;gap:14px}.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--tinta);text-decoration:none}.brand span{text-transform:uppercase;letter-spacing:.14em}.nav-id{display:flex;gap:4px;margin-left:auto}.nav-id button{background:none;border:1px solid transparent;color:var(--tinta3);font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:5px 9px;border-radius:7px;cursor:pointer;transition:.2s}.nav-id button:hover{color:var(--azul)}.nav-id button.activo{color:var(--azul-osc);border-color:var(--azul-borde);background:var(--azul-suave)}.nav-live{display:flex;align-items:center;gap:8px;margin-left:12px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--tinta3);text-transform:uppercase}.nav-live i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px #04785780;animation:pulso 1.8s infinite}.nav-live.resolviendo i{background:var(--ambar);box-shadow:0 0 8px #b4530966}@keyframes pulso{0%,to{opacity:1}50%{opacity:.28}}.nav-cta{background:var(--azul);color:#fff;border:none;font-weight:700;font-size:13px;padding:9px 18px;border-radius:8px;cursor:pointer;font-family:inherit;transition:.15s}.nav-cta:hover{background:var(--azul-osc);transform:translateY(-1px)}.hero{position:relative;padding:74px 0 66px;overflow:hidden;background:linear-gradient(180deg,#FFFFFF 0%,var(--fondo) 70%)}.hero:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(760px 420px at 84% 6%,rgba(29,111,224,.1),transparent 62%),radial-gradient(600px 380px at 4% 96%,rgba(20,80,163,.07),transparent 66%)}.hero:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;background-image:linear-gradient(rgba(29,111,224,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(29,111,224,.05) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(720px 420px at 30% 40%,#000 0%,transparent 78%)}.hero-in{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:52px;align-items:center}.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--azul);margin-bottom:20px;font-weight:700}.eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--azul);animation:pulso 1.8s infinite}.greet{font-size:clamp(29px,4.5vw,50px);font-weight:700;color:var(--tinta);min-height:2.3em}.greet .cur{display:inline-block;width:3px;height:.9em;background:var(--azul);vertical-align:-.1em;margin-left:4px;animation:parpadeo .85s steps(1) infinite}@keyframes parpadeo{50%{opacity:0}}.hero-sub{margin-top:18px;font-size:17px;color:var(--tinta2);max-width:560px}.hero-sub b{color:var(--tinta);font-weight:600}.cta-row{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}.btn{display:inline-block;padding:13px 26px;border-radius:9px;font-weight:700;font-size:14.5px;cursor:pointer;border:1px solid transparent;background:transparent;font-family:inherit;text-decoration:none;transition:.16s}.btn.p{background:var(--azul);color:#fff;box-shadow:0 8px 22px #1d6fe047}.btn.p:hover{background:var(--azul-osc);transform:translateY(-1px)}.btn.s{border-color:var(--borde);color:var(--tinta);background:var(--blanco)}.btn.s:hover{border-color:var(--azul);color:var(--azul)}.ctx{position:relative;border-radius:18px;overflow:hidden;background:var(--blanco);border:1px solid var(--borde);box-shadow:var(--sombra-alta)}.ctx-sky{position:relative;height:104px;overflow:hidden;transition:background 1.2s ease}.ctx-sky[data-cielo=despejado]{background:linear-gradient(180deg,#bbd9f7,#e8f1fc)}.ctx-sky[data-cielo=nublado]{background:linear-gradient(180deg,#9fb4c8,#dce6f0)}.ctx-sky[data-cielo=lluvia]{background:linear-gradient(180deg,#7e93a8,#b9c7d6)}.ctx-sky[data-cielo=noche]{background:linear-gradient(180deg,#12233b,#2c4468)}.ctx-sky .sol{position:absolute;right:34px;top:22px;width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3c4,#f59e0b 68%);box-shadow:0 0 34px 10px #f59e0b59;animation:flota 7s ease-in-out infinite}.ctx-sky .sol:after{content:"";position:absolute;inset:-14px;border-radius:50%;background:conic-gradient(from 0deg,rgba(245,158,11,.5) 0 6%,transparent 6% 12.5%,rgba(245,158,11,.5) 12.5% 18.5%,transparent 18.5% 25%,rgba(245,158,11,.5) 25% 31%,transparent 31% 37.5%,rgba(245,158,11,.5) 37.5% 43.5%,transparent 43.5% 50%,rgba(245,158,11,.5) 50% 56%,transparent 56% 62.5%,rgba(245,158,11,.5) 62.5% 68.5%,transparent 68.5% 75%,rgba(245,158,11,.5) 75% 81%,transparent 81% 87.5%,rgba(245,158,11,.5) 87.5% 93.5%,transparent 93.5% 100%);animation:gira 26s linear infinite;opacity:.55}@keyframes gira{to{transform:rotate(360deg)}}@keyframes flota{0%,to{transform:translateY(0)}50%{transform:translateY(-6px)}}.ctx-sky .nube{position:absolute;height:16px;border-radius:99px;background:#ffffffbf;animation:deriva linear infinite}.ctx-sky .nube.n1{width:88px;top:26px;left:-90px;animation-duration:26s}.ctx-sky .nube.n2{width:64px;top:48px;left:-70px;animation-duration:34s;opacity:.7}.ctx-sky .nube.n3{width:110px;top:64px;left:-110px;animation-duration:42s;opacity:.5}@keyframes deriva{to{transform:translate(560px)}}.ctx-sky .gota{position:absolute;top:-12px;width:1.6px;height:11px;border-radius:99px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.85));animation:cae linear infinite}@keyframes cae{to{transform:translateY(120px)}}.ctx-sky .estrella{position:absolute;width:2px;height:2px;border-radius:50%;background:#dce6f0;animation:titila 3.4s ease-in-out infinite}@keyframes titila{0%,to{opacity:.25}50%{opacity:.95}}.ctx-sky .scan{position:absolute;left:0;right:0;height:2px;top:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);animation:scan 2.6s ease-in-out infinite;opacity:.7}@keyframes scan{0%{top:4%}50%{top:92%}to{top:4%}}.ctx-sky .ciudad-tag{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--azul-osc);background:#fffffff0;border:1px solid var(--azul-borde);border-radius:99px;padding:5px 12px;font-weight:700;box-shadow:0 4px 14px #0e1b2a24}.ctx-body{padding:18px 20px 16px}.ctx-head{display:flex;align-items:baseline;gap:12px}.ctx-temp{font-size:42px;font-weight:700;letter-spacing:-.035em;color:var(--tinta);line-height:1;font-variant-numeric:tabular-nums}.ctx-temp small{font-size:17px;color:var(--tinta3);font-weight:500}.ctx-cond{font-size:13.5px;color:var(--tinta2)}.sec-head{max-width:660px;margin-bottom:42px}.sec-head h2,.sec-title{font-size:clamp(25px,3.3vw,37px);color:var(--tinta);margin-bottom:12px}.sec-lead{color:var(--tinta2);font-size:15.5px;max-width:600px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:26px 24px;transition:.2s;position:relative;overflow:hidden;box-shadow:var(--sombra)}.card:before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--azul),transparent 70%);opacity:0;transition:.25s}.card:hover{border-color:var(--azul-borde);transform:translateY(-3px);box-shadow:var(--sombra-alta)}.card:hover:before{opacity:1}.card .num{font-family:var(--mono);font-size:10px;color:var(--azul);letter-spacing:.16em;margin-bottom:12px;font-weight:700}.card .ic{width:42px;height:42px;border-radius:10px;background:var(--azul-suave);display:flex;align-items:center;justify-content:center;margin-bottom:16px}.card h3{font-size:16.5px;color:var(--tinta);margin-bottom:8px}.card p{font-size:13.5px;color:var(--tinta2)}.card.svc{display:flex;flex-direction:column}.card.svc ul{list-style:none;margin:14px 0 18px;display:grid;gap:0}.card.svc li{padding:7px 0 7px 20px;position:relative;font-size:13px;color:var(--tinta2);border-top:1px solid var(--borde)}.card.svc li:first-child{border-top:none}.card.svc li:before{content:"";position:absolute;left:2px;top:14px;width:6px;height:6px;border-radius:50%;background:var(--azul)}.card.svc li b{color:var(--tinta)}.card .price{font-size:13px;color:var(--azul-osc);font-weight:700;letter-spacing:.04em;font-family:var(--mono);margin-top:auto}.prob-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:start}.pain-list{display:grid;gap:12px;margin-top:26px}.pain{background:var(--blanco);border-left:3px solid var(--azul);border-radius:0 12px 12px 0;padding:16px 18px;box-shadow:var(--sombra)}.pain h4{font-size:14.5px;color:var(--tinta);margin-bottom:6px}.pain p{font-size:13.5px;color:var(--tinta2)}.bars-title{font-size:17px;color:var(--tinta);margin:6px 0 22px}.bars{display:grid;gap:18px}.bar .lbl{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;color:var(--tinta);margin-bottom:7px}.bar .lbl span:last-child{color:var(--azul);font-family:var(--mono)}.track{height:10px;background:var(--azul-suave);border-radius:99px;overflow:hidden}.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--azul-osc),var(--azul));transition:width 1.1s cubic-bezier(.22,.9,.3,1)}.fill.hi{background:linear-gradient(90deg,var(--azul),#4C9AF5)}.fill.dim{background:var(--borde)}.bar .track{opacity:.4;transition:opacity .5s ease}.bar.revelado .track{opacity:1}.bars-note{margin-top:24px;padding:15px 18px;background:var(--azul-suave);border-radius:12px;font-size:13.5px;color:var(--tinta2);border:1px solid var(--azul-borde)}.bars-note b{color:var(--azul-osc)}.steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.step{position:relative;padding-top:8px}.step .n{font-family:var(--mono);font-size:30px;font-weight:700;color:var(--azul);letter-spacing:-.04em;display:block;margin-bottom:10px}.step h4{font-size:15.5px;color:var(--tinta);margin-bottom:8px}.step p{font-size:13px;color:var(--tinta2)}.situations{display:grid;gap:12px;margin-top:8px}.situation{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);overflow:hidden;transition:border-color .3s ease,box-shadow .3s ease;box-shadow:var(--sombra)}.situation.abierto{border-color:var(--azul-borde);box-shadow:var(--sombra-alta)}.sit-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:18px;background:none;border:none;cursor:pointer;padding:20px 22px;font-family:inherit;text-align:left}.sit-q{font-size:16.5px;font-weight:700;color:var(--tinta);line-height:1.3}.situation.abierto .sit-q{color:var(--azul-osc)}.sit-plus{font-size:24px;color:var(--azul);font-weight:400;line-height:1;transition:transform .35s cubic-bezier(.4,0,.2,1)}.situation.abierto .sit-plus{transform:rotate(45deg)}.sit-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s ease;opacity:0}.situation.abierto .sit-body{opacity:1}.sit-inner{padding:2px 22px 24px}.sit-inner h3{font-size:18px;color:var(--tinta);margin-bottom:14px}.sit-list{list-style:none;display:grid;gap:0}.sit-list li{padding:9px 0 9px 24px;position:relative;font-size:14px;color:var(--tinta2);border-top:1px solid var(--borde)}.sit-list li:first-child{border-top:none}.sit-list li:before{content:"";position:absolute;left:2px;top:16px;width:7px;height:7px;border-radius:50%;background:var(--azul)}.sit-win{display:flex;align-items:center;gap:16px;margin:18px 0 6px;padding:16px 18px;background:var(--azul-suave);border:1px solid var(--azul-borde);border-radius:12px}.win-num{font-size:44px;font-weight:700;color:var(--azul);letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}.win-txt{font-size:12.5px;color:var(--tinta2);line-height:1.45}.sit-detail{list-style:none;margin:12px 0 16px;display:grid;gap:8px}.sit-detail .why{background:var(--blanco);border:1px dashed var(--azul-borde);color:var(--tinta3);font-size:12.5px;padding:6px 12px;border-radius:99px;cursor:pointer;font-family:inherit;transition:.2s}.sit-detail .why:hover{border-color:var(--azul);color:var(--azul)}.sit-detail span{display:none;font-size:13px;color:var(--tinta2);padding:8px 4px 2px}.sit-detail li.mostrando .why{border-style:solid;border-color:var(--azul);color:var(--azul-osc)}.sit-detail li.mostrando span{display:block;animation:entra .3s ease-out}.sit-cta{margin-top:6px}.sit-note{margin-top:26px;font-size:13px;color:var(--tinta3);text-align:center;line-height:1.6}.crece-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:40px;align-items:start}.crece-palancas{display:grid;gap:14px}.palanca{background:var(--fondo);border:1px solid var(--borde);border-radius:var(--r);padding:18px 20px;position:relative}.pal-num{font-family:var(--mono);font-size:10px;color:var(--azul);letter-spacing:.16em;font-weight:700}.palanca h4{font-size:15.5px;color:var(--tinta);margin:6px 0}.palanca p{font-size:13.5px;color:var(--tinta2)}.crece-nota{margin-top:4px;font-size:13px;color:var(--tinta3);font-style:italic}.calc{background:var(--blanco);border:1px solid var(--azul-borde);border-radius:18px;padding:26px 26px 22px;box-shadow:var(--sombra-alta)}.calc-head h3{font-size:20px;color:var(--tinta);margin-bottom:6px}.calc-head p{font-size:13.5px;color:var(--tinta2);margin-bottom:18px}.calc-in{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}.calc-in label{display:grid;gap:6px;font-size:11.5px;font-weight:600;color:var(--tinta2);letter-spacing:.02em}.calc-in label:first-child{grid-column:1/-1}.calc-in input{background:var(--fondo);border:1px solid var(--borde);border-radius:9px;padding:10px 12px;font-size:15px;font-family:var(--mono);color:var(--tinta);outline:none;font-variant-numeric:tabular-nums}.calc-in input:focus{border-color:var(--azul)}.calc-out{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.co{background:var(--azul-suave);border:1px solid var(--azul-borde);border-radius:12px;padding:14px 16px;display:grid;gap:4px}.co span{font-size:11px;color:var(--tinta2);line-height:1.35}.co strong{font-size:22px;color:var(--azul-osc);letter-spacing:-.02em;font-variant-numeric:tabular-nums}.co.total{grid-column:1/-1;background:linear-gradient(135deg,var(--azul-osc),#0E2A4D);border-color:var(--azul-osc)}.co.total span{color:#bbd4f2}.co.total strong{font-size:34px;color:#fff}.calc-sup{margin-top:14px;font-size:11.5px;color:var(--tinta3);line-height:1.55}.calc-cta{width:100%;margin-top:14px;text-align:center}.corr-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}.corr{background:var(--blanco);border-left:3px solid var(--ambar);border-radius:0 12px 12px 0;padding:16px 18px;box-shadow:var(--sombra)}.corr .q{font-size:13px;color:var(--tinta3);font-style:italic;margin-bottom:8px}.corr .q:before{content:"Tú: ";color:var(--ambar);font-style:normal;font-weight:700}.corr .a{font-size:13.5px;color:var(--tinta2)}.corr .a:before{content:"Nexa: ";color:var(--azul-osc);font-weight:700}.faq{display:grid;gap:0}.faq details{border-bottom:1px solid var(--borde);padding:18px 0}.faq summary{font-weight:700;font-size:15.5px;color:var(--tinta);cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:18px;align-items:center}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";font-size:24px;color:var(--azul);font-weight:400;line-height:1;transition:.2s}.faq details[open] summary:after{transform:rotate(45deg)}.faq details p{margin-top:12px;font-size:14px;color:var(--tinta2)}.lm{background:linear-gradient(160deg,#FFFFFF 0%,var(--azul-suave) 100%)}.lm-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:50px;align-items:center}.lm-list{list-style:none;margin:22px 0 0;display:grid;gap:0}.lm-list li{padding:9px 0 9px 28px;position:relative;font-size:13.5px;color:var(--tinta2);border-top:1px solid var(--borde)}.lm-list li:first-child{border-top:none}.lm-list li:before{content:"✓";position:absolute;left:4px;top:9px;color:var(--azul);font-weight:700}.lm-honest{margin-top:20px;font-size:13px;color:var(--tinta3)}.lm-card{background:var(--blanco);border:1px solid var(--azul-borde);border-radius:16px;padding:28px 26px;box-shadow:var(--sombra-alta)}.lm-card h3{color:var(--tinta);font-size:19px;margin-bottom:5px}.lm-price{color:var(--azul);font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px}.lm-facts{display:flex;gap:22px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--borde)}.lm-facts b{display:block;font-size:21px;color:var(--tinta);letter-spacing:-.02em}.lm-facts span{font-size:10px;color:var(--tinta3);text-transform:uppercase;letter-spacing:.08em}.lm-form{display:grid;gap:10px}.lm-form input{background:var(--fondo);border:1px solid var(--borde);border-radius:9px;padding:12px 14px;color:var(--tinta);font-size:14px;font-family:inherit;outline:none}.lm-form input:focus{border-color:var(--azul)}.lm-form .btn{width:100%;text-align:center}.lm-note{font-size:11.5px;color:var(--tinta3);margin-top:12px;line-height:1.55;text-align:center}.qr-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}.qr-pasos{list-style:none;margin:20px 0 0;display:grid;gap:10px}.qr-pasos li{font-size:14px;color:var(--tinta2);padding-left:4px}.qr-pasos b{color:var(--azul);font-family:var(--mono);margin-right:6px}.qr-pasos code{font-family:var(--mono);font-size:12px;color:var(--azul-osc)}.qr-url{margin-top:18px;font-family:var(--mono);font-size:11.5px;color:var(--tinta3);word-break:break-all}.qr-aviso{color:var(--ambar)}.qr-idiomas{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.qr-id{font-size:11.5px;color:var(--tinta2);border:1px solid var(--borde);border-radius:99px;padding:5px 12px;text-decoration:none;transition:.2s;background:var(--blanco)}.qr-id:hover{border-color:var(--azul);color:var(--azul)}.qr-marco{justify-self:center;background:var(--blanco);border-radius:20px;padding:22px 22px 16px;box-shadow:var(--sombra-alta);text-align:center;border:1px solid var(--borde)}.qr-svg svg{display:block;width:232px;height:232px;border-radius:8px}.qr-pie{margin-top:12px;font-size:12px;font-weight:700;color:var(--tinta);letter-spacing:.06em;text-transform:uppercase;line-height:1.5}.qr-pie span{font-weight:500;color:var(--azul-osc);text-transform:none;letter-spacing:0;font-size:11.5px}.cta-final{background:linear-gradient(135deg,#0E2A4D 0%,var(--azul-osc) 100%);position:relative;overflow:hidden}.cta-final:before{content:"";position:absolute;inset:0;opacity:.4;background:radial-gradient(620px 320px at 50% 120%,rgba(76,154,245,.4),transparent 65%)}.cta-final .wrap{position:relative}.cta-final h2{color:#fff;font-size:clamp(25px,3.4vw,38px);margin-bottom:14px}.cta-final .eyebrow{color:#bbd4f2}.cta-final .eyebrow i{background:#bbd4f2}.cta-lead{font-size:15.5px;color:#dce6f0;max-width:600px;margin:0 auto 28px}.cta-micro{margin-top:22px;font-size:12.5px;color:#9fb4c8}.cta-final .btn.s{border-color:#ffffff59;color:#fff;background:transparent}.cta-final .btn.s:hover{border-color:#fff}.footer{border-top:1px solid var(--borde);padding:32px 0;color:var(--tinta3);font-size:12.5px;background:var(--blanco)}.footer-in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.invitacion{position:fixed;left:22px;bottom:22px;z-index:85;width:min(340px,calc(100vw - 100px));background:var(--blanco);border:1px solid var(--azul-borde);border-radius:16px;box-shadow:var(--sombra-alta);padding:18px 18px 16px;display:none;animation:sube .28s ease-out}.invitacion.visible{display:block}.invitacion .inv-k{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--azul);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}.invitacion .inv-k i{width:6px;height:6px;border-radius:50%;background:var(--azul);animation:pulso 1.6s infinite}.invitacion p{font-size:13.5px;color:var(--tinta2);line-height:1.5;margin-bottom:14px}.invitacion p b{color:var(--tinta)}.inv-acciones{display:flex;gap:8px;align-items:center}.inv-acciones .btn{padding:10px 16px;font-size:13px}.inv-no{background:none;border:none;color:var(--tinta3);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline}.inv-no:hover{color:var(--tinta)}.dock{position:fixed;right:22px;bottom:22px;z-index:80;display:flex;flex-direction:column;align-items:flex-end;gap:12px}.fab{position:relative;width:60px;height:60px;border-radius:50%;background:var(--azul);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 12px 34px #1d6fe066;transition:.2s}.fab.oculto{display:none}.fab:hover{transform:scale(1.07);background:var(--azul-osc)}.fab .badge{position:absolute;top:-2px;right:-2px;width:17px;height:17px;border-radius:50%;background:var(--ambar);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}.panel{width:min(402px,calc(100vw - 30px));height:min(610px,calc(100vh - 116px));background:var(--blanco);border:1px solid var(--azul-borde);border-radius:16px;display:none;flex-direction:column;overflow:hidden;box-shadow:var(--sombra-alta)}.panel.abierto{display:flex;animation:sube .22s ease-out}@keyframes sube{0%{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}.p-head{padding:12px 15px;background:var(--azul-suave);border-bottom:1px solid var(--azul-borde);display:flex;align-items:center;gap:10px}.p-head .av{width:34px;height:34px;border-radius:50%;background:var(--azul-osc);display:flex;align-items:center;justify-content:center;flex-shrink:0}.p-head .nm{font-weight:700;font-size:14px;color:var(--tinta)}.p-head .st{font-family:var(--mono);font-size:9.5px;color:var(--ok);letter-spacing:.08em}.p-head .x{margin-left:auto;background:none;border:none;color:var(--tinta3);font-size:19px;cursor:pointer;line-height:1}.p-head .x:hover{color:var(--tinta)}.pasos{display:flex;gap:5px;padding:9px 15px;background:var(--blanco);border-bottom:1px solid var(--borde)}.pasos span{flex:1;height:3px;border-radius:99px;background:var(--borde);transition:background .3s}.pasos span.on{background:var(--azul)}.msgs{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;background:var(--fondo)}.msg{max-width:87%;padding:10px 13px;border-radius:13px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;animation:entra .2s ease-out}@keyframes entra{0%{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}.msg.bot{align-self:flex-start;background:var(--blanco);border:1px solid var(--borde);border-bottom-left-radius:4px;color:var(--tinta2)}.msg.bot b{color:var(--azul-osc)}.msg.user{align-self:flex-end;background:var(--azul);color:#fff;border-bottom-right-radius:4px}.msg.sys{align-self:center;background:var(--ambar-bg);border:1px solid var(--ambar-borde);color:var(--ambar);font-size:11.5px;font-family:var(--mono);border-radius:8px;padding:6px 11px}.typing{align-self:flex-start;display:flex;gap:4px;padding:12px 15px;background:var(--blanco);border:1px solid var(--borde);border-radius:13px}.typing i{width:6px;height:6px;border-radius:50%;background:var(--azul-borde);animation:bounce 1.2s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}@keyframes bounce{0%,60%,to{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}.quick{display:flex;gap:6px;flex-wrap:wrap;padding:0 13px 8px;background:var(--fondo)}.quick button{background:var(--blanco);border:1px solid var(--borde);color:var(--tinta2);font-size:11px;padding:5px 10px;border-radius:99px;cursor:pointer;font-family:inherit}.quick button:hover{border-color:var(--azul);color:var(--azul)}.pdfbtn{margin:0 13px 11px;background:var(--azul);color:#fff;border:none;font-weight:800;font-size:13px;padding:12px;border-radius:9px;cursor:pointer;font-family:inherit;display:none}.pdfbtn:hover{background:var(--azul-osc)}.p-input{display:flex;gap:8px;padding:12px 13px;border-top:1px solid var(--borde);background:var(--blanco)}.p-input textarea{flex:1;background:var(--fondo);border:1px solid var(--borde);border-radius:9px;padding:10px 12px;color:var(--tinta);font-size:13.5px;font-family:inherit;outline:none;resize:none;max-height:88px}.p-input textarea:focus{border-color:var(--azul)}.p-input button{background:var(--azul);border:none;color:#fff;font-weight:700;font-size:13px;padding:0 18px;border-radius:9px;cursor:pointer;font-family:inherit}.p-input button:disabled{opacity:.4;cursor:not-allowed}.llamada{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:radial-gradient(900px 600px at 50% 18%,#12325c,#0a1626 72%);opacity:0;transition:opacity .3s ease}.llamada.abierta{display:flex;opacity:1}.ll-inner{display:flex;flex-direction:column;align-items:center;gap:18px;padding:30px;width:min(560px,calc(100vw - 32px));text-align:center}.ll-orb{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center}.ll-orb .core{width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#1d6fe0,#0e2a4d);color:#bbd4f2;box-shadow:0 0 40px #1d6fe059,inset 0 1px #ffffff1f;transition:transform .3s ease,color .3s ease}.ll-orb .ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(76,154,245,.4);opacity:0}.llamada[data-estado=escuchando] .core{color:#6ee7b7;transform:scale(1.06)}.llamada[data-estado=hablando] .core{color:#7cc4fa;transform:scale(1.1);animation:respira 1.6s ease-in-out infinite}.llamada[data-estado=pensando] .core{color:#fcd34d}@keyframes respira{0%,to{transform:scale(1.06)}50%{transform:scale(1.14)}}.llamada[data-estado=escuchando] .r1{animation:onda 1.8s ease-out infinite}.llamada[data-estado=escuchando] .r2{animation:onda 1.8s ease-out .45s infinite}.llamada[data-estado=escuchando] .r3{animation:onda 1.8s ease-out .9s infinite}.llamada[data-estado=hablando] .r1{animation:onda 1.5s ease-out infinite}.llamada[data-estado=hablando] .r2{animation:onda 1.5s ease-out .5s infinite}@keyframes onda{0%{transform:scale(.62);opacity:.9}to{transform:scale(1.35);opacity:0}}.ll-estado{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7cc4fa}.llamada[data-estado=escuchando] .ll-estado{color:#6ee7b7}.llamada[data-estado=pensando] .ll-estado{color:#fcd34d}.ll-transcripcion{min-height:52px;font-size:17px;color:#eaf2fb;line-height:1.5;max-width:460px}.llamada[data-estado=hablando] .ll-transcripcion{color:#9fb4c8;font-size:14px}.ll-respuesta{min-height:24px;font-size:14px;color:#c7d6e8;line-height:1.55;max-width:460px;white-space:pre-wrap}.ll-aviso{font-size:12.5px;color:#fcd34d;min-height:18px}.ll-tap{margin-top:4px;background:#7cc4fa;color:#0a1626;border:none;font-weight:800;font-size:17px;font-family:inherit;padding:16px 40px;border-radius:99px;cursor:pointer;box-shadow:0 14px 40px #7cc4fa59;animation:respira 1.8s ease-in-out infinite}.ll-tap:hover{filter:brightness(1.07)}.ll-controles{display:flex;gap:14px;margin-top:6px}.ll-btn{display:flex;align-items:center;gap:8px;background:#ffffff0f;border:1px solid rgba(255,255,255,.18);color:#c7d6e8;font-size:12.5px;font-family:inherit;padding:11px 18px;border-radius:99px;cursor:pointer;transition:.2s}.ll-btn:hover{border-color:#7cc4fa;color:#7cc4fa}.ll-btn.colgar{background:#f8717124;border-color:#f8717173;color:#fca5a5}.ll-btn.colgar:hover{background:#f8717142}.ll-priv{font-size:11px;color:#a9bac8;max-width:420px;line-height:1.5;margin-top:8px}[data-reveal]{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,.9,.3,1)}[data-reveal].revelado{opacity:1;transform:none}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important}[data-reveal]{opacity:1!important;transform:none!important}html{scroll-behavior:auto}}@media(max-width:940px){.hero-in,.prob-grid,.lm-grid,.qr-grid,.crece-grid{grid-template-columns:1fr;gap:34px}.grid3,.corr-list{grid-template-columns:1fr}.steps4{grid-template-columns:1fr 1fr}.qr-marco{justify-self:start}section{padding:52px 0}.invitacion{left:12px;bottom:92px}}@media(max-width:600px){.steps4{grid-template-columns:1fr}}a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--azul);outline-offset:2px;border-radius:6px}.llamada a:focus-visible,.llamada button:focus-visible{outline-color:#7cc4fa}
+</style></head> <body>  <nav class="nav"> <div class="nav-in"> <a class="brand" href="#"> <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true"> <g transform="translate(20,21)"> <path d="M0 0 L-11 -11" stroke="#1450A3" stroke-width="3.4" stroke-linecap="round"></path> <path d="M0 0 L12 -9" stroke="#1450A3" stroke-width="3.4" stroke-linecap="round"></path> <path d="M0 0 L0 12" stroke="#1D6FE0" stroke-width="3.4" stroke-linecap="round"></path> <circle cx="-11" cy="-11" r="3.4" fill="#1450A3"></circle><circle cx="12" cy="-9" r="3.4" fill="#1450A3"></circle> <circle cx="0" cy="12" r="3.8" fill="#1D6FE0"></circle><circle cx="0" cy="0" r="6.4" fill="#1D6FE0"></circle> <circle cx="0" cy="0" r="2.3" fill="#F4F7F9"></circle> </g> </svg> <span>SINAPTIA</span> </a> <div class="nav-id" id="nav-id" role="group" aria-label="Idioma"></div> <div class="nav-live resolviendo" id="nav-live"><i></i><span id="nav-live-txt">resolviendo tu contexto…</span></div> <button class="nav-cta" id="nav-agente">Hablar con el agente</button> </div> </nav> <header class="hero"> <div class="wrap hero-in"> <div> <div class="eyebrow"><i></i> esto no es una web estática · está leyéndote ahora mismo</div> <h1 class="greet" id="saludo">IA que trabaja por tu empresa, sin que tengas que contratar un equipo técnico.<span class="cur" hidden></span></h1> <p class="hero-sub">Un agente de IA que conversa contigo, entiende tu operación en minutos,
+<b>te corrige cuando algo está mal planteado</b> y te deja un brief en PDF con lo que de
+        verdad conviene automatizar — y lo que no.</p> <div class="cta-row"> <button class="btn p" id="cta-agente">Empezar la conversación</button> <a class="btn s" href="#como-piensa">Ver cómo piensa</a> </div> </div> <aside class="ctx" aria-label="Lectura de contexto del visitante"> <div class="ctx-sky" id="ctx-sky" data-cielo="nublado"> <div class="scan"></div> <div class="sol" id="ctx-sol" hidden></div> <div class="nube n1"></div><div class="nube n2"></div><div class="nube n3"></div> <div id="ctx-lluvia"></div> <div id="ctx-estrellas"></div> <div class="ciudad-tag">desde <b id="ctx-ciudad-tag">—</b></div> </div> <div class="ctx-body"> <div class="ctx-head"> <div class="ctx-temp cargando" id="ctx-temp">00°</div> <div class="ctx-cond cargando" id="ctx-cond">consultando el cielo…</div> </div> </div> </aside> </div> </header> <section id="que-hace"> <div class="wrap"> <div class="sec-head"> <h2>Qué hace el agente mientras hablas</h2> <p>No es un formulario con chat encima. Es un proceso de diagnóstico de verdad, comprimido en una conversación.</p> </div> <div class="grid3"> <div class="card"> <div class="num">01</div> <div class="ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.8" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></div> <h3>Conversa y te corrige</h3> <p>Si pides "un chatbot que responda todo solo" o "automatizar todo", te lo dice claro: eso no se hace así, y te explica el orden correcto. Corrige porque es útil, no por quedar bien.</p> </div> <div class="card"> <div class="num">02</div> <div class="ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"></path></svg></div> <h3>Recauda lo que importa</h3> <p>Sector, proceso que duele, volumen y tus datos de contacto — sin formularios de once campos. Lo que sueltes en la charla se registra solo, sin que te lo pregunte dos veces.</p> </div> <div class="card"> <div class="num">03</div> <div class="ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.8" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg></div> <h3>Te deja un PDF</h3> <p>Al cierre genera un brief de una página con tu dolor, la propuesta por fases, el rango de inversión y — clave — lo que recomendamos NO automatizar. Listo para reenviar a quien decida contigo.</p> </div> </div> </div> </section> <section id="problema" class="alt"> <div class="wrap prob-grid"> <div> <div class="eyebrow"><i></i> el problema real</div> <h2 class="sec-title">No te falta IA.<br>Te falta quien la conecte a tu operación.</h2> <p class="sec-lead">Casi todos los dueños ya probaron ChatGPT por su cuenta. Funcionó a medias,
+        nadie lo adoptó y quedó ahí. El motivo casi nunca es tecnológico: es que se automatizó un
+        proceso que antes había que rediseñar.</p> <div class="pain-list"> <div class="pain"><h4>Tus clientes ya esperan otra velocidad</h4><p>Los estándares de respuesta los están marcando empresas con sistemas automatizados. Responder en 4 horas ya es llegar tarde.</p></div> <div class="pain"><h4>Tu conocimiento vive en cabezas, no en sistemas</h4><p>Cuando esa persona se va de vacaciones o renuncia, la operación se detiene. Eso es riesgo puro, y es automatizable.</p></div> <div class="pain"><h4>Tus datos existen pero no deciden nada</h4><p>Están repartidos entre Excel, el CRM y el correo. Sin consolidarlos, ninguna IA puede ayudarte de verdad.</p></div> </div> </div> <div> <div class="eyebrow"><i></i> brecha de adopción · Unión Europea</div> <h3 class="bars-title">Quién está usando IA hoy, por tamaño de empresa</h3> <div class="bars"> <div class="bar"><div class="lbl"><span>Grandes empresas</span><span>55%</span></div><div class="track"><div class="fill" style="width:55%"></div></div></div> <div class="bar"><div class="lbl"><span>Medianas empresas</span><span>30%</span></div><div class="track"><div class="fill" style="width:30%"></div></div></div> <div class="bar"><div class="lbl"><span>Pequeñas empresas</span><span>17%</span></div><div class="track"><div class="fill hi" style="width:17%"></div></div></div> <div class="bar"><div class="lbl"><span>Media OCDE</span><span>20%</span></div><div class="track"><div class="fill dim" style="width:20%"></div></div></div> </div> <p class="bars-note"><b>Esa brecha es tu oportunidad.</b> Cada trimestre que una empresa mediana
+        espera, el costo de alcanzar a quien ya automatizó sube. Y apenas 1 de cada 4 empresas logra
+        convertir un piloto en valor de negocio real.</p> </div> </div> </section> <section id="servicios"> <div class="wrap"> <div class="sec-head"> <h2>Tres capas. Una sola relación de largo plazo.</h2> <p>Empezamos por un diagnóstico corto que ya entrega algo funcionando. De ahí salen los
+        proyectos grandes. Y todo termina en operación continua, porque un sistema de IA sin
+        mantenimiento se degrada.</p> </div> <div class="grid3"> <div class="card svc"> <div class="num">CAPA 1 · ENTRADA</div> <h3>Diagnóstico IA + Piloto</h3> <p>Número cerrado al aceptar. Sales con un roadmap priorizado por ROI y una automatización real ya en producción.</p> <ul> <li>Taller de descubrimiento con decisores</li> <li>Mapa de 5–8 procesos con scoring impacto × viabilidad</li> <li>Auditoría de datos y sistemas conectables</li> <li>Mapa de implementación priorizado por retorno</li> <li>Documento de gobernanza y privacidad</li> <li><b>1 automatización viva antes de terminar la primera fase</b></li> </ul> <div class="price">Primera fase · número cerrado al aceptar</div> </div> <div class="card svc"> <div class="num">CAPA 2 · PROYECTO</div> <h3>Construcción a medida</h3> <p>Ingeniería de verdad, no configuración de plantillas. Lo que tu operación necesita, construido para durar.</p> <ul> <li>Agentes de IA: WhatsApp, web, voz, multi-canal</li> <li>Automatización de procesos (n8n, APIs, LLMs)</li> <li>Aplicaciones web y paneles internos</li> <li>Apps móviles iOS + Android</li> <li>Plataformas de datos y predicción</li> <li>Capacitación y adopción de equipos</li> </ul> <div class="price">Se cotiza en conversación, según tu operación</div> </div> <div class="card svc"> <div class="num">CAPA 3 · RECURRENTE</div> <h3>Operación continua</h3> <p>El sistema en vivo es el punto de partida, no la meta. Monitoreamos, ajustamos y mejoramos cada mes.</p> <ul> <li>Monitoreo 24/7 y alertas de fallo</li> <li>Horas de desarrollo mensual incluidas</li> <li>Optimización de prompts y costos de modelos</li> <li>Gestión de consumo de API con tope y reporte</li> <li>Roadmap trimestral de mejoras</li> <li>Soporte con SLA de respuesta acordado</li> </ul> <div class="price">Tu equipo continuo, según cuántos sistemas cuidemos</div> </div> </div> </div> </section> <section id="proceso" class="alt"> <div class="wrap"> <div class="sec-head"> <h2>De la primera llamada al sistema en vivo</h2> <p>Proceso corto, hitos claros y una demo en vivo cada viernes. Nunca te enteras del estado del proyecto por correo.</p> </div> <div class="steps4"> <div class="step"><span class="n">01</span><h4>Descubrimiento</h4><p>Una llamada corta. Mapeamos procesos, datos y qué te cuesta hoy cada problema. Sin compromiso y sin presentación de ventas.</p></div> <div class="step"><span class="n">02</span><h4>Diagnóstico y piloto</h4><p>La primera fase. Recibes el roadmap priorizado por ROI y una automatización ya funcionando en producción para validar que esto sirve.</p></div> <div class="step"><span class="n">03</span><h4>Construcción</h4><p>Sprints semanales con demo en vivo los viernes. Alcance cerrado por contrato: cualquier cambio se cotiza por escrito antes de ejecutarlo.</p></div> <div class="step"><span class="n">04</span><h4>Adopción y operación</h4><p>Capacitamos a tu equipo, entregamos runbooks y pasamos a operación continua. Al cerrar cada fase, informe de resultados con números.</p></div> </div> </div> </section> <section id="precios" class="alt"> <div class="wrap wrap-narrow"> <div class="sec-head" style="text-align:center;margin-left:auto;margin-right:auto"> <h2>¿Cómo está tu operación hoy?</h2> <p>Toca la tuya. No verás una lista de precios para comparar: verás lo que hacemos por ti
+        en tu momento. El número te lo decimos en conversación, porque depende de tu operación
+        y un número suelto siempre parece caro.</p> </div> <div class="situations" id="situaciones"> <div class="situation" data-sit="inicio"> <button class="sit-head" aria-expanded="false"> <span class="sit-q">Estoy empezando: quiero ver algo funcionando ya</span> <span class="sit-plus" aria-hidden="true">+</span> </button> <div class="sit-body"> <div class="sit-inner"> <h3>Una primera pieza que trabaja por ti desde el arranque</h3> <ul class="sit-list"> <li>Nos sentamos contigo y dibujamos, paso por paso, cómo trabaja tu empresa hoy.</li> <li>Te decimos qué conviene automatizar primero y qué es mejor dejar quieto.</li> <li>Antes de terminar la primera fase ya hay una cosa real funcionando: la que más tiempo te devuelve.</li> <li>Te queda un mapa escrito de qué sigue y en qué orden.</li> </ul> <div class="sit-win"> <span class="win-num" data-count="6">0</span> <span class="win-txt">horas a la semana<br>vuelven a ser tuyas</span> </div> <ul class="sit-detail"> <li><button class="why">¿qué significa "diagnóstico"?</button><span>Una revisión completa de tus procesos y tus datos, con un plan escrito y priorizado. Como un chequeo médico, pero de tu operación.</span></li> <li><button class="why">¿y si no me gusta?</button><span>El número de esta primera pieza es cerrado y se descuenta del proyecto siguiente si continúas. No hay permanencia ni letras pequeñas.</span></li> </ul> <button class="btn s sit-cta" data-sitmsg="Estoy empezando y quiero ver algo funcionando ya. ¿Cuánto sería lo mío?">Pregúntale a Nexa cuánto sería lo mío</button> </div> </div> </div> <div class="situation abierto" data-sit="cuidado"> <button class="sit-head" aria-expanded="true"> <span class="sit-q">Ya tengo cosas andando y no quiero que se caigan</span> <span class="sit-plus" aria-hidden="true">+</span> </button> <div class="sit-body"> <div class="sit-inner"> <h3>Tu equipo de intervención directa</h3> <ul class="sit-list"> <li>Lo vigilamos día y noche. Si algo se detiene a las 3 de la mañana, lo levantamos nosotros mientras tú sigues vendiendo.</li> <li>Cada mes le dedicamos horas a dejarlo mejor de lo que estaba. Van incluidas en tu plan.</li> <li>Una hoja al mes, en palabras normales, con el tiempo y el dinero que tu operación recuperó.</li> <li>Nos escribes y te respondemos nosotros, no un ticket anónimo.</li> <li>El uso de la IA va incluido en tu contratación. No compras licencias aparte ni contratas nada por tu cuenta: de eso nos ocupamos nosotros.</li> </ul> <div class="sit-win"> <span class="win-num" data-count="22">0</span> <span class="win-txt">horas a la semana<br>vuelven a ser tuyas</span> </div> <ul class="sit-detail"> <li><button class="why">¿cuánto uso de IA incluye?</button><span>Incluye hasta USD 500 al mes de consumo de modelos. Si tu operación necesita más, lo vemos juntos antes y tú decides.</span></li> <li><button class="why">¿qué pasa si quiero cambiar algo?</button><span>Cada mes hay horas incluidas para mejoras y ajustes. Lo que no alcanzara ese mes, se planifica para el siguiente sin sorpresas.</span></li> </ul> <button class="btn s sit-cta" data-sitmsg="Ya tengo cosas andando y no quiero que se caigan. ¿Cuánto sería lo mío?">Pregúntale a Nexa cuánto sería lo mío</button> </div> </div> </div> <div class="situation" data-sit="equipo"> <button class="sit-head" aria-expanded="false"> <span class="sit-q">Quiero un equipo técnico completo sin contratarlo</span> <span class="sit-plus" aria-hidden="true">+</span> </button> <div class="sit-body"> <div class="sit-inner"> <h3>Tu departamento de IA, sin los 5 contratos</h3> <ul class="sit-list"> <li>Un responsable de IA tuyo, sentado en tus reuniones, que decide contigo qué se construye y qué no.</li> <li>Detrás: quien programa, quien automatiza y quien vigila que nada se caiga.</li> <li>Gobernanza y papeles al día: dejamos por escrito que tu empresa cumple la ley de IA de Europa, listo para mostrar a tus clientes grandes.</li> <li>En cada revisión nos sentamos contigo y elegimos juntos la mejora que más te devuelve.</li> </ul> <div class="sit-win"> <span class="win-num" data-count="40">0</span> <span class="win-txt">horas al mes<br>de equipo dedicado a ti</span> </div> <ul class="sit-detail"> <li><button class="why">¿por qué no contratar a alguien interno?</button><span>Porque una persona sola no sabe de modelos, de integraciones, de datos y de ley a la vez. Y porque un equipo que ya trabajó junto rinde desde el día uno.</span></li> <li><button class="why">¿y si un día quiero terminar?</button><span>Te llevas todo: código, documentación y manuales. Tu operación no queda rehén de nadie, nunca.</span></li> </ul> <button class="btn s sit-cta" data-sitmsg="Quiero un equipo técnico completo sin contratarlo. ¿Cuánto sería lo mío?">Pregúntale a Nexa cuánto sería lo mío</button> </div> </div> </div> </div> <p class="sit-note">El número exacto depende de tu operación, y por eso no lo colgamos en una pared
+      para que lo compares: te lo decimos en una conversación, o por chat después de dos
+      preguntas. La única excepción es la primera pieza, que tiene un número cerrado y
+      publicado — una invitación, no un menú. Y sin fechas prometidas: el ritmo sale de tu proceso.</p> </div> </section> <section id="crecimiento" class="alt"> <div class="wrap"> <div class="sec-head"> <div class="eyebrow"><i></i> para emprendedores y startups</div> <h2>Atiende a más clientes sin contratar más gente</h2> <p class="sec-lead">Crecer no es añadir cabezas: es añadir capacidad. Cada consulta que
+        respondes en segundos, cada hora que tu equipo deja de transcribir y cada venta que
+        dejas de perder por llegar tarde son capacidad nueva — sin una sola contratación.</p> </div> <div class="crece-grid"> <div class="crece-palancas"> <div class="palanca"> <span class="pal-num">01</span> <h4>Capacidad sin nómina</h4> <p>Un agente atiende a 100 personas a la vez a las 3 de la mañana. Tu equipo humano
+            entra solo donde hace falta un cerebro: negociar, cuidar, decidir.</p> </div> <div class="palanca"> <span class="pal-num">02</span> <h4>Velocidad que cierra</h4> <p>El que responde primero se queda con el cliente. Pasar de horas a segundos no es
+            comodidad: es tasa de cierre.</p> </div> <div class="palanca"> <span class="pal-num">03</span> <h4>Tu tiempo vuelto venta</h4> <p>Las horas que tu equipo pasa transcribiendo y copiando datos son horas que no
+            vende. Libéralas y mándalaslas al ingreso.</p> </div> <p class="crece-nota">Esto no es una promesa: es aritmética con tus propios números.
+          Pruébala aquí al lado.</p> </div> <div class="calc" aria-label="Calculadora de dinero recuperado"> <div class="calc-head"> <h3>¿Cuánto dinero dejas en la mesa al año?</h3> <p>Mueve tus números reales. El resultado se recalcula al instante.</p> </div> <div class="calc-in"> <label>Consultas al mes
+<input type="number" id="c-consultas" value="300" min="10" max="100000" step="10" inputmode="numeric"> </label> <label>Valor promedio de una venta (USD)
+<input type="number" id="c-valor" value="250" min="1" max="1000000" step="10" inputmode="numeric"> </label> <label>% de consultas que hoy quedan sin respuesta a tiempo
+<input type="number" id="c-pierde" value="35" min="0" max="100" step="5" inputmode="numeric"> </label> <label>Horas/semana en tareas repetitivas
+<input type="number" id="c-horas" value="15" min="0" max="80" step="1" inputmode="numeric"> </label> <label>Costo de una hora de tu equipo (USD)
+<input type="number" id="c-costohora" value="8" min="1" max="500" step="1" inputmode="numeric"> </label> </div> <div class="calc-out"> <div class="co"> <span>Ventas recuperadas / mes</span> <strong id="o-ventas">—</strong> </div> <div class="co"> <span>Horas liberadas convertidas en dinero / mes</span> <strong id="o-horas">—</strong> </div> <div class="co total"> <span>Al año, dinero que hoy se queda en la mesa</span> <strong id="o-total">—</strong> </div> </div> <p class="calc-sup">Supuestos conservadores, escritos para que los discutas: recuperas el
+          25% de las consultas que hoy pierdes, y el 70% del tiempo liberado vuelve a trabajo que
+          vende. Si tus números reales son mejores, el resultado también.</p> <button class="btn p calc-cta" id="calc-cta">Quiero recuperar ese dinero</button> </div> </div> </div> </section> <section id="como-piensa" class="alt"> <div class="wrap"> <div class="sec-head"> <h2>Cómo piensa: cuatro correcciones reales</h2> <p>La diferencia entre un chatbot y un sistema serio no es lo que sabe hacer, es lo que tiene prohibido hacer y cómo te lo explica.</p> </div> <div class="corr-list"> <div class="corr"><div class="q">"quiero un chatbot que responda todo solo, sin personas"</div><div class="a">Un bot que responde TODO sin supervisión es una ruleta con buena interfaz. Lo correcto: responde lo estándar y deriva a una persona en negociación, reclamos o cualquier cosa con dinero de por medio.</div></div> <div class="corr"><div class="q">"necesito automatizar todo el negocio"</div><div class="a">Automatizar "todo" es la forma más rápida de tirar el dinero. El orden que funciona es mapear el proceso, simplificarlo y recién entonces automatizarlo. Si automatizas un proceso roto, solo consigues errores más rápidos.</div></div> <div class="corr"><div class="q">"quiero que la IA cierre ventas y facture sola"</div><div class="a">Ahí pon el freno: preparar sí, decidir no. Que califique, cotice dentro de tu política y agende es excelente. Que firme o facture solo es un riesgo legal que no vale la pena. El humano aprueba; la máquina prepara.</div></div> <div class="corr"><div class="q">"¿me garantizas que no se equivoca?"</div><div class="a">Ojalá: no existe. Los modelos son probabilísticos. Por eso el diseño serio no promete cero errores: pone validaciones, revisión humana donde importa y registro de cada decisión. Eso es lo que debes exigirle a cualquier proveedor.</div></div> </div> </div> </section> <section id="faq"> <div class="wrap wrap-narrow"> <div class="sec-head" style="text-align:center;margin-left:auto;margin-right:auto"> <h2>Lo que suelen preguntarnos</h2> </div> <div class="faq"> <details open><summary>¿Necesito tener un equipo técnico para trabajar con ustedes?</summary><p>No. Esa es precisamente la razón por la que existimos. Nos encargamos de todo el ciclo: diagnóstico, diseño, construcción, despliegue, capacitación de tu equipo y mantenimiento. Tú necesitas un decisor que conozca bien la operación y alguien que nos dé acceso a los sistemas. Nada más.</p></details> <details><summary>La IA se equivoca. ¿Cómo evitan un problema con mis clientes?</summary><p>No la dejamos suelta. Todo lo que construimos incluye validaciones de salida, revisión humana en los puntos críticos que definimos juntos, registro completo de cada decisión y pruebas con tus datos reales antes de ir a producción. El error no se elimina: se acota, se mide y se corrige rápido.</p></details> <details><summary>¿Qué pasa con la confidencialidad de mis datos?</summary><p>Firmamos NDA y acuerdo de tratamiento de datos antes de comenzar. Usamos modelos que no entrenan con tu información y, si tu sector lo requiere, desplegamos en tu propia infraestructura o con modelos de pesos abiertos. Nunca enviamos datos personales a una API sin base legal para hacerlo.</p></details> <details><summary>¿Cuánto tarda y cuánto cuesta un proyecto típico?</summary><p>El diagnóstico con piloto es la primera fase y tiene un número cerrado que te decimos en la primera llamada. El resto depende de tu operación: el alcance y el ritmo salen de revisarla juntos. Después de esa llamada recibes un presupuesto cerrado por escrito, con alcance y excluidos explícitos: sin sorpresas.</p></details> <details><summary>Ya intentamos con IA y no funcionó. ¿Por qué sería distinto?</summary><p>Porque en la mayoría de los casos el problema no fue la tecnología: fue automatizar un proceso que antes había que rediseñar, o arrancar por el proceso equivocado. Por eso empezamos con dos semanas de diagnóstico antes de escribir una línea de código, y por eso el primer entregable incluye algo funcionando en producción.</p></details> <details><summary>¿Trabajan con empresas de mi país y en mi moneda?</summary><p>Trabajamos 100% en remoto con clientes en Europa y América. Facturamos en la moneda que tu entidad use, a través de entidad legal constituida y pasarela de pago internacional. Las reuniones son en tu zona horaria y en tu idioma.</p></details> <details><summary>¿Y si después quiero cambios o el sistema necesita mantenimiento?</summary><p>Por eso existe la operación continua. Todo proyecto se entrega con documentación, runbooks y capacitación. Un sistema de IA sin mantenimiento se degrada: los modelos cambian, tus procesos cambian y tus clientes cambian. Preferimos decirlo desde el principio.</p></details> <details><summary>¿Cumplen con la regulación europea de IA?</summary><p>Sí. Clasificamos por escrito el nivel de riesgo de cada sistema que entregamos e incluimos documentación de gobernanza y registro de decisiones como entregable estándar — algo que tus clientes grandes ya empiezan a exigir en licitaciones. Seguimos el calendario de aplicación de la EU AI Act y de GDPR.</p></details> </div> </div> </section> <section id="auditoria" class="lm"> <div class="wrap lm-grid"> <div> <div class="eyebrow"><i></i> recurso gratuito</div> <h2>¿Prefieres comprobarlo tú mismo antes de hablar con nadie?</h2> <p class="sec-lead">Publicamos la auditoría que usamos en la primera fase de cada diagnóstico.
+        Son 24 preguntas sobre tu operación, sin reloj y a tu ritmo. Al terminar sabes exactamente
+        qué procesos te conviene automatizar, cuáles no, y cuánto te está costando cada uno.</p> <ul class="lm-list"> <li>6 bloques: velocidad de respuesta, tareas repetitivas, datos y sistemas, procesos documentados, adopción del equipo y riesgo</li> <li>Puntuación inmediata con 4 bandas de resultado y qué hacer en cada una</li> <li>Los 5 procesos que casi siempre conviene automatizar primero — y los 3 que no</li> <li>Los 4 errores que hunden la mayoría de proyectos de IA</li> <li>Sin registro, sin seguimiento por correo y sin letra pequeña</li> </ul> <p class="lm-honest">Si al terminarla tu puntuación es baja, te lo diremos: significará que no te
+        compensa invertir en esto ahora. Preferimos eso a venderte un proyecto que no necesitas.</p> </div> <div class="lm-card"> <h3>Auditoría IA sin reloj</h3> <div class="lm-price">Gratuita · descargable</div> <div class="lm-facts"> <div><b>24</b><span>preguntas</span></div> <div><b>sin reloj</b><span>a tu ritmo</span></div> <div><b>72</b><span>puntos máx.</span></div> </div> <form class="lm-form" id="lmform"> <input type="email" name="email" id="lm-email" placeholder="Tu email de trabajo" aria-label="Email"> <button type="submit" class="btn p">Abrir la auditoría</button> </form> <p class="lm-note" id="lmnote">Te enviamos el documento y nada más. Sin secuencias de correo automáticas.<br>
+¿No quieres dejar tu email? <a href="./auditoria.html">Ábrela directamente aquí</a>.</p> </div> </div> <script type="module">const e=document.getElementById("lmform");e&&e.addEventListener("submit",t=>{t.preventDefault(),document.getElementById("lm-email").value.trim(),(()=>{location.href="./auditoria.html"})()});</script> </section> <section id="qr" class="alt"> <div class="wrap qr-grid"> <div> <div class="eyebrow"><i></i> escanea y habla</div> <h2 class="sec-title">¿Escribir? Mejor habla.</h2> <p class="sec-lead">Apunta con tu cámara o toca el botón, y conversa con el agente como si
+        llamaras a la empresa: te escucha, te entiende y te responde al instante, en tu idioma.
+        Sin formularios, sin teclado, sin esperar en línea.</p> <ul class="qr-pasos"> <li><b>1.</b> Apuntas tu cámara al código, o tocas el micrófono si ya estás en el teléfono.</li> <li><b>2.</b> Tocas <em>toca para hablar</em>. El micrófono siempre pide tu permiso: nunca se enciende solo.</li> <li><b>3.</b> El agente te saluda en tu idioma y la conversación sigue sola, hasta resolver lo tuyo.</li> </ul> <p class="crece-nota"><b>Y si ya hablamos antes, te reconoce.</b> Dices "soy José, el de la pastelería"
+        y el agente busca en su historial, encuentra tu caso y sigue desde donde quedó: no te vuelve a
+        preguntar lo que ya le contaste.</p> <p class="crece-nota"><a class="qr-id" href="./voz">abrir /voz directo →</a></p> <p class="crece-nota">¿Tienes un negocio y quieres escuchar cómo sonaría tu propio agente de voz?
+        Prueba el demo adaptado a tu sector: suena distinto para una clínica, un taller o una inmobiliaria,
+        porque cada negocio habla de lo suyo.</p> <div class="qr-idiomas"> <a class="qr-id" href="?voz=1&negocio=clinica"> demo clínica dental</a> <a class="qr-id" href="?voz=1&negocio=taller">🔧 demo taller mecánico</a> <a class="qr-id" href="?voz=1&negocio=inmobiliaria">🏠 demo inmobiliaria</a> </div> <p class="qr-url">
+Este mismo código puedes imprimirlo donde quieras: cada conversación que empieza aquí
+        queda registrada con tu consentimiento, y puedes pedir que se borre cuando quieras.
+</p> </div> <div class="qr-marco"> <div class="qr-svg"><svg xmlns="http://www.w3.org/2000/svg" width="232" height="232" viewBox="0 0 27 27" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h27v27H0z"/><path stroke="#0E1B2A" d="M1 1.5h7m2 0h1m3 0h1m2 0h1m1 0h7M1 2.5h1m5 0h1m2 0h1m3 0h4m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h2m2 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h3m2 0h1m4 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h3m1 0h2m2 0h1m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h4m1 0h3m2 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h2m1 0h1m4 0h1M1 9.5h1m1 0h5m3 0h2m1 0h2m3 0h5M6 10.5h1m2 0h1m3 0h1m3 0h2m1 0h1m3 0h1M6 11.5h2m1 0h3m2 0h1m1 0h4m2 0h1m1 0h2M1 12.5h1m1 0h2m1 0h1m2 0h1m1 0h3m1 0h2m1 0h3m4 0h1M2 13.5h1m2 0h1m1 0h1m3 0h5m3 0h3m1 0h3M1 14.5h2m3 0h1m2 0h3m1 0h2m2 0h1m2 0h1m1 0h1m1 0h1M1 15.5h1m1 0h5m5 0h6m1 0h3m1 0h2M1 16.5h1m2 0h1m3 0h2m1 0h3m1 0h7m3 0h1M1 17.5h1m3 0h3m1 0h4m1 0h2m1 0h5m1 0h1M9 18.5h1m2 0h1m1 0h1m1 0h2m3 0h2M1 19.5h7m2 0h2m3 0h1m1 0h1m1 0h1m1 0h1m1 0h3M1 20.5h1m5 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h2M1 21.5h1m1 0h3m1 0h1m1 0h1m2 0h3m1 0h6m1 0h1M1 22.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h1m2 0h3m1 0h5M1 23.5h1m1 0h3m1 0h1m1 0h1m3 0h3m1 0h1m4 0h2m1 0h1M1 24.5h1m5 0h1m2 0h3m2 0h8m2 0h1M1 25.5h7m1 0h3m2 0h2m3 0h7"/></svg>
+</div> <div class="qr-pie">toca o escanea<br><span>conversación por voz</span></div> </div> </div> </section> <section id="contacto" class="cta-final"> <div class="wrap" style="text-align:center"> <div class="eyebrow" style="justify-content:center"><i></i> siguiente paso</div> <h2>Una conversación para saber si la IA te sirve<br>y por dónde empezar</h2> <p class="cta-lead">Sin presentación de ventas y sin compromiso. Revisamos tu operación, te decimos
+      con honestidad qué procesos valen la pena automatizar y cuáles no — y cuánto costaría cada uno.</p> <div class="cta-row" style="justify-content:center"> <button class="btn p" id="cta-agendar">Agendar hablando con Nexa</button> <a class="btn s" href="mailto:hola@sinaptialabs.com">hola@sinaptialabs.com</a> </div> <p class="cta-micro">Si al final de la llamada no vemos un caso claro de retorno, te lo diremos directamente.</p> </div> </section> <footer class="footer"> <div class="wrap footer-in"> <span>SINAPTIA · IA que entra en operación</span> <span>hola@sinaptialabs.com · sinaptialabs.com</span> </div> </footer> <div class="dock"> <div class="panel" id="panel" role="dialog" aria-label="Conversación con el agente"> <div class="p-head"> <div class="av"> <svg width="18" height="18" viewBox="0 0 40 40" aria-hidden="true"> <g transform="translate(20,21)"> <path d="M0 0 L-11 -11" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"></path> <path d="M0 0 L12 -9" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"></path> <path d="M0 0 L0 12" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"></path> <circle cx="0" cy="0" r="7.4" fill="#FFFFFF"></circle><circle cx="0" cy="0" r="2.7" fill="#1450A3"></circle> </g> </svg> </div> <div> <div class="nm">Nexa</div> <div class="st" id="p-estado">en línea</div> </div> <button class="x" id="cerrar" aria-label="Cerrar">×</button> </div> <div class="pasos" id="pasos" title="Progreso del diagnóstico"> <span></span><span></span><span></span><span></span><span></span> </div> <div class="msgs" id="mensajes" role="log" aria-live="polite" aria-label="Conversación con el agente"></div> <div class="quick" id="quick"></div> <button class="pdfbtn" id="pdfbtn">⬇ Generar mi brief en PDF</button> <div class="p-input"> <textarea id="entrada" rows="1" placeholder="Escribe aquí…"></textarea> <button id="enviar">➤</button> </div> </div> <button class="fab" id="fab" aria-label="Abrir conversación con el agente"> <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0B1B2B" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"> <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path> </svg> <span class="badge" id="fab-badge" style="display:none">1</span> </button> </div> <div class="llamada" id="llamada" data-estado="inactiva" role="dialog" aria-label="Llamada de voz con el agente" aria-hidden="true"> <div class="ll-inner"> <div class="ll-orb" aria-hidden="true"> <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span> <span class="core"> <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"> <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path> <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4"></path> </svg> </span> </div> <div class="ll-estado" id="ll-estado">conectando…</div> <div class="ll-transcripcion" id="ll-transcripcion">…</div> <div class="ll-respuesta" id="ll-respuesta"></div> <div class="ll-aviso" id="ll-aviso"></div> <button class="ll-tap" id="ll-tap" hidden>Toca para hablar</button> <div class="ll-controles"> <button class="ll-btn" id="ll-mic" title="Pausar o reanudar la escucha"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4"></path></svg> <span id="ll-mic-txt">pausar</span> </button> <button class="ll-btn colgar" id="ll-colgar" title="Colgar"> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"></path></svg> <span>colgar</span> </button> <button class="ll-btn" id="ll-silencio" title="Silenciar la voz de la IA"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><path d="M23 9l-6 6M17 9l6 6"></path></svg> <span id="ll-sil-txt">silenciar</span> </button> </div> <p class="ll-priv">La conversación se procesa en tu navegador y en los servidores de voz de tu
+      sistema operativo. Nada de lo que digas se envía a nuestro servidor.</p> </div> </div> <div class="invitacion" id="invitacion" role="dialog" aria-label="Invitación a llamada de voz" aria-hidden="true"> <div class="inv-k"><i></i> llamada de voz · corta</div> <p id="inv-texto"></p> <div class="inv-acciones"> <button class="btn p" id="inv-si">Hablar ahora</button> <button class="inv-no" id="inv-no">ahora no</button> </div> </div>   
+<!-- bundle inlineado por postbuild: funciona sin servidor -->
+<script>
+(() => {
+  var __defProp = Object.defineProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+
+  // dist/_astro/memoria.CeyWR2wa.js
+  var Q = { marca: { email: "hola@sinaptialabs.com", web: "sinaptialabs.com", agenda: "https://cal.com/tu-usuario/descubrimiento" }, ciudadRespaldo: "Bogot\xE1", pdf: { nombreArchivo: "brief-implementacion-ia", pie: "Documento generado autom\xE1ticamente por el agente de diagn\xF3stico de Sinaptia." }, voz: { lang: "es-ES", genero: "femenina", prefVoz: "", autoEscucha: true, velocidad: 1.04, tono: 1 } };
+  var E = { codigo: "es", stt: "es-ES", voz: "es-ES", etiqueta: "ES", cuerdas: { retomando: "Y retomando:", noSe: /(no s[eé]|ni idea|no tengo idea|no estoy segur)/i, si: /^(si|sí|s|ok|okay|dale|va|claro|perfecto|genial|hecho|vend[eí]a|me interesa)\b/i, no: /^(no|nop|nah|mejor no|despu[eé]s|luego)\b/i, precio: /cu[áa]nto (cuesta|vale|ser[íi]a|saldr[íi]a)|precio|tarifa|inversi[óo]n/i, saludoHora: (r) => r >= 5 && r < 12 ? "Buenos d\xEDas" : r >= 12 && r < 19 ? "Buenas tardes" : "Buenas noches" }, identidad: { nombre: "Nexa", empresa: "SINAPTIA", rol: "asistente de diagn\xF3stico de IA", tono: 'Cercano, directo y t\xE9cnicamente honesto. Frases cortas. Cero jerga de marketing. Nunca dice "como modelo de lenguaje". Si no sabe algo, lo dice y propone verificarlo con un humano.', reglas: ["Nunca prometas plazos ni cantidades de d\xEDas por situaci\xF3n: el tiempo sale de revisar el proceso, no de una lista.", "Saluda una sola vez; no repitas el saludo en turnos posteriores.", "Haz UNA pregunta por turno. Nunca tres seguidas.", "Si el usuario da un dato sin que lo preguntes, reg\xEDstralo y agrad\xE9celo en media l\xEDnea.", "Corrige antes de complacer: si el pedido est\xE1 mal planteado, dilo primero.", "M\xE1ximo 3 frases por respuesta salvo que est\xE9s presentando la propuesta.", "Nunca prometas exactitud, plazos imposibles ni reemplazo de personas."] }, saludoVoz: "Hola, soy Nexa. Dime en una frase qu\xE9 necesitas y te llevo directo.", saludo: { plantilla: `{saludo}. Llegas desde {ciudad}, donde ahora son las {hora} y hay {temp}\xB0 con {clima}. {tip}
+
+Soy {nombre}, el asistente de {empresa}. En un par de preguntas entiendo tu operaci\xF3n y te dejo un brief en PDF con lo que de verdad te conviene automatizar \u2014 y lo que no.
+
+Empiezo yo: \xBFa qu\xE9 se dedica tu empresa?`, tips: { calor: "Con esa temperatura, un vaso de agua al lado no es opcional.", frio: "Hace fr\xEDo: algo caliente al lado y seguimos.", lluvia: "Est\xE1 lloviendo: buen momento para estar dentro pensando en esto.", nublado: "Cielo cubierto: luz perfecta para leer sin reflejos.", despejado: "D\xEDa despejado: aprovecha, que esto va r\xE1pido.", noche: "Y a esta hora, trabajando: respeto." } }, correcciones: [{ id: "todo_automatico", cuando: [/(todo|toda la empresa|el negocio completo|absolutamente todo)\s+(automatiz|con ia|con inteligencia)/i, /automatizar\s+(todo|absolutamente)/i], decir: 'Te paro aqu\xED con cari\xF1o: automatizar "todo" es la forma m\xE1s r\xE1pida de tirar el dinero. El orden que funciona es mapear el proceso, simplificarlo y reci\xE9n entonces automatizarlo. Si automatizas un proceso roto, solo consigues errores m\xE1s r\xE1pidos.', porque: "El cliente pidi\xF3 automatizar todo; se le explic\xF3 que primero se mapea y simplifica.", retoma: "As\xED que vayamos por partes: \xBFcu\xE1l es EL proceso que m\xE1s te duele hoy?" }, { id: "chatbot_sin_humanos", cuando: [/que responda (todo|solo|sin (ayuda|humanos|personas))/i, /(chatbot|bot) que (atienda|resuelva) (todo|solo)/i, /sin que intervenga nadie/i], decir: "Cuidado con eso: un bot que responde TODO sin supervisi\xF3n es una ruleta con buena interfaz. Lo correcto es que responda lo est\xE1ndar y derive a una persona en negociaci\xF3n, reclamos o cualquier cosa con dinero de por medio. El error no se elimina: se acota.", porque: "Ped\xEDa un bot sin supervisi\xF3n humana; se defini\xF3 escalamiento obligatorio en puntos cr\xEDticos.", retoma: "Dime: \xBFqu\xE9 porcentaje de tus consultas son siempre la misma pregunta?" }, { id: "un_gpt_para_mi_empresa", cuando: [/(un|comprar|meter)\s+(gpt|chatgpt|claude|gemini)\s+(para|en)\s+mi/i, /ponerle (un )?chatgpt/i], decir: 'Matiz importante: no necesitas "un ChatGPT", necesitas un sistema. El modelo es solo el motor; el valor est\xE1 en conectarlo a TUS datos, tus procesos y tus reglas, con validaciones para que no invente precios ni pol\xEDticas. Eso es ingenier\xEDa, no una suscripci\xF3n.', porque: "Confund\xEDa modelo con sistema; se aclar\xF3 que el valor est\xE1 en la integraci\xF3n y las validaciones.", retoma: "Para aterrizarlo: \xBFd\xF3nde vive hoy la informaci\xF3n que el sistema tendr\xEDa que consultar?" }, { id: "entrenar_con_mis_datos", cuando: [/entrenar(lo|la|el modelo)?\s+con mis (datos|documentos)/i, /que aprenda de mis (datos|documentos|archivos)/i], decir: "Buena intuici\xF3n, nombre t\xE9cnico distinto: casi nunca hace falta entrenar un modelo. Lo que se usa es recuperaci\xF3n sobre tus documentos (RAG): el sistema consulta tu informaci\xF3n al responder y la cita. Es m\xE1s barato, m\xE1s seguro y se actualiza solo cuando cambias el documento.", porque: "Ped\xEDa entrenar un modelo; se propuso RAG como alternativa correcta y m\xE1s barata.", retoma: "\xBFTus documentos est\xE1n en alg\xFAn repositorio o andan sueltos en correos y carpetas?" }, { id: "ia_infalible", cuando: [/(no se equivoca|infalible|100 ?% (seguro|exacto|confiable)|nunca falla)/i], decir: "Ojal\xE1: no existe. Los modelos son probabil\xEDsticos y se equivocan una de cada tantas veces. Por eso el dise\xF1o serio no promete cero errores: pone validaciones, revisi\xF3n humana donde importa y registro de cada decisi\xF3n. Eso es lo que debes exigirle a cualquier proveedor, incluido yo.", porque: "Asum\xEDa IA infalible; se estableci\xF3 expectativa realista con validaciones y control humano.", retoma: "Sabiendo eso: \xBFqu\xE9 decisi\xF3n NO le dejar\xEDas tomar a una m\xE1quina ni loco?" }, { id: "reemplazar_personas", cuando: [/reemplazar\s+(?:a\s+)?(?:los\s+|el\s+|al\s+|mis\s+)?(emplead|personal|equipo|gente)/i, /despedir\s+(gente|personal|empleados)/i, /que haga el trabajo de (mis|los) (empleados|personal)/i], decir: "Te lo digo directo porque me lo preguntan mucho: esto no elimina personas, elimina tareas. El equipo deja de transcribir y contestar lo mismo cien veces, y pasa a hacer lo que una m\xE1quina no puede: negociar, cuidar al cliente y decidir. Los proyectos que prometen despedir gente son los que se cancelan a los tres meses.", porque: "Buscaba reemplazar personal; se reencuadr\xF3 como eliminaci\xF3n de tareas, no de puestos.", retoma: "Entonces: \xBFqu\xE9 tareas repetitivas quieres quitarle a tu equipo esta semana?" }, { id: "para_ayer", cuando: [/(para (ayer|mañana|esta semana)|en (una )?semana|urgentemente|ya mismo|inmediato)/i], decir: "Entiendo la urgencia, y hay una parte que s\xED puede ir r\xE1pido: un piloto real en dos semanas es perfectamente posible. Lo que no existe es un sistema completo y confiable en siete d\xEDas, y quien te lo venda te lo va a entregar roto. Prefiero darte algo que funcione de verdad dentro de la primera fase, que algo r\xE1pido y roto.", porque: "Ped\xEDa plazos irreales; se ofreci\xF3 una primera pieza dentro de la primera fase, sin prometer fechas.", retoma: "Con eso en mente: \xBFqu\xE9 proceso querr\xEDas ver funcionando primero?" }, { id: "es_caro", cuando: [/(muy caro|carísimo|no tengo (presupuesto|plata|dinero)|no puedo pagar)/i], decir: "Leg\xEDtimo. Ponlo en perspectiva: un administrativo cuesta entre 25 y 40 mil d\xF3lares al a\xF1o y trabaja ocho horas. Un sistema bien hecho cuesta eso una vez y trabaja siempre. Si aun as\xED no es momento, el diagn\xF3stico te sirve igual: te dice qu\xE9 arreglar gratis y cu\xE1ndo volver.", porque: "Objeci\xF3n de precio; se reencuadr\xF3 contra el coste de un puesto y se ofreci\xF3 v\xEDa de entrada.", retoma: "\xBFQu\xE9 te frena m\xE1s: el monto o no estar seguro del retorno?" }, { id: "que_cierre_ventas", cuando: [/(?:que\s+.*?)?(cierre|facture|cobre|firme)\s+(ventas|contratos|pedidos)/i, /que venda solo/i], decir: "Ah\xED pon el freno: preparar s\xED, decidir no. Que el sistema califique, cotize dentro de tu pol\xEDtica y agende es excelente. Que firme o facture solo es un riesgo legal y financiero que no vale la pena. El humano aprueba; la m\xE1quina prepara. Esa l\xEDnea es innegociable en un dise\xF1o serio.", porque: "Quer\xEDa que la IA cierre ventas o facture; se limit\xF3 a preparar con aprobaci\xF3n humana.", retoma: "Dicho eso: \xBFqui\xE9n aprueba hoy una cotizaci\xF3n en tu empresa?" }], descubrimiento: [{ campo: "sector", pregunta: "\xBFA qu\xE9 se dedica tu empresa?", ayuda: 'Con un frase basta: "vendemos repuestos", "somos una cl\xEDnica", "software para log\xEDstica".', capturar: /(?:nos dedicamos a|somos|vendo|vendemos|es una?|empresa de)\s+([a-záéíóúñü\s]{4,60})/i }, { campo: "dolor", pregunta: "\xBFQu\xE9 proceso te quita m\xE1s tiempo o m\xE1s dinero hoy?", ayuda: "Ejemplos: responder consultas, hacer cotizaciones, facturar, reportes, onboarding de clientes.", capturar: null }, { campo: "volumen", pregunta: "\xBFM\xE1s o menos cu\xE1ntas consultas, pedidos o documentos de esos manejan al mes?", ayuda: 'Un n\xFAmero aproximado sirve: 50, 300, 2.000. Si no lo sabes, dime "no s\xE9" y seguimos.', capturar: /(\d[\d.\s]*)\s*(?:al mes|por mes|\/mes|mensuales)?/i, opcional: true }, { campo: "contacto", pregunta: "Perfecto. Para dejarte el brief necesito tres datos: tu nombre, tu email y el nombre de tu empresa.", ayuda: 'Puedes d\xE1rmelos en un solo mensaje, ej: "Laura Ortiz, laura@x.com, Comercializadora Andina".', capturar: null }], conocimiento: [{ cuando: [/cu[áa]nto (cuesta|vale|cobran)|precio|tarifa/i], decir: "Rangos honestos: un diagn\xF3stico con piloto real, 1.800 USD precio cerrado. Agentes y automatizaciones, desde 3.500. Aplicaciones a medida, desde 8.000. Y siempre con mantenimiento mensual opcional desde 900. El n\xFAmero exacto sale de tu proceso, no de una lista." }, { cuando: [/cu[áa]nto (tarda|demora|se demora)|tiempo|plazo/i], decir: "El diagn\xF3stico con piloto es la primera fase. Un agente completo es un proyecto mediano; una aplicaci\xF3n a medida, uno grande. El alcance y el tiempo salen de revisar tu proceso juntos, no de una lista. Y una regla: si alguien te promete plazos cerrados sin mirar tu operaci\xF3n, pregunta qu\xE9 est\xE1 dejando fuera." }, { cuando: [/mis datos|privacidad|confidencial|segur/i], decir: "Tus datos no se usan para entrenar modelos de nadie. Se firman acuerdo de confidencialidad y de tratamiento de datos antes de tocar nada, y si tu sector lo exige, el sistema vive en tu propia infraestructura." }, { cuando: [/qu[ée] es (rag|un agente|un agente de ia)|c[óo]mo funciona/i], decir: "Versi\xF3n corta: un agente de IA es un sistema que entiende un mensaje, consulta TUS datos, decide una acci\xF3n y la ejecuta en tus herramientas \u2014 con reglas que definen qu\xE9 puede hacer solo y qu\xE9 necesita tu aprobaci\xF3n. No es un chat flotante: es un empleado digital con l\xEDmites escritos." }, { cuando: [/whatsapp/i], decir: "S\xED, y es de los que m\xE1s retorno da: responder en segundos por WhatsApp, con tu cat\xE1logo real detr\xE1s y derivando a un humano cuando toca negociar. Es la primera pieza t\xEDpica." }, { cuando: [/gracias|perfecto|genial|excelente/i], decir: "A ti. Sigo contigo hasta dejarte el brief listo." }], propuestas: { reglas: [{ cuando: /(responder|consultas|atenci|whatsapp|cliente|lead|venta)/i, titulo: "Agente de respuesta inmediata", que: "Un agente atiende consultas por web y WhatsApp en segundos, consulta tu cat\xE1logo o pol\xEDticas reales, califica al interesado y agenda visitas o llamadas en el calendario del equipo.", fases: "Fase 1: diagn\xF3stico + agente piloto en un canal. Fase 2: integraci\xF3n con tu CRM y todos los canales. Fase 3: panel de m\xE9tricas y mejora continua.", inversion: "3.500 \u2013 12.000 USD seg\xFAn canales e integraciones", no: "No negociar\xE1 precios ni aceptar\xE1 ofertas: esas decisiones siguen siendo humanas." }, { cuando: /(cotiz|factur|documento|transcri|carga|pedido)/i, titulo: "Automatizaci\xF3n de back-office", que: "El sistema lee los documentos entrantes, extrae y valida los datos contra tus maestros, y los registra en tu ERP o contable con aprobaci\xF3n humana por encima de un umbral que t\xFA defines.", fases: "Fase 1: un documento tipo en producci\xF3n. Fase 2: resto de documentos y excepciones. Fase 3: conciliaci\xF3n y reportes autom\xE1ticos.", inversion: "2.000 \u2013 9.000 USD seg\xFAn volumen y sistemas", no: "Nada con impacto contable firme se registra sin revisi\xF3n humana hasta que el error medido sea cero." }, { cuando: /(report|inform|dato|excel|consolid|dashboard)/i, titulo: "Consolidaci\xF3n de datos y reportes autom\xE1ticos", que: "Un pipeline une tus sistemas dispersos en una sola fuente de verdad y genera los reportes que hoy arma alguien a mano, con env\xEDo programado y alertas de anomal\xEDas.", fases: "Fase 1: inventario de fuentes y cuadro de mando m\xEDnimo. Fase 2: automatizaci\xF3n de reportes. Fase 3: alertas y predicci\xF3n simple.", inversion: "4.000 \u2013 15.000 USD seg\xFAn n\xFAmero de fuentes", no: "No se tocar\xE1n hojas de c\xE1lculo que sean fuente \xFAnica de verdad sin antes versionarlas." }, { cuando: /(onboarding|capacit|interno|preguntas|pol[íi]tica|documento|manual)/i, titulo: "Copiloto interno de conocimiento", que: "Un copiloto que responde a tu equipo consultando tus pol\xEDticas, manuales y historial, citando la fuente de cada respuesta y registrando qu\xE9 preguntas no supo contestar.", fases: "Fase 1: centralizar y versionar documentaci\xF3n. Fase 2: copiloto con citas. Fase 3: detecci\xF3n de huecos de conocimiento.", inversion: "3.000 \u2013 10.000 USD seg\xFAn volumen documental", no: "Si la documentaci\xF3n no est\xE1 centralizada, ese es el paso 1 obligatorio: sin fuente \xFAnica no hay copiloto fiable." }], porDefecto: { titulo: "Diagn\xF3stico de automatizaci\xF3n", que: "Un levantamiento auditado de tus procesos con puntuaci\xF3n de impacto contra viabilidad, y un piloto real en producci\xF3n dentro de la primera fase para validar con datos y no con opiniones.", fases: "Fase 1: diagn\xF3stico + piloto. Fase 2: el proceso ganador a producci\xF3n completa. Fase 3: operaci\xF3n continua y mejora.", inversion: "1.800 USD el diagn\xF3stico, descontables del proyecto siguiente", no: "No se automatizar\xE1 ning\xFAn proceso que antes no se haya mapeado y simplificado." } }, cierre: { presentar: `Listo, {nombre}. Con lo que me contaste, esto es lo que yo har\xEDa en tu lugar:
+
+**{titulo}**
+{que}
+
+{fases}
+
+Inversi\xF3n estimada: {inversion}
+
+Y lo que NO har\xEDa: {no}`, ofrecerPdf: "\xBFTe dejo todo esto en un PDF de una p\xE1gina, con tus datos y los pr\xF3ximos pasos, para que lo revises con calma o lo reenv\xEDes a quien decida contigo?", despedidaPdf: "Hecho. Revisa el PDF: lleva tus datos, el dolor que me contaste, la propuesta con fases, el rango de inversi\xF3n y \u2014 importante \u2014 lo que recomendamos NO automatizar. Si quieres retomarlo con un humano, responde este correo o agenda desde el sitio.", despedidaNo: "Sin problema. Cuando quieras retomarlo, estoy aqu\xED y tu conversaci\xF3n queda guardada en este navegador. Suerte con {dolor}, y acu\xE9rdate de {tip}" } };
+  var P = /[\w.+-]+@[\w-]+\.[\w.]{2,}/;
+  var V = /(?:\+?\d{1,3}[\s.-]?)?[679]\d{2}[\s.-]?\d{3}[\s.-]?\d{3}/;
+  var H = /(\d{1,3}(?:[.\s]\d{3})+|\d+)/;
+  function _(r, a) {
+    return String(r).replace(/\{(\w+)\}/g, (e, n2) => a[n2] != null ? a[n2] : e);
+  }
+  function N(r, a, e) {
+    const n2 = String(r).match(a);
+    return n2 ? n2[1].trim() : null;
+  }
+  function X(r, a) {
+    a = a || {};
+    const e = r, n2 = r.cuerdas || {}, i3 = n2.noSe || /(no s[eé]|ni idea|no tengo idea|no estoy segur)/i, m2 = n2.si || /^(si|sí|s|ok|okay|dale|va|claro|perfecto|genial|hecho|vend[eí]a|me interesa)\b/i, h = n2.no || /^(no|nop|nah|mejor no|despu[eé]s|luego)\b/i, g = n2.precio || /cu[áa]nto (cuesta|vale|ser[íi]a)|precio|tarifa|inversi[óo]n/i, y2 = n2.retomando || "Y retomando:";
+    function p(t) {
+      return /\?|¿|\bqu[eéi]\b|\bc[óo]mo\b|\bcu[áa]ndo\b|\bcu[áa]nto\b|\bpor qu[eé]\b|\bwhat\b|\bhow\b|\bwhy\b|\bwhen\b|\bquanto\b|\bcomo\b/i.test(t);
+    }
+    function b(t) {
+      return m2.test(t.trim());
+    }
+    function A(t) {
+      return h.test(t.trim());
+    }
+    function f2(t) {
+      return i3.test(t);
+    }
+    const o3 = { sector: null, dolor: null, volumen: null, nombre: null, email: null, telefono: null, empresa: null, ciudad: a.ciudad || null, pais: a.pais || null, temp: a.temp != null ? a.temp : null, clima: a.clima || null, hora: a.hora || null, dispositivo: a.dispositivo || null }, s4 = { etapa: "saludo", correcciones: [], vistos: {}, turno: 0, pdfOfrecido: false, iniciado: false };
+    function q() {
+      const t = e.saludo.tips[a.tipKey] || e.saludo.tips.nublado;
+      return { saludo: a.saludo || "Hola", ciudad: a.ciudad || "tu ciudad", temp: a.temp != null ? a.temp : "\u2014", clima: a.clima || "cielo variable", hora: a.hora || "\u2014", tip: t, nombre: e.identidad.nombre, empresa: e.identidad.empresa, nombreUsuario: o3.nombre || "", empresaUsuario: o3.empresa || "", sector: o3.sector || "", dolor: o3.dolor || "" };
+    }
+    function R2(t) {
+      for (const c of e.correcciones) if (!s4.vistos[c.id] && c.cuando.some((u) => u.test(t))) return s4.vistos[c.id] = true, s4.correcciones.push({ id: c.id, porque: c.porque }), c;
+      return null;
+    }
+    function I2() {
+      const t = e.descubrimiento;
+      return s4.etapa === "sector" ? t[0] : s4.etapa === "dolor" ? t[1] : s4.etapa === "volumen" ? t[2] : s4.etapa === "contacto" ? t[3] : null;
+    }
+    function k2(t) {
+      const c = String(t).split(/[,;|]/).map((u) => u.trim()).filter(Boolean);
+      for (const u of c) {
+        const w2 = u.match(P);
+        if (w2 && !o3.email) {
+          o3.email = w2[0];
+          continue;
+        }
+        if (/^\+?[\d\s.-]{9,}$/.test(u) && !o3.telefono) {
+          o3.telefono = u;
+          continue;
+        }
+        const d2 = u.match(/^(?:me llamo|soy|mi nombre es)\s+(.+)$/i);
+        if (d2 && !o3.nombre) {
+          o3.nombre = d2[1].replace(P, "").trim();
+          continue;
+        }
+        if (/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+){0,2}$/.test(u) && !o3.nombre && !o3.empresa) {
+          o3.nombre = u;
+          continue;
+        }
+        !o3.empresa && u.length > 2 && !P.test(u) && (o3.empresa = u);
+      }
+      if (!o3.nombre) {
+        const u = N(t, /(?:me llamo|mi nombre es|soy)\s+([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+){0,2})/);
+        u && (o3.nombre = u);
+      }
+      if (!o3.email) {
+        const u = t.match(P);
+        u && (o3.email = u[0]);
+      }
+      if (!o3.telefono) {
+        const u = t.match(V);
+        u && /\d{9}/.test(u[0].replace(/\D/g, "")) && (o3.telefono = u[0]);
+      }
+    }
+    function U2() {
+      const t = [];
+      return o3.nombre || t.push("tu nombre"), o3.email || t.push("tu email"), o3.empresa || t.push("el nombre de tu empresa"), t;
+    }
+    function T2() {
+      const t = (o3.dolor || "") + " " + (o3.sector || "");
+      for (const c of e.propuestas.reglas) if (c.cuando.test(t)) return c;
+      return e.propuestas.porDefecto;
+    }
+    function F2() {
+      const t = T2();
+      s4.propuesta = t;
+      const c = q();
+      return c.titulo = t.titulo, c.que = t.que, c.fases = t.fases, c.inversion = t.inversion, c.no = t.no, _(e.cierre.presentar, c) + `
+
+` + e.cierre.ofrecerPdf;
+    }
+    const z2 = { get estado() {
+      return s4;
+    }, get lead() {
+      return o3;
+    }, iniciar() {
+      return s4.iniciado = true, s4.etapa = "sector", _(e.saludo.plantilla, q());
+    }, responder(t) {
+      const c = s4.correcciones.length, u = s4.etapa, w2 = this._turno(t), d2 = s4.correcciones.length > c ? s4.correcciones[s4.correcciones.length - 1] : null, v = I2();
+      return w2.guion = { idioma: r.codigo || "es", etapa: u, etapaNueva: s4.etapa, intencion: d2 ? "pedido mal planteado: " + d2.id : s4.etapa !== u ? "avance del diagnostico" : "pregunta o comentario libre", correccion: d2 ? { id: d2.id, decir: d2.decir, retoma: d2.retoma } : null, propuesta: s4.propuesta ? { titulo: s4.propuesta.titulo, inversion: s4.propuesta.inversion, no: s4.propuesta.no, fases: s4.propuesta.fases } : null, siguiente: v ? v.pregunta : null, lead: { sector: o3.sector, dolor: o3.dolor, volumen: o3.volumen, nombre: o3.nombre, email: o3.email, empresa: o3.empresa } }, w2;
+    }, _turno(t) {
+      t = String(t || "").trim(), s4.turno++;
+      const c = [];
+      P.test(t) && k2(t);
+      const u = R2(t);
+      if (s4.etapa === "pdf_ofrecido") return b(t) ? (s4.etapa = "pdf_listo", c.push({ tipo: "generar_pdf" }), { texto: _(e.cierre.despedidaPdf, q()), etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: true }) : A(t) ? (s4.etapa = "fin", { texto: _(e.cierre.despedidaNo, q()), etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false }) : { texto: e.cierre.ofrecerPdf, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false };
+      if (s4.etapa === "propuesta") {
+        const d2 = (e.conocimiento || []).find((v) => v.cuando.some((D2) => D2.test(t)));
+        return d2 && p(t) ? (s4.etapa = "pdf_ofrecido", { texto: d2.decir + `
+
+` + e.cierre.ofrecerPdf, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false }) : b(t) || /pdf|brief|documento|s[ií], (dame|genera|quiero)/i.test(t) ? (s4.etapa = "pdf_listo", c.push({ tipo: "generar_pdf" }), { texto: _(e.cierre.despedidaPdf, q()), etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: true }) : A(t) ? (s4.etapa = "fin", { texto: _(e.cierre.despedidaNo, q()), etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false }) : (s4.etapa = "pdf_ofrecido", { texto: e.cierre.ofrecerPdf, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false });
+      }
+      if (u) {
+        const d2 = I2(), v = u.retoma || (d2 ? d2.pregunta : "");
+        return { texto: u.decir + (v ? `
+
+` + v : ""), etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false };
+      }
+      if (g.test(t) && p(t) && ["sector", "dolor", "volumen"].includes(s4.etapa)) {
+        if (!o3.sector || !o3.dolor) return { texto: "Te doy un n\xFAmero honesto y no un men\xFA de precios, pero para eso necesito conocer tu caso: " + (o3.sector ? "\xBFqu\xE9 proceso te quita m\xE1s tiempo o m\xE1s dinero hoy?" : "\xBFa qu\xE9 se dedica tu empresa?"), etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false };
+        const d2 = T2();
+        return { texto: "Por lo que me contaste \u2014" + o3.dolor.slice(0, 90) + "\u2014 lo nuestro ser\xEDa " + d2.titulo.toLowerCase() + ". La inversi\xF3n para algo as\xED va de " + d2.inversion + `, y el n\xFAmero cerrado sale de revisar tu proceso, no de una lista.
+
+\xBFSeguimos con tus datos para dejarte el brief completo?`, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false };
+      }
+      const w2 = (e.conocimiento || []).find((d2) => d2.cuando.some((v) => v.test(t)));
+      if (w2 && p(t) && s4.etapa !== "contacto") {
+        const d2 = I2();
+        return { texto: (u ? u.decir + `
+
+` : "") + w2.decir + (d2 ? `
+
+` + y2 + " " + d2.pregunta.toLowerCase() : ""), etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false };
+      }
+      switch (s4.etapa) {
+        case "sector": {
+          const d2 = N(t, e.descubrimiento[0].capturar) || (t.length > 3 ? t : null);
+          return d2 ? (o3.sector = d2.replace(/[.¡!]+$/, "").slice(0, 80), s4.etapa = "dolor", { texto: (u ? u.decir + `
+
+` : "") + "Anotado: " + o3.sector + ". " + e.descubrimiento[1].pregunta, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false }) : { texto: e.descubrimiento[0].pregunta + " " + e.descubrimiento[0].ayuda, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false };
+        }
+        case "dolor":
+          return t.length >= 4 ? (o3.dolor = t.replace(/[.¡!]+$/, "").slice(0, 220), s4.etapa = "volumen", { texto: (u ? u.decir + `
+
+` : "") + "Ese duele, s\xED. " + e.descubrimiento[2].pregunta + " (" + e.descubrimiento[2].ayuda + ")", etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false }) : { texto: e.descubrimiento[1].pregunta, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false };
+        case "volumen": {
+          if (f2(t)) o3.volumen = "sin dato";
+          else {
+            const d2 = N(t, H);
+            d2 && (o3.volumen = String(parseInt(d2.replace(/[.\s]/g, ""), 10)));
+          }
+          return o3.volumen ? (s4.etapa = "contacto", { texto: (u ? u.decir + `
+
+` : "") + e.descubrimiento[3].pregunta + " " + e.descubrimiento[3].ayuda, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false }) : (s4.etapa = "contacto", { texto: e.descubrimiento[3].pregunta + " " + e.descubrimiento[3].ayuda, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false });
+        }
+        case "contacto": {
+          k2(t);
+          const d2 = U2();
+          return d2.length ? { texto: (u ? u.decir + `
+
+` : "") + "Voy teniendo: " + L2() + ". Me falta " + d2.join(" y ") + ".", etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false } : (s4.etapa = "propuesta", { texto: (u ? u.decir + `
+
+` : "") + F2(), etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false });
+        }
+        default:
+          return { texto: e.descubrimiento[0].pregunta, etapa: s4.etapa, lead: o3, acciones: c, listoParaPdf: false };
+      }
+    } };
+    z2.precargar = function(t) {
+      return t && (t.nombre && (o3.nombre = t.nombre), t.empresa && (o3.empresa = t.empresa), (t.negocio || t.sector) && (o3.sector = t.negocio || t.sector), (t.necesidad || t.dolor) && (o3.dolor = t.necesidad || t.dolor), t.volumen && (o3.volumen = t.volumen), s4.etapa = o3.sector ? o3.dolor ? o3.volumen ? "contacto" : "volumen" : "dolor" : "sector", s4.iniciado = true), z2;
+    };
+    function L2() {
+      const t = [];
+      return o3.nombre && t.push("nombre " + o3.nombre), o3.email && t.push("email " + o3.email), o3.empresa && t.push("empresa " + o3.empresa), t.length ? t.join(", ") : "nada a\xFAn";
+    }
+    return z2;
+  }
+  var l = { INACTIVA: "inactiva", ESCUCHANDO: "escuchando", PENSANDO: "pensando", HABLANDO: "hablando" };
+  var O = class _O {
+    constructor({ responder: a, responderStream: e, onEstado: n2, onTranscripcion: i3, onRespuesta: m2, onPatron: h, onError: g, fusionar: y2, conf: p = {} }) {
+      __publicField(this, "silenciada", false);
+      this.responder = a, this.responderStream = e || null, this.onEstado = n2 || (() => {
+      }), this.onTranscripcion = i3 || (() => {
+      }), this.onRespuesta = m2 || (() => {
+      }), this.onPatron = h || (() => {
+      }), this.onError = g || (() => {
+      }), this.conf = { lang: p.lang || "es-ES", autoEscucha: p.autoEscucha !== false, velocidad: p.velocidad || 1.04, tono: p.tono || 1, prefVoz: p.prefVoz || "", genero: p.genero || "femenina" }, this.estado = l.INACTIVA, this.activa = false, this.fullResponseText = "", this.spokenSoFar = "", this.fusionar = y2 || null, this._streamActivo = false, this._streamGen = 0, this._rec = null, this._vozElegida = null, this._reiniciarEn = null;
+    }
+    static soportado() {
+      const a = !!(window.SpeechRecognition || window.webkitSpeechRecognition), e = typeof window.speechSynthesis < "u";
+      return { stt: a, tts: e, completo: a && e };
+    }
+    _setEstado(a) {
+      this.estado = a, this.onEstado(a);
+    }
+    _vozes() {
+      const a = window.speechSynthesis.getVoices() || [];
+      if (!a.length) return null;
+      const e = (this.conf.lang || "es").toLowerCase(), n2 = a.filter((f2) => f2.lang && f2.lang.toLowerCase().startsWith(e.split("-")[0])), i3 = this.conf.genero || "femenina", m2 = /helena|laura|m[oó]nica|monica|paulina|luc[ií]a|lucia|pen[eé]lope|penelope|paloma|marisol|carmen|sabina|elvira|dalia|lorena|raquel|ximena|esperanza|isabela|francisca|camila|mar[ií]a|maria|conchita|lupe|rosario|juliana|samantha|victoria|karen|zira|aria|jenny|michelle|serena|susan|joana|helia|h[eé]lia|google espa|google portugu|google us english|female|mujer|femenin|woman/i, h = /jorge|carlos|diego|pablo|ra[uú]l|andres|andr[eé]s|miguel|enrique|pedro|daniel|alex|fred|george|david|hombre|var[oó]n|varon|\bmale\b|\bman\b/i, g = /natural|neural|google|microsoft|enhanced|premium|online/i, y2 = (f2) => i3 === "femenina" ? f2.filter((o3) => m2.test(o3.name)) : i3 === "masculina" ? f2.filter((o3) => h.test(o3.name)) : [], p = (f2) => f2.find((o3) => g.test(o3.name)) || f2.find((o3) => o3.lang && o3.lang.toLowerCase() === e) || f2[0] || null, b = (this.conf.prefVoz || "").toLowerCase();
+      if (b) {
+        const f2 = n2.filter((s4) => s4.lang.toLowerCase().startsWith(b)).concat(a.filter((s4) => s4.lang && s4.lang.toLowerCase().startsWith(b) && n2.indexOf(s4) === -1)), o3 = p(y2(f2));
+        if (o3) return o3;
+        if (f2.length) return p(f2) || f2[0];
+      }
+      const A = y2(n2);
+      return p(A.length ? A : n2) || a.find((f2) => g.test(f2.name)) || a[0] || null;
+    }
+    iniciar(a) {
+      return _O.soportado().completo ? (this.activa = true, this._vozElegida = this._vozes(), !this._vozElegida && typeof window.speechSynthesis.onvoiceschanged < "u" && (window.speechSynthesis.onvoiceschanged = () => {
+        this._vozElegida || (this._vozElegida = this._vozes());
+      }), a ? this._hablar(a) : this._escuchar(), true) : false;
+    }
+    detener() {
+      if (this.activa = false, this._streamActivo = false, this._streamGen++, clearTimeout(this._reiniciarEn), this._rec) {
+        try {
+          this._rec.abort();
+        } catch {
+        }
+        this._rec = null;
+      }
+      typeof window.speechSynthesis < "u" && window.speechSynthesis.cancel(), this._setEstado(l.INACTIVA);
+    }
+    interrumpirYEscuchar() {
+      if (this.estado !== l.HABLANDO) return false;
+      this._cola = [], this._streamActivo = false, this._streamGen++, typeof window.speechSynthesis < "u" && window.speechSynthesis.cancel(), this._setEstado(l.ESCUCHANDO);
+      const a = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!a) return this._setEstado(l.INACTIVA), false;
+      const e = new a();
+      e.lang = this.conf.lang, e.continuous = false, e.interimResults = false, e.maxAlternatives = 1, e.onresult = (n2) => {
+        const i3 = n2.results[0] && n2.results[0][0] ? n2.results[0][0].transcript : "";
+        i3 ? this._procesarInterrupcion(i3) : this._setEstado(l.INACTIVA);
+      }, e.onerror = () => this._setEstado(l.INACTIVA), e.onend = () => {
+        this.estado === l.ESCUCHANDO && this._setEstado(l.INACTIVA);
+      };
+      try {
+        e.start();
+      } catch {
+        this._setEstado(l.INACTIVA);
+      }
+      return true;
+    }
+    async _procesarInterrupcion(a) {
+      if (!this.activa) return;
+      if (this.responderStream) {
+        this._turnoStream(a);
+        return;
+      }
+      this._setEstado(l.PENSANDO);
+      const e = { respuesta_incompleta: this.fullResponseText, respuesta_ya_dicha: this.spokenSoFar, interrupcion_cliente: a };
+      let n2 = null;
+      if (this.fusionar && (n2 = await this.fusionar(e)), !n2) {
+        const i3 = await Promise.resolve(this.responder(a));
+        n2 = i3 && i3.texto ? i3.texto : a;
+      }
+      this.activa && this._hablar(n2);
+    }
+    pausar() {
+      if (this.conf.autoEscucha = false, clearTimeout(this._reiniciarEn), this._rec) try {
+        this._rec.stop();
+      } catch {
+      }
+      this.estado === l.ESCUCHANDO && this._setEstado(l.INACTIVA);
+    }
+    reanudar() {
+      this.conf.autoEscucha = true, this.estado === l.INACTIVA && this.activa && this._escuchar();
+    }
+    alternarSilencio() {
+      return this.silenciada = !this.silenciada, this.silenciada && typeof window.speechSynthesis < "u" && window.speechSynthesis.cancel(), this.silenciada;
+    }
+    _escuchar() {
+      if (!this.activa) return;
+      const a = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!a) {
+        this._setEstado(l.INACTIVA);
+        return;
+      }
+      typeof window.speechSynthesis < "u" && window.speechSynthesis.cancel();
+      const e = new a();
+      this._rec = e, e.lang = this.conf.lang, e.interimResults = true, e.continuous = false, e.maxAlternatives = 1;
+      let n2 = "";
+      e.onresult = (i3) => {
+        let m2 = "";
+        for (let h = i3.resultIndex; h < i3.results.length; h++) {
+          const g = i3.results[h][0].transcript;
+          i3.results[h].isFinal ? n2 += g : m2 += g;
+        }
+        this.onTranscripcion(n2 || m2, !!n2 && !m2);
+      }, e.onerror = (i3) => {
+        i3.error === "no-speech" || i3.error === "aborted" || (i3.error === "not-allowed" || i3.error === "service-not-allowed") && (this.onTranscripcion("\u26A0 El navegador neg\xF3 el permiso de micr\xF3fono.", true), this.detener());
+      }, e.onend = () => {
+        if (this._rec = null, !this.activa) return;
+        const i3 = n2.trim();
+        i3 ? this._procesar(i3) : this.conf.autoEscucha ? this._reiniciarEn = setTimeout(() => this._escuchar(), 250) : this._setEstado(l.INACTIVA);
+      }, this._setEstado(l.ESCUCHANDO);
+      try {
+        e.start();
+      } catch {
+      }
+    }
+    _procesar(a) {
+      if (this.activa) {
+        if (this.responderStream) {
+          this._turnoStream(a);
+          return;
+        }
+        this._setEstado(l.PENSANDO), setTimeout(() => {
+          this.activa && Promise.resolve(this.responder(a)).then((e) => {
+            this.activa && (this.onRespuesta(e.texto, e), e && e.guion && e.guion.intencion && this.onPatron(e.guion.intencion), this._hablar(this._paraVoz(this._resumir(e.texto))));
+          });
+        }, 60);
+      }
+    }
+    async _turnoStream(a) {
+      if (!this.activa) return;
+      this._setEstado(l.PENSANDO);
+      const e = ++this._streamGen;
+      this._streamActivo = true, this.fullResponseText = "", this.spokenSoFar = "", this._cola = [], this._offset = 0;
+      let n2 = null;
+      try {
+        n2 = await this.responderStream(a, (i3) => {
+          this.activa && this._streamActivo && this._streamGen === e && this._encolarFrase(i3);
+        });
+      } catch (i3) {
+        n2 = { texto: "", error: String(i3 && i3.message || i3) };
+      }
+      if (!(!this.activa || this._streamGen !== e)) {
+        if (this._streamActivo = false, n2 && n2.error && this.onError(n2.error, n2), n2 && n2.texto && (this.onRespuesta(n2.texto, n2), n2.guion && n2.guion.intencion && this.onPatron(n2.guion.intencion)), this.silenciada) {
+          this._cola = [], this.conf.autoEscucha ? this._reiniciarEn = setTimeout(() => this._escuchar(), 500) : this._setEstado(l.INACTIVA);
+          return;
+        }
+        (!this._cola || !this._cola.length) && this.estado !== l.HABLANDO && this._hablarSiguiente();
+      }
+    }
+    _encolarFrase(a) {
+      const e = this._paraVoz(a), n2 = this._frases(e);
+      if (n2.length) {
+        for (const i3 of n2) this.fullResponseText += (this.fullResponseText ? " " : "") + i3, this._cola.push(i3);
+        this.estado !== l.HABLANDO && this._hablarSiguiente();
+      }
+    }
+    _resumir(a) {
+      const e = String(a).split(/(?<=[.!?])\s+/).filter(Boolean);
+      return e.length <= 2 ? a : e.slice(0, 2).join(" ");
+    }
+    _paraVoz(a) {
+      return String(a).replace(/\*\*(.+?)\*\*/g, "$1").replace(/https?:\/\/\S+/g, "el enlace que ves en pantalla").replace(/[·•]/g, ",").replace(/\n{2,}/g, ". ").replace(/\n/g, ", ").replace(/\s{2,}/g, " ").trim();
+    }
+    _frases(a) {
+      return String(a).split(/(?<=[.!?])\s+/).map((e) => e.trim()).filter(Boolean);
+    }
+    _hablar(a) {
+      this.activa && (this._streamActivo = false, this.fullResponseText = a, this.spokenSoFar = "", this._cola = this._frases(a), this._offset = 0, this._hablarSiguiente());
+    }
+    _hablarSiguiente() {
+      if (!this.activa) return;
+      if (!this._cola || !this._cola.length) {
+        if (this._streamActivo) {
+          this._setEstado(l.PENSANDO);
+          return;
+        }
+        this.conf.autoEscucha ? this._escuchar() : this._setEstado(l.INACTIVA);
+        return;
+      }
+      const a = this._cola.shift(), e = this._offset;
+      if (this._offset += a.length + 1, this.silenciada) {
+        if (this._streamActivo) return;
+        this.conf.autoEscucha ? this._reiniciarEn = setTimeout(() => this._escuchar(), 700) : this._setEstado(l.INACTIVA);
+        return;
+      }
+      const n2 = new SpeechSynthesisUtterance(a);
+      this._vozElegida && (n2.voice = this._vozElegida), n2.lang = this.conf.lang, n2.rate = this.conf.velocidad, n2.pitch = this.conf.tono, n2.onboundary = (i3) => {
+        typeof i3.charIndex == "number" && (this.spokenSoFar = this.fullResponseText.slice(0, e + i3.charIndex));
+      }, n2.onstart = () => this._setEstado(l.HABLANDO), n2.onend = () => {
+        this.activa && this._hablarSiguiente();
+      }, n2.onerror = () => {
+        this.activa && (this._cola = [], this._hablarSiguiente());
+      }, this._setEstado(l.HABLANDO), window.speechSynthesis.speak(n2);
+    }
+  };
+  var G = { codigo: "en", stt: "en-US", voz: "en-US", etiqueta: "EN", identidad: { ...E.identidad, nombre: "Nexa", empresa: "SINAPTIA" }, saludoVoz: "Hi, I'm Nexa. Tell me in one sentence what you need and I'll take you straight there.", saludo: { plantilla: `{greeting}. You are writing from {ciudad}, where it is {hora} and {temp}\xB0 with {clima}. {tip}
+
+I'm {nombre}, {empresa}'s assistant. In a couple of questions I'll understand your operation and leave you a one-page brief with what is worth automating \u2014 and what is not.
+
+I will start: what does your company do?`, tips: { calor: "With that heat, keep a glass of water close.", frio: "It is cold out there: something warm beside you, and let us talk.", lluvia: "Rain outside: good moment to be in here thinking about this.", nublado: "Overcast sky: perfect light to read without glare.", despejado: "Clear day: make the most of it, this goes fast.", noche: "And at this hour, still working: respect." } }, correcciones: [{ id: "todo_automatico", cuando: [/automate (everything|all of it|the whole)/i, /(whole|entire) (company|business).{0,20}automat/i], decir: 'Let me stop you kindly: automating "everything" is the fastest way to burn money. The order that works is: map the process, simplify it, then automate it. Automate a broken process and you only get faster mistakes.', porque: "The client asked to automate everything; we explained map-first, simplify-second.", retoma: "So, one step at a time: which single process hurts the most today?" }, { id: "chatbot_sin_humanos", cuando: [/chatbot that (answers|handles) (everything|all)/i, /without (any )?(humans|people|supervision)/i], decir: "Careful here: a bot that answers EVERYTHING with no supervision is a roulette wheel with a nice interface. The right design answers the routine and hands over to a person for negotiation, complaints, or anything involving money. The error is not eliminated: it is bounded.", porque: "Asked for an unsupervised bot; we defined mandatory human handoff at critical points.", retoma: "Tell me: what share of your enquiries is always the same question?" }, { id: "un_gpt_para_mi_empresa", cuando: [/(buy|get|put) (a |an )?(chatgpt|gpt|claude|gemini) for my (company|business)/i], decir: 'Important nuance: you do not need "a ChatGPT", you need a system. The model is only the engine; the value is connecting it to YOUR data, your processes and your rules, with validations so it cannot invent prices or policies. That is engineering, not a subscription.', porque: "Confused model with system; we clarified the value is in integration and validation.", retoma: "To ground it: where does the information the system must consult live today?" }, { id: "entrenar_con_mis_datos", cuando: [/train (it|the model)? (with|on) my (data|documents)/i, /learn from my (data|documents|files)/i], decir: "Good instinct, wrong technical name: you almost never need to train a model. What we use is retrieval over your documents (RAG): the system consults your information when answering and cites it. Cheaper, safer, and it updates itself when you edit the document.", porque: "Asked to train a model; we proposed RAG as the correct, cheaper alternative.", retoma: "Are your documents in one repository, or scattered across emails and folders?" }, { id: "ia_infalible", cuando: [/(never fails|infallible|100 ?% (safe|accurate|reliable))/i], decir: "I wish: it does not exist. Models are probabilistic and get it wrong once in a while. That is why serious design does not promise zero errors: it adds validations, human review where it matters, and a log of every decision. That is what you should demand from any vendor.", porque: "Assumed infallible AI; we set a realistic expectation with validations and human control.", retoma: "Knowing that: which decision would you never leave to a machine?" }, { id: "reemplazar_personas", cuando: [/replace (my |the )?(employees|staff|team|people)/i, /fire (people|staff|employees)/i], decir: "I say this straight because I get asked a lot: this does not remove people, it removes tasks. Your team stops transcribing and answering the same thing a hundred times, and goes back to what a machine cannot do: negotiate, care for the client, decide. Projects that promise firing people are the ones cancelled at month three.", porque: "Wanted to replace staff; we reframed as removing tasks, not jobs.", retoma: "Then: which repetitive tasks do you want off your team this week?" }, { id: "para_ayer", cuando: [/(by yesterday|by tomorrow|this week|in a week|urgently|right now)/i], decir: "I understand the urgency, and one part can go fast: a real pilot in two weeks is perfectly possible. What does not exist is a complete, reliable system in seven days, and whoever sells you that will deliver it broken. I would rather give you something that truly works in the first phase than something fast and broken.", porque: "Asked for impossible deadlines; we offered a first piece inside the first phase, without promising dates.", retoma: "With that in mind: which process would you like to see working first?" }, { id: "es_caro", cuando: [/(too expensive|very expensive|no budget|can'?t afford|no money)/i], decir: "Fair. Put it in perspective: an office hire costs 25 to 40 thousand dollars a year and works eight hours. A well-built system costs that once and works always. If it still is not the moment, the diagnosis still helps: it tells you what to fix for free and when to come back.", porque: "Price objection; reframed against the cost of a hire and offered an entry path.", retoma: "What holds you back more: the amount, or not being sure of the return?" }, { id: "que_cierre_ventas", cuando: [/(close sales|invoice|charge|sign) (on its own|by itself|alone)/i, /sell (by itself|alone)/i], decir: "Put the brake there: prepare, yes; decide, no. Having the system qualify, quote inside your policy and book meetings is excellent. Having it sign or invoice alone is a legal and financial risk not worth taking. The human approves; the machine prepares.", porque: "Wanted AI closing sales or invoicing; limited to preparing with human approval.", retoma: "Said that: who approves a quote in your company today?" }], descubrimiento: [{ campo: "sector", pregunta: "What does your company do?", ayuda: 'One line is enough: "we sell spare parts", "we are a clinic", "software for logistics".', capturar: /(?:we are|we do|we sell|i sell|company does|business is)\s+([a-z\s]{4,60})/i }, { campo: "dolor", pregunta: "Which process costs you the most time or money today?", ayuda: "Examples: answering enquiries, quoting, invoicing, reports, onboarding clients.", capturar: null }, { campo: "volumen", pregunta: "Roughly how many enquiries, orders or documents of that kind per month?", ayuda: 'An approximate number works: 50, 300, 2,000. If you do not know, say "no idea" and we move on.', capturar: /(\d[\d.\s,]*)/i, opcional: true }, { campo: "contacto", pregunta: "Perfect. For the brief I need three things: your name, your email and your company name.", ayuda: 'One message is fine: "Laura Ortiz, laura@x.com, Andinos Parts".', capturar: null }], conocimiento: [{ cuando: [/how much (does it cost|is it|would it be)|price|pricing|fee/i], decir: "Honest ranges: a diagnosis with a real pilot, 1,800 USD fixed. Agents and automations from 3,500. Custom applications from 8,000. And always optional monthly care from 900. The exact number comes from your process, not from a list." }, { cuando: [/how long|how (much )?time|deadline/i], decir: "The diagnosis with a pilot is the first phase. A complete agent is a medium project; a custom application, a large one. Scope and time come from reviewing your process together, not from a list. And one rule: if someone promises fixed timelines without looking at your operation, ask what they are leaving out." }, { cuando: [/my data|privacy|confidential|secur/i], decir: "Your data is never used to train anyone's models. We sign confidentiality and data-processing agreements before touching anything, and if your sector requires it, the system lives in your own infrastructure." }, { cuando: [/what is (rag|an agent|an ai agent)|how does it work/i], decir: "Short version: an AI agent is a system that understands a message, consults YOUR data, decides an action and executes it in your tools \u2014 with rules defining what it may do alone and what needs your approval. It is not a floating chat: it is a digital employee with written limits." }, { cuando: [/whatsapp/i], decir: "Yes, and it is one of the highest-return builds: answering in seconds on WhatsApp with your real catalogue behind it, handing over to a human when negotiation starts. It is the typical first piece." }, { cuando: [/thanks|perfect|great|excellent/i], decir: "Thank you. I stay with you until the brief is ready." }], propuestas: { reglas: [{ cuando: /(answer|enquir|attention|whatsapp|client|lead|sales)/i, titulo: "Immediate-response agent", que: "An agent answers enquiries on web and WhatsApp in seconds, consults your real catalogue or policies, qualifies the interested party and books visits or calls in your team calendar.", fases: "Phase 1: diagnosis + pilot agent on one channel. Phase 2: CRM integration and all channels. Phase 3: metrics panel and continuous improvement.", inversion: "3,500 \u2013 12,000 USD depending on channels and integrations", no: "It will not negotiate prices or accept offers: those decisions stay human." }, { cuando: /(quot|invoic|document|transcri|load|order)/i, titulo: "Back-office automation", que: "The system reads incoming documents, extracts and validates data against your masters, and records it in your ERP or accounting with human approval above a threshold you define.", fases: "Phase 1: one document type in production. Phase 2: remaining documents and exceptions. Phase 3: reconciliation and automatic reports.", inversion: "2,000 \u2013 9,000 USD depending on volume and systems", no: "Nothing with firm accounting impact is recorded without human review until measured error is zero." }, { cuando: /(report|inform|data|excel|consolid|dashboard)/i, titulo: "Data consolidation and automatic reports", que: "A pipeline joins your scattered systems into one source of truth and produces the reports someone builds by hand today, scheduled, with anomaly alerts.", fases: "Phase 1: source inventory and minimum dashboard. Phase 2: report automation. Phase 3: alerts and simple forecasting.", inversion: "4,000 \u2013 15,000 USD depending on number of sources", no: "We will not touch spreadsheets that are a single source of truth before versioning them." }, { cuando: /(onboarding|train|internal|question|polic|document|manual)/i, titulo: "Internal knowledge copilot", que: "A copilot that answers your team consulting your policies, manuals and history, citing the source of every answer and logging the questions it could not answer.", fases: "Phase 1: centralise and version documentation. Phase 2: copilot with citations. Phase 3: knowledge-gap detection.", inversion: "3,000 \u2013 10,000 USD depending on document volume", no: "If documentation is not centralised, that is step 1: without a single source there is no reliable copilot." }], porDefecto: { titulo: "Automation diagnosis", que: "An audited lift of your processes with impact-vs-viability scoring, and a real pilot in production before day 14 to validate with data, not opinions.", fases: "Phase 1: diagnosis + pilot. Phase 2: the winning process to full production. Phase 3: continuous operation and improvement.", inversion: "1,800 USD for the diagnosis, deducted from the next project", no: "No process is automated before being mapped and simplified." } }, cierre: { presentar: `Ready, {nombreUsuario}. With what you told me, this is what I would do in your place:
+
+**{titulo}**
+{que}
+
+{fases}
+
+Estimated investment: {inversion}
+
+And what I would NOT do: {no}`, ofrecerPdf: "Shall I leave all of this in a one-page PDF, with your data and the next steps, so you can review it calmly or forward it to whoever decides with you?", despedidaPdf: "Done. Check the PDF: it carries your data, the pain you told me, the proposal with phases, the investment range and \u2014 important \u2014 what we recommend NOT automating.", despedidaNo: "No problem. Whenever you want to resume, I am here and your conversation stays in this browser." }, cuerdas: { retomando: "And getting back to it:", noSe: /(no idea|don'?t know|not sure|no clue)/i, si: /^(yes|yep|yeah|ok|okay|sure|go ahead|please do)\b/i, no: /^(no|nop|nah|not now|later)\b/i, precio: /how much (does it cost|is it|would it be|will it be)|price|pricing|fee|investment/i, saludoHora: (r) => r >= 5 && r < 12 ? "Good morning" : r >= 12 && r < 19 ? "Good afternoon" : "Good evening" } };
+  var W = { codigo: "pt", stt: "pt-BR", voz: "pt-BR", etiqueta: "PT", identidad: { ...E.identidad, nombre: "Nexa", empresa: "SINAPTIA" }, saludoVoz: "Oi, sou a Nexa. Me diga em uma frase o que voc\xEA precisa e eu te levo direto.", saludo: { plantilla: `{greeting}. Voc\xEA fala de {ciudad}, onde agora s\xE3o {hora} e faz {temp}\xB0 com {clima}. {tip}
+
+Sou {nombre}, assistente da {empresa}. Em um par de perguntas entendo sua operaci\xF3n e deixo um brief de uma p\xE1gina com o que vale automatizar \u2014 e o que n\xE3o vale.
+
+Come\xE7o eu: o que sua empresa faz?`, tips: { calor: "Com esse calor, mantenha um copo de \xE1gua por perto.", frio: "Est\xE1 frio: algo quente ao lado e vamos conversar.", chuva: "Chuva l\xE1 fora: bom momento para estar aqui pensando nisso.", nublado: "C\xE9u nublado: luz perfeita para ler sem reflexo.", despejado: "Dia limpo: aproveite, isto vai r\xE1pido.", noite: "E a esta hora, ainda trabalhando: respeito." } }, correcciones: [{ id: "todo_automatico", cuando: [/automatizar (tudo|toda a empresa|o negócio inteiro)/i], decir: 'Deixa eu te parar com carinho: automatizar "tudo" \xE9 o jeito mais r\xE1pido de queimar dinheiro. A ordem que funciona \xE9 mapear o processo, simplificar e s\xF3 ent\xE3o automatizar. Automatizar um processo quebrado s\xF3 gera erros mais r\xE1pidos.', porque: "Pediu para automatizar tudo; explicamos mapear primeiro, simplificar depois.", retoma: "Ent\xE3o, um passo de cada vez: qual processo mais d\xF3i hoje?" }, { id: "chatbot_sin_humanos", cuando: [/chatbot que (responda|atenda) tudo/i, /sem (humanos|pessoas|supervisão)/i], decir: "Cuidado: um bot que responde TUDO sem supervis\xE3o \xE9 uma roleta com interface bonita. O desenho certo responde o rotineiro e passa para uma pessoa em negocia\xE7\xE3o, reclama\xE7\xF5es ou qualquer coisa com dinheiro. O erro n\xE3o se elimina: se limita.", porque: "Pediu bot sem supervis\xE3o; definimos passagem humana obrigat\xF3ria nos pontos cr\xEDticos.", retoma: "Me diz: que parte das suas consultas \xE9 sempre a mesma pergunta?" }, { id: "un_gpt_para_mi_empresa", cuando: [/(comprar|colocar|por) (um |o )?(chatgpt|gpt|claude|gemini) (para|na) (minha|empresa)/i], decir: 'Nuance importante: voc\xEA n\xE3o precisa de "um ChatGPT", precisa de um sistema. O modelo \xE9 s\xF3 o motor; o valor est\xE1 em conect\xE1-lo aos SEUS dados, seus processos e suas regras, com valida\xE7\xF5es para n\xE3o inventar pre\xE7os nem pol\xEDticas. Isso \xE9 engenharia, n\xE3o assinatura.', porque: "Confundiu modelo com sistema; esclarecemos que o valor est\xE1 na integra\xE7\xE3o e nas valida\xE7\xF5es.", retoma: "Para aterrizar: onde vive hoje a informa\xE7\xE3o que o sistema precisa consultar?" }, { id: "que_cierre_ventas", cuando: [/(fechar vendas|faturar|cobrar|assinar) (sozinho|sozinha|por conta própria)/i], decir: "P\xF5e o freio a\xED: preparar, sim; decidir, n\xE3o. Que o sistema qualifique, cote dentro da sua pol\xEDtica e agende \xE9 excelente. Que assine ou fature sozinho \xE9 um risco legal e financeiro que n\xE3o vale a pena. O humano aprova; a m\xE1quina prepara.", porque: "Queria IA fechando vendas ou faturando; limitamos a preparar com aprova\xE7\xE3o humana.", retoma: "Dito isso: quem aprova um or\xE7amento na sua empresa hoje?" }], descubrimiento: [{ campo: "sector", pregunta: "O que sua empresa faz?", ayuda: 'Uma linha basta: "vendemos pe\xE7as", "somos uma cl\xEDnica", "software para log\xEDstica".', capturar: /(?:somos|vendemos|vendo|a empresa faz|negócio é)\s+([a-záéíóúãõç\s]{4,60})/i }, { campo: "dolor", pregunta: "Que processo te custa mais tempo ou dinheiro hoje?", ayuda: "Exemplos: responder consultas, or\xE7ar, faturar, relat\xF3rios, onboarding de clientes.", capturar: null }, { campo: "volumen", pregunta: "Mais ou menos quantas consultas, pedidos ou documentos desses por m\xEAs?", ayuda: 'Um n\xFAmero aproximado serve: 50, 300, 2.000. Se n\xE3o souber, diga "n\xE3o sei" e seguimos.', capturar: /(\d[\d.\s,]*)/i, opcional: true }, { campo: "contacto", pregunta: "Perfeito. Para o brief preciso de tr\xEAs coisas: seu nome, seu email e o nome da empresa.", ayuda: 'Em uma mensagem s\xF3: "Laura Ortiz, laura@x.com, Andinos Pe\xE7as".', capturar: null }], conocimiento: [{ cuando: [/quanto (custa|é|seria)|preço|preco|valor/i], decir: "Faixas honestas: diagn\xF3stico com piloto real, 1.800 USD fechado. Agentes e automa\xE7\xF5es a partir de 3.500. Aplica\xE7\xF5es sob medida a partir de 8.000. E cuidado mensal opcional a partir de 900. O n\xFAmero exato sai do seu processo, n\xE3o de uma lista." }, { cuando: [/quanto tempo|prazo|demora/i], decir: "O diagn\xF3stico com piloto \xE9 a primeira fase. Um agente completo \xE9 um projeto m\xE9dio; uma aplica\xE7\xE3o sob medida, um grande. Escopo e tempo saem de revisar seu processo juntos, n\xE3o de uma lista. E uma regra: se algu\xE9m prometer metade disso, pergunte o que est\xE3o deixando de fora." }, { cuando: [/meus dados|privacidade|confidencial|seguran/i], decir: "Seus dados nunca treinam modelos de ningu\xE9m. Assinamos confidencialidade e acordo de tratamento antes de tocar em qualquer coisa e, se seu setor exigir, o sistema vive na sua pr\xF3pria infraestrutura." }, { cuando: [/whatsapp/i], decir: "Sim, e \xE9 uma das constru\xE7\xF5es de maior retorno: responder em segundos no WhatsApp com seu cat\xE1logo real por tr\xE1s, passando para um humano quando come\xE7a a negocia\xE7\xE3o. \xC9 a primeira pe\xE7a t\xEDpica." }, { cuando: [/obrigad|perfeito|ótimo|otimo|excelente/i], decir: "Obrigado a voc\xEA. Fico contigo at\xE9 o brief estar pronto." }], propuestas: { reglas: [{ cuando: /(responder|consulta|atend|whatsapp|cliente|lead|venda)/i, titulo: "Agente de resposta imediata", que: "Um agente responde consultas na web e no WhatsApp em segundos, consulta seu cat\xE1logo ou pol\xEDticas reais, qualifica o interessado e agenda visitas ou liga\xE7\xF5es na agenda da equipe.", fases: "Fase 1: diagn\xF3stico + agente piloto em um canal. Fase 2: integra\xE7\xE3o com CRM e todos os canais. Fase 3: painel de m\xE9tricas e melhoria cont\xEDnua.", inversion: "3.500 \u2013 12.000 USD conforme canais e integra\xE7\xF5es", no: "N\xE3o negocia pre\xE7o nem aceita ofertas: essas decis\xF5es continuam humanas." }], porDefecto: { titulo: "Diagn\xF3stico de automa\xE7\xE3o", que: "Um levantamento auditado dos seus processos com pontua\xE7\xE3o de impacto contra viabilidade, e um piloto real em produ\xE7\xE3o antes do dia 14 para validar com dados, n\xE3o com opini\xF5es.", fases: "Fase 1: diagn\xF3stico + piloto. Fase 2: o processo vencedor em produ\xE7\xE3o completa. Fase 3: opera\xE7\xE3o cont\xEDnua e melhoria.", inversion: "1.800 USD pelo diagn\xF3stico, descontados do projeto seguinte", no: "Nenhum processo \xE9 automatizado antes de ser mapeado e simplificado." } }, cierre: { presentar: `Pronto, {nombreUsuario}. Com o que voc\xEA me contou, \xE9 isto que eu faria no seu lugar:
+
+**{titulo}**
+{que}
+
+{fases}
+
+Investimento estimado: {inversion}
+
+E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\xE1gina, com seus dados e os pr\xF3ximos passos, para revisar com calma ou encaminhar a quem decide com voc\xEA?", despedidaPdf: "Feito. Veja o PDF: leva seus dados, a dor que voc\xEA contou, a proposta com fases, a faixa de investimento e \u2014 importante \u2014 o que recomendamos N\xC3O automatizar.", despedidaNo: "Sem problema. Quando quiser retomar, estou aqui e sua conversa fica neste navegador." }, cuerdas: { retomando: "E voltando ao assunto:", noSe: /(não sei|nao sei|não tenho ideia|no tengo)/i, si: /^(sim|sim, pode|ok|okay|claro|pode|por favor)\b/i, no: /^(não|nao|agora não|depois)\b/i, precio: /quanto (custa|é|seria|fica)|preço|preco|valor|investimento/i, saludoHora: (r) => r >= 5 && r < 12 ? "Bom dia" : r >= 12 && r < 19 ? "Boa tarde" : "Boa noite" } };
+  var C = { es: E, en: G, pt: W };
+  var Z = [{ codigo: "es", etiqueta: "ES", nombre: "Espa\xF1ol" }, { codigo: "en", etiqueta: "EN", nombre: "English" }, { codigo: "pt", etiqueta: "PT", nombre: "Portugu\xEAs" }];
+  function K(r) {
+    if (!r) return E;
+    const a = String(r).toLowerCase();
+    if (C[a]) return C[a];
+    const e = a.split("-")[0];
+    return C[e] || E;
+  }
+  var x = "sinaptia:memoria";
+  var B = ["pasteler\xEDa", "panader\xEDa", "cl\xEDnica", "clinica", "taller", "inmobiliaria", "restaurante", "cafeter\xEDa", "cafeteria", "tienda", "gimnasio", "escuela", "consultorio", "abogados", "consultora", "log\xEDstica", "logistica", "florer\xEDa", "floreria", "veterinaria", "hotel"];
+  var M = ["implementar IA", "automatizar", "agente", "chatbot", "responder", "cotizaciones", "facturaci\xF3n", "facturacion", "reportes", "atenci\xF3n", "atencion", "ventas", "web", "app"];
+  function $(r) {
+    const a = String(r), e = { nombre: null, negocio: null, necesidad: null, vuelve: false }, n2 = a.match(/\b(?:soy|me llamo|mi nombre es|soy de nuevo|habla)\s+([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?)/i) || a.match(/\bsoy\s+([a-záéíóúñ]{3,12})\b/i);
+    n2 && (e.nombre = n2[1].trim());
+    const i3 = a.toLowerCase();
+    return e.negocio = B.find((m2) => i3.includes(m2.toLowerCase())) || null, e.necesidad = M.find((m2) => i3.includes(m2.toLowerCase())) || null, e.vuelve = /\b(ya|antes|la (semana|vez|otra) pasada|la última vez|la ultima vez|te (habl|hable|hablé|cont|conté|escrib)|hablamos)\b/i.test(i3), e;
+  }
+  function j(r, a) {
+    let e = 0;
+    return a.nombre && r.nombre && S(r.nombre).includes(S(a.nombre).split(" ")[0]) && (e += 3), a.negocio && r.negocio && S(r.negocio).includes(S(a.negocio)) && (e += 3), a.necesidad && r.necesidad && S(r.necesidad).includes(S(a.necesidad)) && (e += 1), e;
+  }
+  function S(r) {
+    return String(r || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+  function J(r, a = "es") {
+    const e = r.nombre ? r.nombre.split(" ")[0] + ", " : "", n2 = new Date(r.ultimo).toLocaleDateString(a === "en" ? "en" : a === "pt" ? "pt" : "es", { day: "numeric", month: "long" }), i3 = r.negocio || r.necesidad || "tu proyecto";
+    return a === "en" ? `${e}I found your case: we spoke on ${n2} about ${i3}. We don't start from zero: we pick up where we left off. Shall we continue from there, or is there something new?` : a === "pt" ? `${Y(r)}encontrei seu caso: conversamos em ${n2} sobre ${i3}. N\xE3o come\xE7amos do zero: continuamos de onde paramos.` : `${e}encontr\xE9 tu caso: hablamos el ${n2} sobre ${i3}${r.necesidad && r.negocio ? " para " + r.necesidad : ""}. No empezamos de cero: seguimos desde ah\xED. \xBFContinuamos donde quedamos o hay algo nuevo?`;
+  }
+  function Y(r) {
+    return r.nombre ? r.nombre.split(" ")[0] + ", " : "";
+  }
+  var ee = class {
+    constructor(a) {
+      this.storage = a || (typeof localStorage < "u" ? localStorage : null);
+    }
+    _cargar() {
+      if (!this.storage) return [];
+      try {
+        return JSON.parse(this.storage.getItem(x) || "[]");
+      } catch {
+        return [];
+      }
+    }
+    _guardar(a) {
+      if (this.storage) try {
+        this.storage.setItem(x, JSON.stringify(a.slice(-200)));
+      } catch {
+      }
+    }
+    perfiles() {
+      return this._cargar();
+    }
+    recordar(a) {
+      const e = $(a), n2 = this._cargar();
+      let i3 = null, m2 = 0;
+      for (const h of n2) {
+        const g = j(h, e);
+        g > m2 && (m2 = g, i3 = h);
+      }
+      return m2 >= 3 ? { perfil: i3, score: m2, identidad: e } : null;
+    }
+    guardar({ nombre: a, negocio: e, necesidad: n2, resumen: i3, idioma: m2 }) {
+      if (!a && !e) return null;
+      const h = this._cargar(), g = { nombre: a, negocio: e }, y2 = h.findIndex((b) => j(b, g) >= 3), p = y2 >= 0 ? h[y2] : { id: "p" + Date.now().toString(36), creado: (/* @__PURE__ */ new Date()).toISOString() };
+      return Object.assign(p, { nombre: a || p.nombre, negocio: e || p.negocio, necesidad: n2 || p.necesidad, idioma: m2 || p.idioma, ultimo: (/* @__PURE__ */ new Date()).toISOString(), veces: (p.veces || 0) + 1, resumen: i3 || p.resumen }), y2 >= 0 ? h[y2] = p : h.push(p), this._guardar(h), p;
+    }
+  };
+
+  // dist/_astro/bd.CY1tvGcL.js
+  var i = "sinaptia:bd";
+  var s = 0;
+  function o() {
+    return s += 1, `${Date.now().toString(36)}-${s.toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+  }
+  var l2 = class {
+    constructor({ remoto: t = null, supabase: e = null, alCambiar: a = null } = {}) {
+      this.remoto = t, this.supabase = e, this.alCambiar = a, this.memoria = [], this.cola = [], this._cargar();
+    }
+    _cargar() {
+      try {
+        const t = localStorage.getItem(i);
+        if (!t) return;
+        const e = JSON.parse(t);
+        Array.isArray(e.registros) && (this.memoria = e.registros.slice(-500)), Array.isArray(e.cola) && (this.cola = e.cola);
+      } catch {
+      }
+    }
+    _guardar() {
+      try {
+        localStorage.setItem(i, JSON.stringify({ registros: this.memoria, cola: this.cola }));
+      } catch {
+      }
+      this.alCambiar && this.alCambiar(this);
+    }
+    registrar(t, e = {}) {
+      const a = { id: o(), ts: (/* @__PURE__ */ new Date()).toISOString(), evento: t, ...e };
+      return this.memoria.push(a), this.memoria.length > 500 && this.memoria.shift(), this.cola.push(a), this._guardar(), a;
+    }
+    todos() {
+      return this.memoria.slice();
+    }
+    porEvento(t) {
+      return this.memoria.filter((e) => e.evento === t);
+    }
+    get tamano() {
+      return this.memoria.length;
+    }
+    get pendiente() {
+      return this.cola.length;
+    }
+    lead() {
+      const t = this.porEvento("lead");
+      return t.length ? t[t.length - 1].lead : null;
+    }
+    borrar() {
+      this.memoria = [], this.cola = [];
+      try {
+        localStorage.removeItem(i);
+      } catch {
+      }
+      this.alCambiar && this.alCambiar(this);
+    }
+    exportar(t = "sinaptia-datos.json") {
+      const e = new Blob([JSON.stringify({ exportado: (/* @__PURE__ */ new Date()).toISOString(), registros: this.memoria }, null, 2)], { type: "application/json" }), a = URL.createObjectURL(e), r = document.createElement("a");
+      return r.href = a, r.download = t, document.body.appendChild(r), r.click(), setTimeout(() => {
+        URL.revokeObjectURL(a), r.remove();
+      }, 400), this.memoria.length;
+    }
+    async sincronizar() {
+      if (!this.cola.length) return 0;
+      const t = this.cola.slice();
+      if (this.supabase && this.supabase.url && this.supabase.key) {
+        const e = this.supabase.tabla || "eventos", a = await fetch(`${this.supabase.url.replace(/\/$/, "")}/rest/v1/${e}`, { method: "POST", headers: { "Content-Type": "application/json", apikey: this.supabase.key, Authorization: `Bearer ${this.supabase.key}`, Prefer: "return=minimal" }, body: JSON.stringify(t.map((r) => ({ payload: r }))) }).catch(() => null);
+        return a && a.ok ? (this.cola = [], this._guardar(), t.length) : 0;
+      }
+      if (this.remoto) {
+        const e = await fetch(this.remoto, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lote: t }) }).catch(() => null);
+        if (e && e.ok) return this.cola = [], this._guardar(), t.length;
+      }
+      return 0;
+    }
+  };
+
+  // dist/_astro/funnel.CC0F3Ta4.js
+  var s2 = ["visita", "calculadora", "calculadora_cta", "lead", "llamada"];
+  var i2 = "sinaptia:visita";
+  var o2 = class {
+    constructor(t) {
+      this.bd = t;
+    }
+    marcar(t, e = {}) {
+      if (t === "visita") try {
+        if (sessionStorage.getItem(i2)) return null;
+        sessionStorage.setItem(i2, "1");
+      } catch {
+      }
+      return this.bd.registrar("funnel:" + t, { paso: t, ...e });
+    }
+    recuento() {
+      const t = {};
+      for (const e of s2) t[e] = this.bd.porEvento("funnel:" + e).length;
+      return t.invitacion = this.bd.porEvento("funnel:invitacion").length, t;
+    }
+    tasas() {
+      const t = this.recuento(), e = [];
+      for (let n2 = 1; n2 < s2.length; n2++) {
+        const a = t[s2[n2 - 1]];
+        e.push({ de: s2[n2 - 1], a: s2[n2], tasa: a ? t[s2[n2]] / a : 0 });
+      }
+      return e;
+    }
+    resumen() {
+      const t = this.recuento();
+      return { ...t, tasaGlobal: t.visita ? t.llamada / t.visita : 0, pendientes: this.bd.pendiente };
+    }
+  };
+
+  // dist/_astro/index.astro_astro_type_script_index_0_lang.DpzTTUwH.js
+  var Oe = { 0: "cielo despejado", 1: "cielo mayormente despejado", 2: "parcialmente nublado", 3: "nublado", 45: "niebla", 48: "niebla con escarcha", 51: "llovizna ligera", 53: "llovizna", 55: "llovizna intensa", 56: "llovizna helada", 57: "llovizna helada intensa", 61: "lluvia ligera", 63: "lluvia", 65: "lluvia intensa", 66: "lluvia helada", 67: "lluvia helada intensa", 71: "nevada ligera", 73: "nevada", 75: "nevada intensa", 77: "granizo fino", 80: "chubascos ligeros", 81: "chubascos", 82: "chubascos fuertes", 85: "nevadas intermitentes", 86: "nevadas fuertes", 95: "tormenta", 96: "tormenta con granizo", 99: "tormenta con granizo fuerte" };
+  function X2(e) {
+    return Oe[e] || "cielo variable";
+  }
+  function Re(e, a, t) {
+    return t ? "noche" : a >= 95 || a >= 51 && a <= 82 ? "lluvia" : a === 45 || a === 48 ? "nublado" : e >= 27 ? "calor" : e <= 10 ? "frio" : a <= 1 ? "despejado" : "nublado";
+  }
+  async function J2(e, a) {
+    return Promise.race([e, new Promise((t, o3) => setTimeout(() => o3(new Error("timeout")), a))]);
+  }
+  async function Ue() {
+    const e = [async () => {
+      const a = await fetch("https://ipwho.is/");
+      if (!a.ok) throw new Error("ipwhois " + a.status);
+      const t = await a.json();
+      if (!t.success && t.success !== void 0) throw new Error("ipwhois sin \xE9xito");
+      return { ciudad: t.city, pais: t.country, lat: t.latitude, lon: t.longitude, fuente: "ipwho.is" };
+    }, async () => {
+      const a = await fetch("https://ipapi.co/json/");
+      if (!a.ok) throw new Error("ipapi " + a.status);
+      const t = await a.json();
+      return { ciudad: t.city, pais: t.country_name, lat: t.latitude, lon: t.longitude, fuente: "ipapi.co" };
+    }];
+    for (const a of e) try {
+      return await J2(a(), 4e3);
+    } catch {
+    }
+    return null;
+  }
+  async function Ve(e, a) {
+    const t = "https://api.open-meteo.com/v1/forecast?latitude=" + e + "&longitude=" + a + "&current_weather=true&timezone=auto", o3 = await J2(fetch(t), 4e3);
+    if (!o3.ok) throw new Error("open-meteo " + o3.status);
+    const i3 = await o3.json(), r = i3.current_weather || {};
+    return { temp: Math.round(r.temperature ?? 20), code: r.weathercode ?? 2, viento: Math.round(r.windspeed ?? 0), esDeDia: r.is_day === 1, zonaHoraria: i3.timezone || null, horaLocal: i3.current_weather && i3.current_weather.time ? i3.current_weather.time.slice(11, 16) : null };
+  }
+  function F(e) {
+    try {
+      return new Intl.DateTimeFormat("es", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: e }).format(/* @__PURE__ */ new Date());
+    } catch {
+      const t = /* @__PURE__ */ new Date();
+      return String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
+    }
+  }
+  function G2(e) {
+    const a = parseInt(String(e).slice(0, 2), 10);
+    return a >= 5 && a < 12 ? "Buenos d\xEDas" : a >= 12 && a < 19 ? "Buenas tardes" : "Buenas noches";
+  }
+  function we() {
+    const e = navigator.userAgent || "";
+    return /Mobi|Android|iPhone/i.test(e) ? "m\xF3vil" : /Tablet|iPad/i.test(e) ? "tablet" : "escritorio";
+  }
+  async function Be(e) {
+    const a = { ciudad: e && e.ciudad || "tu ciudad", pais: null, lat: null, lon: null, temp: 22, code: 2, clima: X2(2), viento: 0, zonaHoraria: null, hora: F(null), saludo: G2(F(null)), esDeNoche: false, tipKey: "nublado", dispositivo: we(), preciso: false, fuente: "por defecto" };
+    try {
+      const t = await Ue();
+      if (t && t.ciudad && (a.ciudad = t.ciudad, a.pais = t.pais, a.lat = t.lat, a.lon = t.lon, a.fuente = t.fuente, a.preciso = true), a.lat != null) {
+        const o3 = await Ve(a.lat, a.lon);
+        a.temp = o3.temp, a.code = o3.code, a.clima = X2(o3.code), a.viento = o3.viento, a.zonaHoraria = o3.zonaHoraria, a.hora = o3.horaLocal || F(o3.zonaHoraria), a.esDeNoche = !o3.esDeDia, a.fuente += " + open-meteo";
+      }
+    } catch {
+    }
+    return a.saludo = G2(a.hora), a.esDeNoche = a.esDeNoche || parseInt(a.hora, 10) >= 20 || parseInt(a.hora, 10) < 5, a.tipKey = Re(a.temp, a.code, a.esDeNoche), a;
+  }
+  function We(e) {
+    const a = e && e.ciudad || "Bogot\xE1", t = F(null);
+    return { ciudad: a, pais: null, lat: null, lon: null, temp: 22, code: 2, clima: X2(2), viento: 0, zonaHoraria: null, hora: t, saludo: G2(t), esDeNoche: parseInt(t, 10) >= 20 || parseInt(t, 10) < 5, tipKey: "nublado", dispositivo: we(), preciso: false, fuente: "referencia sin red" };
+  }
+  var Ke = 5e3;
+  async function W2(e) {
+    return Promise.race([Be(e), new Promise((a) => setTimeout(() => a(We(e)), Ke))]);
+  }
+  async function Qe(e) {
+    const a = "https://geocoding-api.open-meteo.com/v1/search?count=1&language=es&format=json&name=" + encodeURIComponent(e), t = await J2(fetch(a), 4e3);
+    if (!t.ok) throw new Error("geocoding " + t.status);
+    const o3 = await t.json(), i3 = o3 && o3.results && o3.results[0];
+    if (!i3) throw new Error("sin resultados para " + e);
+    return { ciudad: i3.name, pais: i3.country, lat: i3.latitude, lon: i3.longitude };
+  }
+  var ne = [278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584, 584, 556, 1015, 667, 667, 722, 722, 667, 611, 778, 722, 278, 500, 667, 556, 833, 722, 778, 667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 278, 278, 278, 469, 556, 333, 556, 556, 500, 556, 556, 278, 556, 556, 222, 222, 500, 222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334, 260, 334, 584];
+  var Xe = (e) => {
+    const a = e.charCodeAt(0);
+    return a >= 32 && a <= 126 ? ne[a - 32] : ne[({ \u00E1: "a", \u00E9: "e", \u00ED: "i", \u00F3: "o", \u00FA: "u", \u00F1: "n", \u00FC: "u", \u00C1: "A", \u00C9: "E", \u00CD: "I", \u00D3: "O", \u00DA: "U", \u00D1: "N", "\xBF": "?", "\xA1": "!", "\u20AC": "E", "\u201C": '"', "\u201D": '"', "\u2018": "'", "\u2019": "'", "\u2014": "m", "\u2013": "-", "\xB7": ".", "\u2022": ".", "\u2026": ".", "\u2192": "-" }[e] || " ").charCodeAt(0) - 32] || 556;
+  };
+  var Ge = "\u2022";
+  var xe = 595.28;
+  var Ee = 841.89;
+  var x2 = 56;
+  var L = xe - x2 * 2;
+  var ie = { 8364: 128, 8230: 133, 8216: 145, 8217: 146, 8220: 147, 8221: 148, 8226: 149, 8211: 150, 8212: 151 };
+  var re = { 8594: "->", 10003: "OK", 9888: "!", 160: " ", 8232: " ", 8233: " " };
+  function se(e) {
+    const a = [];
+    for (const t of String(e)) {
+      const o3 = t.codePointAt(0);
+      if (o3 < 256) {
+        a.push(o3);
+        continue;
+      }
+      if (ie[o3] != null) {
+        a.push(ie[o3]);
+        continue;
+      }
+      if (re[o3] != null) {
+        for (const i3 of re[o3]) a.push(i3.charCodeAt(0));
+        continue;
+      }
+      a.push(63);
+    }
+    return a;
+  }
+  function ee2(e) {
+    return String(e).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+  }
+  function ze(e, a) {
+    let t = 0;
+    for (const o3 of String(e)) t += Xe(o3);
+    return t * a / 1e3;
+  }
+  function V2(e, a, t) {
+    const o3 = String(e).split(/\s+/).filter(Boolean), i3 = [];
+    let r = "";
+    for (const l3 of o3) {
+      const p = r ? r + " " + l3 : l3;
+      ze(p, a) <= t ? r = p : (r && i3.push(r), r = l3);
+    }
+    return r && i3.push(r), i3.length ? i3 : [""];
+  }
+  function m(e) {
+    this.meta = e || {}, this.pages = [], this._newPage();
+  }
+  m.prototype._newPage = function() {
+    this.pages.push([]), this.y = Ee - x2;
+  };
+  m.prototype._ensure = function(e) {
+    this.y - e < x2 && this._newPage();
+  };
+  m.prototype._text = function(e, a) {
+    a = a || {};
+    const t = a.size || 10, o3 = a.color || [0.2, 0.25, 0.31], i3 = V2(e, t, a.maxW != null ? a.maxW : L - (a.indent || 0)), r = a.lh != null ? a.lh : t * 1.42;
+    for (const l3 of i3) {
+      this._ensure(r);
+      const p = x2 + (a.indent || 0);
+      this.y -= r, this.pages[this.pages.length - 1].push(`BT /F1 ${t} Tf ${o3[0]} ${o3[1]} ${o3[2]} rg ${p.toFixed(2)} ${this.y.toFixed(2)} Td (${ee2(l3)}) Tj ET`);
+    }
+    return a.after && (this.y -= a.after, this._ensure(0)), this;
+  };
+  m.prototype.titulo = function(e) {
+    return this._ensure(60), this.y -= 6, this._text(e, { size: 21, color: [0.04, 0.11, 0.17], lh: 26, after: 4 }), this.pages[this.pages.length - 1].push(`0.13 0.83 0.93 rg ${x2} ${this.y.toFixed(2)} ${L * 0.34} 2.2 re f`), this.y -= 14, this;
+  };
+  m.prototype.sub = function(e) {
+    return this.y -= 8, this._ensure(30), this._text(e, { size: 12.5, color: [0.11, 0.29, 0.4], lh: 17, after: 3 }), this;
+  };
+  m.prototype.parrafo = function(e) {
+    return this._text(e, { size: 10, lh: 14.6, after: 7 });
+  };
+  m.prototype.vineta = function(e) {
+    const a = V2(e, 10, L - 16), t = 14.6;
+    for (let o3 = 0; o3 < a.length; o3++) {
+      this._ensure(t), this.y -= t;
+      const i3 = this.pages[this.pages.length - 1];
+      o3 === 0 && i3.push(`BT /F1 10 Tf 0.13 0.55 0.62 rg ${x2 + 2} ${this.y.toFixed(2)} Td (${Ge}) Tj ET`), i3.push(`BT /F1 10 Tf 0.2 0.25 0.31 rg ${x2 + 16} ${this.y.toFixed(2)} Td (${ee2(a[o3])}) Tj ET`);
+    }
+    return this.y -= 2, this._ensure(0), this;
+  };
+  m.prototype.claveValor = function(e, a) {
+    return this._ensure(15), this._text(e + ":", { size: 10, lh: 14.6, maxW: 120 }), this._text(String(a), { size: 10, lh: 14.6, indent: 122, maxW: L - 122, after: 1 });
+  };
+  m.prototype.aviso = function(e) {
+    this._ensure(40);
+    const t = V2(e, 9.5, L - 24).length * 13 + 14;
+    this._ensure(t);
+    const o3 = this.y;
+    return this.pages[this.pages.length - 1].push(`0.99 0.95 0.80 rg ${x2} ${(o3 - t).toFixed(2)} ${L} ${t} re f 0.96 0.62 0.04 rg ${x2} ${(o3 - t).toFixed(2)} 2.4 ${t} re f`), this.y -= 11, this._text(e, { size: 9.5, lh: 13, indent: 12, maxW: L - 24, color: [0.42, 0.25, 0.03] }), this.y -= 8, this;
+  };
+  m.prototype.separador = function() {
+    return this.y -= 6, this._ensure(10), this.pages[this.pages.length - 1].push(`0.85 0.88 0.90 rg ${x2} ${this.y.toFixed(2)} ${L} 0.7 re f`), this.y -= 12, this;
+  };
+  m.prototype.salto = function() {
+    return this._newPage(), this;
+  };
+  m.prototype.espacio = function(e) {
+    return this.y -= e, this._ensure(0), this;
+  };
+  m.prototype.bytes = function() {
+    const e = /* @__PURE__ */ new Date(), a = (c) => String(c).padStart(2, "0"), t = `D:${e.getUTCFullYear()}${a(e.getUTCMonth() + 1)}${a(e.getUTCDate())}${a(e.getUTCHours())}${a(e.getUTCMinutes())}${a(e.getUTCSeconds())}Z`, o3 = [], i3 = this.pages.length;
+    o3[1] = "<< /Type /Catalog /Pages 2 0 R >>";
+    const r = [];
+    for (let c = 0; c < i3; c++) r.push(`${4 + c * 2} 0 R`);
+    o3[2] = `<< /Type /Pages /Count ${i3} /Kids [${r.join(" ")}] >>`, o3[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>";
+    for (let c = 0; c < i3; c++) {
+      const h = 4 + c * 2, te = 5 + c * 2;
+      o3[h] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${xe} ${Ee}] /Resources << /Font << /F1 3 0 R >> >> /Contents ${te} 0 R >>`;
+      const Ie = this.pages[c].join(`
+`), oe = se(Ie);
+      o3[te] = { stream: oe, dict: `<< /Length ${oe.length} >>` };
+    }
+    const l3 = 4 + i3 * 2;
+    o3[l3] = `<< /Title (${ee2(this.meta.titulo || "Documento")}) /Producer (Sinaptia Prospect Agent) /CreationDate (${t}) >>`;
+    const p = [], g = [0];
+    let v = 0;
+    const b = (c) => {
+      const h = se(c);
+      p.push(h), v += h.length;
+    };
+    b(`%PDF-1.4
+%\xE2\xE3\xCF\xD3
+`);
+    for (let c = 1; c < o3.length; c++) {
+      g[c] = v;
+      const h = o3[c];
+      h && h.stream ? (b(`${c} 0 obj
+${h.dict}
+stream
+`), p.push(h.stream), v += h.stream.length, b(`
+endstream
+endobj
+`)) : b(`${c} 0 obj
+${h}
+endobj
+`);
+    }
+    const N2 = v;
+    let M2 = `xref
+0 ${o3.length}
+0000000000 65535 f 
+`;
+    for (let c = 1; c < o3.length; c++) M2 += String(g[c]).padStart(10, "0") + ` 00000 n 
+`;
+    M2 += `trailer
+<< /Size ${o3.length} /Root 1 0 R /Info ${l3} 0 R >>
+startxref
+${N2}
+%%EOF
+`, b(M2);
+    const H2 = v, A = new Uint8Array(H2);
+    let Ae = 0;
+    for (const c of p) for (let h = 0; h < c.length; h++) A[Ae++] = c[h];
+    return A;
+  };
+  m.prototype.descargar = function(e) {
+    const a = this.bytes(), t = new Blob([a], { type: "application/pdf" }), o3 = URL.createObjectURL(t), i3 = document.createElement("a");
+    return i3.href = o3, i3.download = e || "documento.pdf", document.body.appendChild(i3), i3.click(), setTimeout(() => {
+      URL.revokeObjectURL(o3), i3.remove();
+    }, 400), this;
+  };
+  m._measure = ze;
+  m._wrap = V2;
+  var Ye = { clinica: { id: "clinica", nombre: "Cl\xEDnica Dental Sonrisa", sector: "salud", saludo: "Hola, soy el asistente de Cl\xEDnica Dental Sonrisa. Dime qu\xE9 necesitas: agendar una cita, cambiarla, o saber horarios y precios.", servicios: [{ cuando: /limpieza|profilaxis|higiene/i, desc: "La limpieza dental dura 40 minutos e incluye revisi\xF3n completa. Sin dolor y sin cita previa larga: suelo tener huecos libres." }, { cuando: /blanqueamiento|estetica|estética/i, desc: "El blanqueamiento es una sesi\xF3n de 90 minutos con resultado desde el primer d\xEDa. Incluye control a la semana." }, { cuando: /ortodoncia|brackets|brackets|alinead/i, desc: "La ortodoncia empieza con un estudio de 30 minutos con radiograf\xEDa y plan de tratamiento escrito, sin compromiso." }], faq: [{ cuando: /horario|abren|cierran|s[áa]bado/i, a: "Abrimos de lunes a viernes de 9 a 19 y s\xE1bados de 9 a 14. Los domingos cerramos, pero el asistente sigue atendiendo y dejando citas para el lunes." }, { cuando: /precio|costo|cu[áa]nto (cuesta|vale|cobran)/i, a: "La valoraci\xF3n inicial es sin costo. Una limpieza son 60 USD, un blanqueamiento 180 y el estudio de ortodoncia 45. Todo se confirma por escrito antes de empezar." }, { cuando: /seguro|aseguradora|cobertura/i, a: "Trabajamos con las principales aseguradoras. Trae tu credencial y verificamos cobertura antes de citar, para que no haya sorpresas en el mostrador." }], cita: { cuando: /agendar|cita|reservar|apartar/i, a: "Puedo agendarte ahora mismo: dime qu\xE9 d\xEDa y hora te vienen bien y te lo confirmo en esta misma conversaci\xF3n." }, humano: { cuando: /emergencia|dolor fuerte|urgencia|sangr|golpe|accidente/i, a: "Esto necesita atenci\xF3n de una persona ya. Te paso con el equipo de urgencias ahora mismo; no cuelgues." }, fuera: "Eso lo revisa mejor alguien del equipo en persona. Te dejo con una persona para que te ayude con eso, sin que tengas que repetir nada." }, taller: { id: "taller", nombre: "Taller Mec\xE1nico El Pist\xF3n", sector: "automotriz", saludo: "Hola, soy el asistente de Taller Mec\xE1nico El Pist\xF3n. Dime qu\xE9 le pasa a tu carro o qu\xE9 servicio necesitas, y te digo si hay cupo hoy.", servicios: [{ cuando: /aceite|cambio de aceite|lubric/i, desc: "El cambio de aceite toma 45 minutos con filtro incluido. Si llegas antes de las 4, sales el mismo d\xEDa." }, { cuando: /freno|brake|pastilla/i, desc: "El cambio de pastillas toma 2 horas por eje. Revisamos disco y l\xEDquido sin costo y te mostramos las piezas antes de cambiarlas." }, { cuando: /diagnost|falla|check|luz/i, desc: "El diagn\xF3stico con esc\xE1ner toma 1 hora y te lo explicamos con la lectura en la mano, no con suposiciones." }], faq: [{ cuando: /horario|abren|cierran/i, a: "Lunes a viernes de 8 a 18 y s\xE1bados de 8 a 13. El carro puede quedarse en el patio cerrado si lo traes fuera de horario." }, { cuando: /precio|costo|cu[áa]nto|cotiz/i, a: "Te doy un rango ahora y el n\xFAmero cerrado cuando el carro est\xE9 en el elevador: mano de obra de diagn\xF3stico 40 USD, y toda pieza se aprueba contigo antes de montarla." }, { cuando: /garant|garant[ií]a/i, a: "Toda pieza que montamos lleva 6 meses de garant\xEDa por escrito, y la mano de obra 3. Si algo vuelve a fallar, lo ves sin cita." }], cita: { cuando: /cupo|agendar|cita|reservar|traer|hoy/i, a: "Dime marca, modelo y qu\xE9 le pasa, y te aparto el cupo: si es antes de las 4, sale el mismo d\xEDa." }, humano: { cuando: /accidente|grua|grúa|no arranca|humo|humo|huele a/i, a: "Eso no lo toco por tel\xE9fono: te paso con el mec\xE1nico de guardia ahora, y si no arranca te mando la gr\xFAa nuestra." }, fuera: "Eso lo ve mejor el mec\xE1nico con el carro enfrente. Te paso con alguien del equipo para que te d\xE9 el n\xFAmero cerrado." }, inmobiliaria: { id: "inmobiliaria", nombre: "Inmobiliaria Costa Norte", sector: "inmobiliario", saludo: "Hola, soy el asistente de Inmobiliaria Costa Norte. Dime qu\xE9 buscas: comprar, alquilar o vender, y en qu\xE9 zona.", servicios: [{ cuando: /comprar|compra|busco (piso|casa|apartamento)/i, desc: "Dime zona, presupuesto y habitaciones, y te mando ahora mismo las opciones reales que encajan, con fotos y precio. Sin listas infladas." }, { cuando: /alquilar|alquiler|renta/i, desc: "Para alquiler necesito zona y renta m\xE1xima: te mando las disponibles hoy y agendamos visitas en bloque el mismo d\xEDa." }, { cuando: /vender|venta|tasar|tasaci/i, desc: "La valoraci\xF3n es en tu propiedad, con comparables de la zona y un n\xFAmero por escrito. Sin compromiso de exclusividad para empezar." }], faq: [{ cuando: /horario|abren|cierran/i, a: "Oficina de lunes a viernes de 9 a 19 y s\xE1bados de 10 a 14. Las visitas se agendan tambi\xE9n fuera de horario, seg\xFAn la propiedad." }, { cuando: /comisi|comisi[oó]n|cu[áa]nto (cuesta|cobran)|precio del servicio/i, a: "La comisi\xF3n la paga quien vende y es un porcentaje cerrado que se firma por escrito antes de empezar. Quien compra no paga comisi\xF3n de agencia." }, { cuando: /hipoteca|financ|cr[eé]dito/i, a: "No somos banco, pero te conectamos con dos entidades que pre-aprueban en pocos d\xEDas y te dicen el n\xFAmero m\xE1ximo antes de visitar nada." }], cita: { cuando: /visita|visitar|agendar|ver (el|la|la propiedad)/i, a: "Dime qu\xE9 propiedad y qu\xE9 d\xEDa puedes, y te confirmo la visita con el asesor que tiene las llaves." }, humano: { cuando: /negoci|oferta|rebaj|contrato|firmar|legal/i, a: "Negociaci\xF3n y firmas las lleva una persona, no yo. Te paso con el asesor de la propiedad ahora mismo." }, fuera: "Eso lo responde mejor el asesor que conoce la propiedad. Te dejo con una persona para que te d\xE9 el dato exacto." } };
+  function Ze(e) {
+    return { perfil: e, saludo: e.saludo, responder(a) {
+      const t = String(a), o3 = { negocio: e.id, sector: e.sector, intencion: null };
+      if (e.humano.cuando.test(t)) return o3.intencion = "urgencia: derivar a humano", { texto: e.humano.a, guion: o3, humano: true };
+      if (e.cita.cuando.test(t)) return o3.intencion = "quiere agendar", { texto: e.cita.a, guion: o3 };
+      const i3 = e.faq.find((l3) => l3.cuando.test(t));
+      if (i3) return o3.intencion = "pregunta frecuente", { texto: i3.a, guion: o3 };
+      const r = e.servicios.find((l3) => l3.cuando.test(t));
+      return r ? (o3.intencion = "inter\xE9s en un servicio", { texto: r.desc + " " + e.cita.a, guion: o3 }) : (o3.intencion = "fuera de alcance: derivar a humano", { texto: e.fuera, guion: o3, humano: true });
+    } };
+  }
+  function Je(e) {
+    return Ye[String(e).toLowerCase()] || null;
+  }
+  var n = (e) => document.getElementById(e);
+  function ea(e, a) {
+    return a ? "noche" : e >= 95 || e >= 51 && e <= 82 ? "lluvia" : e === 3 || e === 45 || e === 48 || e === 2 ? "nublado" : "despejado";
+  }
+  function aa(e) {
+    const a = n("ctx-sky");
+    a.dataset.cielo = e, n("ctx-sol").hidden = e !== "despejado";
+    const t = n("ctx-lluvia");
+    if (t.innerHTML = "", e === "lluvia") for (let i3 = 0; i3 < 26; i3++) {
+      const r = document.createElement("div");
+      r.className = "gota", r.style.left = Math.random() * 100 + "%", r.style.animationDuration = 0.7 + Math.random() * 0.8 + "s", r.style.animationDelay = Math.random() * 1.6 + "s", t.appendChild(r);
+    }
+    const o3 = n("ctx-estrellas");
+    if (o3.innerHTML = "", e === "noche") for (let i3 = 0; i3 < 34; i3++) {
+      const r = document.createElement("div");
+      r.className = "estrella", r.style.left = Math.random() * 100 + "%", r.style.top = Math.random() * 78 + "%", r.style.animationDelay = Math.random() * 3 + "s", o3.appendChild(r);
+    }
+  }
+  async function ta() {
+    const e = performance.now(), a = new URLSearchParams(location.search), t = a.get("ciudad") || a.get("city");
+    let o3;
+    if (t) try {
+      const r = await Qe(t);
+      o3 = await W2({ ciudad: r.ciudad, pais: r.pais, lat: r.lat, lon: r.lon });
+    } catch {
+      o3 = await W2({ ciudad: Q.ciudadRespaldo });
+    }
+    else o3 = await W2({ ciudad: Q.ciudadRespaldo });
+    return Math.round(performance.now() - e), aa(ea(o3.code, o3.esDeNoche)), n("ctx-ciudad-tag").textContent = o3.ciudad, n("ctx-temp").classList.remove("cargando"), n("ctx-temp").innerHTML = o3.temp + "\xB0<small>C</small>", n("ctx-cond").classList.remove("cargando"), n("ctx-cond").textContent = o3.clima, n("nav-live").classList.remove("resolviendo"), n("nav-live-txt").textContent = o3.ciudad.toLowerCase() + " \xB7 " + o3.temp + "\xB0 \xB7 " + o3.hora, o3;
+  }
+  function Ce(e, a, t) {
+    const o3 = e.querySelector(".cur");
+    e.textContent = "";
+    const i3 = document.createTextNode(""), r = o3 || document.createElement("span");
+    r.className = "cur", r.hidden = false, e.appendChild(i3), e.appendChild(r);
+    let l3 = 0;
+    (function p() {
+      i3.textContent = a.slice(0, l3), l3 <= a.length ? (l3++, setTimeout(p, 15 + Math.random() * 24)) : (r.remove(), t && t());
+    })();
+  }
+  var S2 = new URLSearchParams(location.search);
+  var I = Je(S2.get("negocio"));
+  var w = null;
+  var f = new l2({ remoto: null, supabase: null });
+  var C2 = new o2(f);
+  var Le = new ee();
+  var ce = false;
+  setInterval(() => f.sincronizar(), 2e4);
+  window.addEventListener("beforeunload", () => f.sincronizar());
+  async function Se(e, a, t) {
+    if (!ce) {
+      const g = Le.recordar(e);
+      if (g) {
+        ce = true;
+        const v = g.perfil;
+        s3 && s3.precargar && s3.precargar(v);
+        const b = J(v, d.codigo);
+        return f.registrar("turno", { canal: a, memoria: "recall", usuario: e, respuesta: b, guion: { intencion: "cliente recurrente" } }), C2.marcar("recall"), { texto: b, guion: { intencion: "cliente recurrente", memoria: v } };
+      }
+    }
+    if (w) {
+      const g = w.responder(e);
+      return f.registrar("turno", { canal: a, negocio: I.id, usuario: e, intencion: g.guion.intencion, respuesta: g.texto, guion: g.guion }), g;
+    }
+    const o3 = s3.responder(e);
+    let i3 = o3.texto, r = "motor", l3 = o3.guion.intencion, p = null;
+    return o3.texto = i3, f.registrar("turno", { canal: a, idioma: d.codigo, modo: r, usuario: e, intencion: l3, confianza: p, respuesta: i3, guion: o3.guion }), o3;
+  }
+  var d = K(S2.get("lang") || navigator.language || "es");
+  var s3 = null;
+  var y = null;
+  var T = false;
+  var K2 = false;
+  var Y2 = [];
+  var z = n("mensajes");
+  var P2 = n("entrada");
+  function $2(e, a) {
+    const t = document.createElement("div");
+    return t.className = "msg " + e, t.textContent = a, z.appendChild(t), z.scrollTop = z.scrollHeight, t;
+  }
+  function B2(e) {
+    const a = $2("bot", "");
+    return a.innerHTML = e.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"), z.scrollTop = z.scrollHeight, a;
+  }
+  function oa() {
+    const e = document.createElement("div");
+    return e.className = "typing", e.innerHTML = "<i></i><i></i><i></i>", z.appendChild(e), z.scrollTop = z.scrollHeight, e;
+  }
+  function _2(e) {
+    const a = n("quick");
+    a.innerHTML = "", (e || []).forEach((t) => {
+      const o3 = document.createElement("button");
+      o3.textContent = t, o3.onclick = () => D(t), a.appendChild(o3);
+    });
+  }
+  function Te() {
+    const a = { sector: 1, dolor: 2, volumen: 3, contacto: 4, propuesta: 5, pdf_ofrecido: 5, pdf_listo: 5, fin: 5 }[s3.estado.etapa] || 0, t = n("pasos").children;
+    for (let o3 = 0; o3 < t.length; o3++) t[o3].className = o3 < a ? "on" : "";
+    n("p-estado").textContent = a >= 5 ? "brief listo para generar" : "diagn\xF3stico en curso \xB7 paso " + Math.max(1, a) + " de 5";
+  }
+  function j2() {
+    n("panel").classList.add("abierto"), n("fab-badge").style.display = "none", !window.__saludado && T && (window.__saludado = true, B2(window.__primerMensaje), Te(), _2(["Vendemos repuestos", "Somos una cl\xEDnica", "Software para log\xEDstica"])), P2.focus();
+  }
+  function na() {
+    n("panel").classList.remove("abierto");
+  }
+  function D(e) {
+    if (e = (e ?? P2.value).trim(), !e || K2 || !T) return;
+    K2 = true, n("enviar").disabled = true, P2.value = "", $2("user", e), _2([]), Y2.push({ role: "user", content: e });
+    const a = oa();
+    setTimeout(async () => {
+      a.remove();
+      const t = await Se(e, "chat");
+      B2(t.texto), Y2.push({ role: "bot", content: t.texto }), Te(), t.listoParaPdf ? (n("pdfbtn").style.display = "block", _e(), _2([]), C2.marcar("lead"), Le.guardar({ nombre: s3.lead.nombre, negocio: s3.lead.sector, necesidad: s3.lead.dolor, idioma: d.codigo, resumen: (s3.lead.dolor || "").slice(0, 200) }), f.registrar("lead", { lead: s3.lead, correcciones: s3.estado.correcciones }), f.registrar("pdf", { lead: s3.lead }), f.sincronizar()) : s3.estado.etapa === "sector" ? _2(["Vendemos repuestos", "Somos una cl\xEDnica", "Software para log\xEDstica"]) : s3.estado.etapa === "volumen" ? _2(["Unas 300 al mes", "No s\xE9"]) : (s3.estado.etapa === "propuesta" || s3.estado.etapa === "pdf_ofrecido") && _2(["S\xED, dame el PDF", "No, gracias"]), K2 = false, n("enviar").disabled = false, P2.focus();
+    }, 420 + Math.random() * 420);
+  }
+  function _e() {
+    const e = { origen: "agente-web", ts: (/* @__PURE__ */ new Date()).toISOString(), contexto: { ciudad: y.ciudad, pais: y.pais, temp: y.temp, clima: y.clima, hora: y.hora, dispositivo: y.dispositivo }, lead: s3.lead, correcciones: s3.estado.correcciones, propuesta: s3.estado.propuesta ? { titulo: s3.estado.propuesta.titulo, inversion: s3.estado.propuesta.inversion } : null };
+    try {
+      localStorage.setItem("sinaptia:lead:" + Date.now(), JSON.stringify(e));
+    } catch {
+    }
+  }
+  function ia() {
+    return new Intl.DateTimeFormat("es", { day: "numeric", month: "long", year: "numeric" }).format(/* @__PURE__ */ new Date());
+  }
+  function ra(e) {
+    return String(e).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+  }
+  function sa() {
+    const e = s3.lead, a = y, t = new m({ titulo: "Brief de implementaci\xF3n de IA \u2014 " + (e.empresa || e.nombre) });
+    t.titulo("Brief de implementaci\xF3n de IA"), t.parrafo("Preparado para " + (e.empresa || "\u2014") + " \xB7 " + a.ciudad + " \xB7 " + ia() + " \xB7 Primer contacto: " + a.hora + " hora local, " + a.temp + "\xB0 y " + a.clima + "."), t.sub("1 \xB7 Datos del prospecto"), t.claveValor("Contacto", e.nombre || "\u2014"), t.claveValor("Email", e.email || "\u2014"), e.telefono && t.claveValor("Tel\xE9fono", e.telefono), t.claveValor("Empresa", e.empresa || "\u2014"), t.claveValor("Sector", e.sector || "\u2014"), t.claveValor("Volumen declarado", e.volumen || "sin dato"), t.sub("2 \xB7 Dolor declarado"), t.parrafo(e.dolor || "\u2014"), t.sub("3 \xB7 Propuesta");
+    const o3 = s3.estado.propuesta || E.propuestas.porDefecto;
+    t.parrafo(o3.titulo + ". " + o3.que), t.parrafo(o3.fases), t.claveValor("Inversi\xF3n estimada", o3.inversion), t.sub("4 \xB7 Expectativas ajustadas durante la conversaci\xF3n"), s3.estado.correcciones.length ? s3.estado.correcciones.forEach((i3) => t.vineta(i3.porque)) : t.vineta("No fue necesario ajustar expectativas: el planteamiento inicial era correcto."), t.aviso("Lo que NO recomendamos automatizar: " + o3.no), t.sub("5 \xB7 Siguientes pasos"), t.vineta("Revisar este brief con quien decida contigo."), t.vineta("Agendar una llamada: " + Q.marca.agenda), t.vineta("Si se aprueba: kickoff y acceso a sistemas en la semana 1."), t.separador(), t.parrafo(Q.pdf.pie + " \xB7 " + Q.marca.email + " \xB7 " + Q.marca.web), t.descargar(Q.pdf.nombreArchivo + "-" + ra(e.empresa || e.nombre || "brief") + ".pdf"), $2("sys", "PDF generado y descargado.");
+  }
+  var qe = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ca(e, a, t) {
+    if (qe) {
+      e.textContent = String(a);
+      return;
+    }
+    const o3 = performance.now();
+    (function i3(r) {
+      const l3 = Math.min(1, (r - o3) / t), p = 1 - Math.pow(1 - l3, 3);
+      e.textContent = String(Math.round(a * p)), l3 < 1 && requestAnimationFrame(i3);
+    })(o3);
+  }
+  function le(e) {
+    e.classList.add("revelado"), e.querySelectorAll("[data-count]").forEach((a) => ca(a, parseInt(a.dataset.count, 10), 900)), e.querySelectorAll(".fill").forEach((a) => {
+      a.style.width = a.dataset.w || a.style.width;
+    });
+  }
+  function la() {
+    const e = document.querySelectorAll(".sec-head, .card, .pain, .step, .case, .corr, .bar, .situation, .lm-card, .proj-note, .cta-final .cta-row");
+    if (e.forEach((t, o3) => {
+      t.setAttribute("data-reveal", ""), t.style.transitionDelay = Math.min(o3 % 4, 3) * 70 + "ms";
+    }), document.querySelectorAll(".fill").forEach((t) => {
+      t.dataset.w = t.style.width, t.style.width = "0%";
+    }), qe || !("IntersectionObserver" in window)) {
+      e.forEach(le);
+      return;
+    }
+    const a = new IntersectionObserver((t) => {
+      t.forEach((o3) => {
+        o3.isIntersecting && (le(o3.target), a.unobserve(o3.target));
+      });
+    }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
+    e.forEach((t) => a.observe(t));
+  }
+  function da() {
+    const e = Array.from(document.querySelectorAll(".situation")), a = (t) => {
+      const o3 = t.querySelector(".sit-body");
+      o3.style.maxHeight = t.classList.contains("abierto") ? o3.scrollHeight + "px" : "0px";
+    };
+    e.forEach((t) => {
+      t.querySelector(".sit-head").addEventListener("click", () => {
+        const i3 = t.classList.contains("abierto");
+        e.forEach((r) => {
+          r.classList.toggle("abierto", !i3 && r === t), r.querySelector(".sit-head").setAttribute("aria-expanded", String(!i3 && r === t)), a(r);
+        }), i3 || setTimeout(() => a(t), 60);
+      }), a(t);
+    }), window.addEventListener("resize", () => e.forEach(a)), document.querySelectorAll(".sit-detail .why").forEach((t) => {
+      t.addEventListener("click", () => {
+        t.closest("li").classList.toggle("mostrando");
+        const i3 = t.closest(".situation"), r = i3.querySelector(".sit-body");
+        i3.classList.contains("abierto") && (r.style.maxHeight = r.scrollHeight + 40 + "px");
+      });
+    });
+  }
+  var de = n("cta-agendar");
+  de && de.addEventListener("click", () => {
+    j2(), D("Quiero agendar una llamada. \xBFQu\xE9 horarios tienes y qu\xE9 necesitas saber de m\xED antes?");
+  });
+  function ae(e) {
+    "requestIdleCallback" in window ? window.requestIdleCallback(e, { timeout: 1200 }) : setTimeout(e, 400);
+  }
+  var O2 = (e) => "$" + Math.round(e).toLocaleString("es-US");
+  function Z2() {
+    const e = (M2) => {
+      const H2 = n(M2), A = parseFloat(H2 && H2.value);
+      return Number.isFinite(A) ? Math.max(0, A) : 0;
+    }, a = e("c-consultas"), t = e("c-valor"), o3 = Math.min(100, e("c-pierde")), i3 = e("c-horas"), r = e("c-costohora"), l3 = a * (o3 / 100) * 0.25 * t, p = i3 * 4.33 * r * 0.7, g = l3 + p, v = n("o-ventas"), b = n("o-horas"), N2 = n("o-total");
+    return v && (v.textContent = O2(l3)), b && (b.textContent = O2(p)), N2 && (N2.textContent = O2(g * 12)), g * 12;
+  }
+  ae(() => {
+    let e = false;
+    ["c-consultas", "c-valor", "c-pierde", "c-horas", "c-costohora"].forEach((a) => {
+      const t = n(a);
+      t && t.addEventListener("input", () => {
+        Z2(), e || (e = true, C2.marcar("calculadora"));
+      });
+    }), Z2();
+  });
+  var ue = n("calc-cta");
+  ue && ue.addEventListener("click", () => {
+    const e = Z2();
+    C2.marcar("calculadora_cta", { anual: e }), f.registrar("calculadora", { anual: e, consultas: n("c-consultas").value, valor: n("c-valor").value, pierde: n("c-pierde").value, horas: n("c-horas").value, costohora: n("c-costohora").value }), j2(), D("Seg\xFAn la calculadora de tu sitio, estoy dejando en la mesa unos " + O2(e) + " al a\xF1o. Quiero recuperar ese dinero: \xBFpor d\xF3nde empezamos?");
+  });
+  var ua = { [l.ESCUCHANDO]: "escuch\xE1ndote", [l.PENSANDO]: "pensando\u2026", [l.HABLANDO]: "hablando", [l.INACTIVA]: "en pausa" };
+  var E2 = null;
+  function k() {
+    return E2 || (E2 = new O({ responder: (e) => Se(e, "voz"), onEstado: (e) => {
+      const a = n("llamada");
+      a.dataset.estado = e, n("ll-estado").textContent = ua[e] || e, n("ll-mic-txt").textContent = e === l.ESCUCHANDO ? "pausar" : "escuchar";
+    }, onTranscripcion: (e, a) => {
+      n("ll-transcripcion").textContent = e || "\u2026", a && e && $2("user", e);
+    }, onPatron: (e) => {
+      n("ll-respuesta").dataset.patron = e;
+    }, onRespuesta: (e, a) => {
+      B2(e), Y2.push({ role: "bot", content: e }), n("ll-respuesta").textContent = "patr\xF3n: " + (n("ll-respuesta").dataset.patron || "\u2014") + `
+` + e.slice(0, 200), a && a.listoParaPdf && (n("pdfbtn").style.display = "block", _e(), $2("sys", "Brief listo: el bot\xF3n de PDF est\xE1 abajo en el chat."));
+    }, fusionar: async (e) => null, conf: { lang: d.stt || Q.voz && Q.voz.lang || "es-ES", autoEscucha: !Q.voz || Q.voz.autoEscucha !== false, genero: Q.voz && Q.voz.genero || "femenina", prefVoz: d.voz || Q.voz && Q.voz.prefVoz || "", velocidad: Q.voz && Q.voz.velocidad || 1.04, tono: Q.voz && Q.voz.tono || 1 } }), E2);
+  }
+  function De() {
+    const e = n("llamada");
+    e.classList.add("abierta"), e.setAttribute("aria-hidden", "false");
+    const a = O.soportado(), t = k();
+    if (!a.completo) {
+      n("ll-aviso").textContent = a.stt ? "Tu navegador no tiene s\xEDntesis de voz: ver\xE1s las respuestas escritas." : "Tu navegador no reconoce voz. Usa Chrome, Edge o Safari. El chat de texto sigue funcionando.", n("ll-estado").textContent = "voz no disponible";
+      return;
+    }
+    if (S2.get("voz") === "1" && !window.__vozIniciada) {
+      n("ll-tap").hidden = false, n("ll-estado").textContent = "listo para hablarte";
+      return;
+    }
+    if (n("ll-tap").hidden = true, T) {
+      window.__vozIniciada ? t.reanudar() : (window.__vozIniciada = true, C2.marcar("llamada"), f.registrar("llamada", { evento2: "inicio", idioma: d.codigo }), t.iniciar(w && w.saludo || d.saludoVoz || window.__primerMensaje));
+      const o3 = n("fab");
+      o3 && o3.classList.remove("oculto");
+    } else {
+      n("ll-estado").textContent = "conectando\u2026";
+      const o3 = setInterval(() => {
+        T && (clearInterval(o3), window.__vozIniciada || (window.__vozIniciada = true, C2.marcar("llamada"), f.registrar("llamada", { evento2: "inicio", idioma: d.codigo }), t.iniciar(w && w.saludo || d.saludoVoz || window.__primerMensaje)));
+      }, 180);
+    }
+  }
+  function pa() {
+    E2 && (E2.detener(), f.registrar("llamada", { evento2: "fin", lead: s3 ? s3.lead : null }), f.sincronizar());
+    const e = n("llamada");
+    e.classList.remove("abierta"), e.setAttribute("aria-hidden", "true"), n("ll-transcripcion").textContent = "\u2026", n("ll-respuesta").textContent = "";
+  }
+  var Q2 = n("ll-tap");
+  Q2 && Q2.addEventListener("click", () => {
+    Q2.hidden = true;
+    const e = k();
+    window.__vozIniciada = true, C2.marcar("llamada"), f.registrar("llamada", { evento2: "inicio", idioma: d.codigo, origen: S2.get("voz") === "1" ? "qr" : "web" }), e.iniciar(w && w.saludo || d.saludoVoz || window.__primerMensaje);
+  });
+  if (S2.get("voz") === "1") {
+    const e = setInterval(() => {
+      T && (clearInterval(e), De());
+    }, 200);
+  }
+  var pe = n("ll-colgar");
+  pe && pe.addEventListener("click", pa);
+  var me = n("ll-silencio");
+  me && me.addEventListener("click", () => {
+    const e = k().alternarSilencio();
+    n("ll-sil-txt").textContent = e ? "activar voz" : "silenciar";
+  });
+  var fe = n("ll-mic");
+  fe && fe.addEventListener("click", () => {
+    const e = k();
+    if (e.estado === l.HABLANDO) {
+      e.interrumpirYEscuchar();
+      return;
+    }
+    e.estado === l.ESCUCHANDO ? e.pausar() : e.reanudar();
+  });
+  var R = null;
+  function ma(e) {
+    j2(), T ? D(e) : R = e;
+  }
+  document.querySelectorAll(".sit-cta").forEach((e) => {
+    e.addEventListener("click", () => ma(e.dataset.sitmsg));
+  });
+  n("fab").onclick = j2;
+  n("cerrar").onclick = na;
+  n("nav-agente").onclick = j2;
+  n("cta-agente").onclick = j2;
+  n("enviar").onclick = () => D();
+  n("pdfbtn").onclick = sa;
+  P2.addEventListener("keydown", (e) => {
+    e.key === "Enter" && !e.shiftKey && (e.preventDefault(), D());
+  });
+  function je() {
+    const e = n("nav-id");
+    e && (e.innerHTML = "", Z.forEach((a) => {
+      const t = document.createElement("button");
+      t.textContent = a.etiqueta, t.title = a.nombre, t.className = a.codigo === d.codigo ? "activo" : "", t.addEventListener("click", () => fa(a.codigo)), e.appendChild(t);
+    }));
+  }
+  function fa(e) {
+    if (d.codigo !== e && (d = K(e), document.documentElement.lang = d.codigo, je(), E2 && (E2.detener(), E2 = null, window.__vozIniciada = false), z.innerHTML = "", _2([]), window.__saludado = false, y)) {
+      y.saludo = Me(y), s3 = X(d, y);
+      const a = s3.iniciar();
+      T = true, window.__primerMensaje = a, B2(a), Ce(n("saludo"), a.split(`
+
+`)[0]), n("llamada").classList.contains("abierta") && (k(), n("ll-tap").hidden = false, n("ll-estado").textContent = "listo");
+    }
+  }
+  je();
+  ae(() => {
+    da(), la();
+  });
+  var U = n("fab");
+  U && U.classList.add("oculto");
+  var ha = { propuesta: "<b>Lo que acabo de armarte tiene detalles que se entienden mejor hablados.</b> \xBFUna llamada corta de voz y te los explico mientras ves tu propia operaci\xF3n en pantalla?", situacion: "<b>\xBFPrefieres escucharlo?</b> En una llamada corta de voz te cuento qu\xE9 har\xEDamos en tu caso y por d\xF3nde empezar.", pdf: "<b>Tu brief est\xE1 listo.</b> \xBFLo revisamos juntos en una llamada corta? Es donde m\xE1s dudas se resuelven." };
+  var he = {};
+  function ga(e) {
+    const a = n("invitacion");
+    !a || he[e] || a.classList.contains("visible") || (he[e] = true, C2.marcar("invitacion", { tipo: e }), n("inv-texto").innerHTML = ha[e], a.classList.add("visible"), a.setAttribute("aria-hidden", "false"), f.registrar("invitacion", { tipo: e }));
+  }
+  function ge() {
+    const e = n("invitacion");
+    e && (e.classList.remove("visible"), e.setAttribute("aria-hidden", "true"));
+  }
+  ae(() => {
+    const e = n("inv-si");
+    e && e.addEventListener("click", () => {
+      ge(), U && U.classList.remove("oculto"), De();
+    });
+    const a = n("inv-no");
+    a && a.addEventListener("click", ge), document.querySelectorAll(".sit-head").forEach((t) => {
+      t.addEventListener("click", () => setTimeout(() => ga("situacion"), 1400));
+    });
+  });
+  function Me(e) {
+    const a = parseInt(String(e.hora).slice(0, 2), 10);
+    return d.cuerdas && d.cuerdas.saludoHora ? d.cuerdas.saludoHora(a) : e.saludo;
+  }
+  C2.marcar("visita", { origen: S2.get("voz") === "1" ? "qr" : S2.get("negocio") ? "demo-" + S2.get("negocio") : document.referrer ? "referido" : "directo", idioma: d.codigo });
+  ta().then((e) => {
+    y = e, e.saludo = Me(e), s3 = X(d, e), I && (w = Ze(I));
+    const a = w ? w.saludo : s3.iniciar();
+    if (I) {
+      const t = n("nav-live-txt");
+      t && (t.textContent = "demo adaptada \xB7 " + I.nombre.toLowerCase());
+    }
+    T = true, window.__primerMensaje = a, Ce(n("saludo"), a.split(`
+
+`)[0], () => {
+      if (R) {
+        const t = R;
+        R = null, setTimeout(() => D(t), 350);
+      }
+    });
+  });
+})();
+
+</script>
+</body></html>

@@ -1,0 +1,128 @@
+---
+/**
+ * /interprete — Puente de idioma para el dueño que no habla inglés.
+ *
+ * Dos direcciones:
+ *   ES → EN  escribes en español, sale en inglés para copiar/pegar (o traducido al
+ *            instante si hay worker configurado).
+ *   EN → ES  pegas lo que escribió el prospecto, lo lees en español.
+ *   RESUMEN  toma la conversación guardada en la BD y la resume en español (con worker).
+ *
+ * Sin worker configurado, cada dirección ofrece un enlace directo a Google Translate
+ * con el texto ya cargado: no es automático, pero es un clic.
+ */
+import Base from '../layouts/Base.astro';
+import { CONFIG } from '../config.js';
+---
+<Base title="Intérprete — SINAPTIA" description="Puente de idioma para operar conversaciones en inglés sin hablarlo.">
+  <main class="wrap wrap-narrow" style="padding:56px 26px">
+    <div class="eyebrow"><i></i> puente de idioma</div>
+    <h1 class="sec-title">Tú escribes en español.<br />Tu prospecto lo lee en inglés.</h1>
+    <p class="sec-lead">Y al revés: pegas lo que él escribió y lo lees en español. Si tu worker está
+      configurado, la traducción es instantánea; si no, un clic te lleva a Google Translate con el
+      texto ya cargado.</p>
+
+    <div class="calc" style="margin-top:26px">
+      <div class="calc-head">
+        <h3>Español → Inglés</h3>
+        <p>Escribe lo que quieres decirle. Sale listo para copiar y pegar en tu email o WhatsApp.</p>
+      </div>
+      <textarea id="es-in" rows="5" style="width:100%;background:var(--fondo);border:1px solid var(--borde);border-radius:9px;padding:12px;font-family:inherit;font-size:14px;color:var(--tinta)" placeholder="Ej: Hola Mark, gracias por tu interés. Te preparé una propuesta con dos fases y un número cerrado. ¿Te parece si la revisamos el jueves?"></textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0">
+        <button class="btn p" id="traducir-es">Traducir al inglés</button>
+        <button class="btn s" id="gt-es">Abrir en Google Translate</button>
+      </div>
+      <textarea id="en-out" rows="5" readonly style="width:100%;background:var(--azul-suave);border:1px solid var(--azul-borde);border-radius:9px;padding:12px;font-family:inherit;font-size:14px;color:var(--tinta2)" placeholder="Aquí aparece el texto en inglés…"></textarea>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn s" id="copiar-en">Copiar inglés</button>
+      </div>
+    </div>
+
+    <div class="calc" style="margin-top:20px">
+      <div class="calc-head">
+        <h3>Inglés → Español</h3>
+        <p>Pega lo que escribió el prospecto y léelo en español.</p>
+      </div>
+      <textarea id="en-in" rows="5" style="width:100%;background:var(--fondo);border:1px solid var(--borde);border-radius:9px;padding:12px;font-family:inherit;font-size:14px;color:var(--tinta)" placeholder="Paste the prospect's message here…"></textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0">
+        <button class="btn p" id="traducir-en">Traducir al español</button>
+        <button class="btn s" id="gt-en">Abrir en Google Translate</button>
+      </div>
+      <textarea id="es-out" rows="5" readonly style="width:100%;background:var(--azul-suave);border:1px solid var(--azul-borde);border-radius:9px;padding:12px;font-family:inherit;font-size:14px;color:var(--tinta2)" placeholder="Aquí aparece el texto en español…"></textarea>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn s" id="copiar-es">Copiar español</button>
+      </div>
+    </div>
+
+    <div class="calc" style="margin-top:20px">
+      <div class="calc-head">
+        <h3>Resumen en español de la conversación guardada</h3>
+        <p>Toma los turnos guardados en este navegador (chat o voz) y los resume en español: qué pidió,
+          qué datos dio y cuál es el siguiente paso. Requiere worker configurado.</p>
+      </div>
+      <button class="btn p" id="resumir">Resumir conversación en español</button>
+      <div id="resumen-out" class="calc-sup" style="white-space:pre-wrap;margin-top:12px"></div>
+    </div>
+
+    <p class="calc-sup" style="margin-top:18px">
+      {CONFIG.ia && CONFIG.ia.endpoint
+        ? 'Worker configurado: las traducciones y el resumen son instantáneos.'
+        : 'Sin worker configurado: las traducciones se abren en Google Translate con el texto cargado. Configura ia.endpoint para traducción instantánea.'}
+    </p>
+  </main>
+
+  <script>
+    import { CONFIG } from '../config.js';
+    import { BD } from '../lib/bd.js';
+
+    const endpoint = CONFIG.ia && CONFIG.ia.endpoint;
+    const $ = (id) => document.getElementById(id);
+
+    async function pedir(cuerpo) {
+      if (!endpoint) return null;
+      try {
+        const r = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo) });
+        if (!r.ok) return null;
+        return await r.json();
+      } catch (e) { return null; }
+    }
+    function gt(texto, de, a) {
+      window.open('https://translate.google.com/?sl=' + de + '&tl=' + a + '&text=' + encodeURIComponent(texto), '_blank');
+    }
+    function copiar(id) {
+      const t = $(id).value;
+      if (navigator.clipboard) navigator.clipboard.writeText(t);
+    }
+
+    $('traducir-es').addEventListener('click', async () => {
+      const texto = $('es-in').value.trim();
+      if (!texto) return;
+      const j = await pedir({ traducir: { texto, de: 'es', a: 'en' } });
+      if (j && j.traducido) $('en-out').value = j.traducido;
+      else gt(texto, 'es', 'en');
+    });
+    $('gt-es').addEventListener('click', () => gt($('es-in').value, 'es', 'en'));
+    $('copiar-en').addEventListener('click', () => copiar('en-out'));
+
+    $('traducir-en').addEventListener('click', async () => {
+      const texto = $('en-in').value.trim();
+      if (!texto) return;
+      const j = await pedir({ traducir: { texto, de: 'en', a: 'es' } });
+      if (j && j.traducido) $('es-out').value = j.traducido;
+      else gt(texto, 'en', 'es');
+    });
+    $('gt-en').addEventListener('click', () => gt($('en-in').value, 'en', 'es'));
+    $('copiar-es').addEventListener('click', () => copiar('es-out'));
+
+    $('resumir').addEventListener('click', async () => {
+      const bd = new BD({});
+      const turnos = bd.todos().filter((r) => r.evento === 'turno');
+      if (!turnos.length) { $('resumen-out').textContent = 'No hay conversaciones guardadas en este navegador todavía.'; return; }
+      const conv = turnos.map((t) => (t.canal || 'chat') + ' | ' + (t.usuario || '') + ' → ' + (t.respuesta || '')).join('\n');
+      const j = await pedir({ resumir: { conversacion: conv, idioma: 'es' } });
+      $('resumen-out').textContent = j && j.resumen
+        ? j.resumen
+        : 'Sin worker configurado no puedo resumir automáticamente. Copia la conversación y pégala en Google Translate, o configura ia.endpoint.\n\n' + conv;
+    });
+  </script>
+</Base>

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "astro",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/ia.js": { "maxDuration": 30 },
+    "api/voz/session.js": { "maxDuration": 30 },
+    "api/voz/chat.js": { "maxDuration": 60 },
+    "api/voz/end.js": { "maxDuration": 60 },
+    "api/voz/cron.js": { "maxDuration": 60 },
+    "api/voz/panel.js": { "maxDuration": 30 }
+  },
+  "crons": [
+    { "path": "/api/voz/cron", "schedule": "0 9 * * *" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "microphone=(self), camera=(), geolocation=(self)" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+      ]
+    }
+  ]
+}
