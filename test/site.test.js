@@ -265,6 +265,9 @@ const blobs = [];
   d.getElementById('cerrar').click();
   await esperar(120);
   t('las visitas capturan UTMs para atribuir campañas a leads', /utm_source/.test(htmlConBundle('index.html')));
+  // El recurso gratuito estaba enterrado al final de una página larguísima.
+  t('la auditoría gratuita es visible arriba y su ancla existe',
+    !!d.querySelector('.hero-alt a[href="#auditoria"]') && !!d.querySelector('#auditoria'));
   t('el selector de idioma pinta ES / EN / PT', d.querySelectorAll('#nav-id button').length === 3);
   d.querySelectorAll('#nav-id button')[1].click();
   await esperar(400);

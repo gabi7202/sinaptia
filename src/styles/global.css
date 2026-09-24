@@ -87,6 +87,10 @@ section{padding:72px 0}
 .btn.p:hover{background:var(--azul-osc);transform:translateY(-1px)}
 .btn.s{border-color:var(--borde);color:var(--tinta);background:var(--blanco)}
 .btn.s:hover{border-color:var(--azul);color:var(--azul)}
+/* Segunda puerta del hero: el recurso gratuito, visible arriba (no enterrado al final). */
+.hero-alt{margin-top:14px;font-size:13px;color:var(--tinta2);max-width:46ch}
+.hero-alt a{color:var(--azul-osc);font-weight:700;text-decoration:none;border-bottom:1px solid rgba(20,80,163,.3)}
+.hero-alt a:hover{border-bottom-color:var(--azul)}
 
 /* ── panel de contexto: un cielo sobre tarjeta blanca ── */
 .ctx{position:relative;border-radius:18px;overflow:hidden;background:var(--blanco);
