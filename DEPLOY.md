@@ -200,3 +200,33 @@ Con `ia.voz` vacío, todo funciona 100% local como siempre. Con `ia.voz` configu
 backend caído, `/voz` avisa una vez y **degrada al motor local sin cortar la llamada**:
 degrada, no se rompe. Las conversaciones en modo local no viajan a Supabase (no hay
 consentimiento de por medio): el recall vuelve a ser por `localStorage`.
+
+---
+
+## 7 · Si la web abre con 404 (diagnóstico en 60 segundos)
+
+El sitio **sí tiene página de inicio**: `src/pages/index.astro` → `dist/index.html`. Si Vercel
+devuelve 404 en `/`, el problema nunca es Astro: es que **lo que está publicado no es este repo**.
+Comprueba en este orden:
+
+1. **¿GitHub tiene el repo correcto?** Abre `github.com/TU_USUARIO/sinaptia` y mira la lista de
+   archivos de la raíz. Debes ver `package.json`, `astro.config.mjs`, `vercel.json`, `src/`,
+   `api/`, `server/`.
+   - Si ves otra cosa (p. ej. solo `api/`, `server/`, `vercel.json` — el contenido de un backend
+     suelto), ese es el 404: Vercel compila eso y no hay portada que servir.
+   - Arreglo: clona el bundle y fuerza el push correcto:
+     ```bash
+     git clone /ruta/a/sinaptia.bundle sinaptia && cd sinaptia
+     bash scripts/push-github.sh https://github.com/TU_USUARIO/sinaptia.git
+     ```
+2. **¿Root Directory vacío?** Vercel → *Settings → General → Root Directory* debe estar **en blanco**
+   (no `implementacion-b`, no `backend`, no `api`). Si apunta a una subcarpeta, Vercel busca ahí el
+   `package.json` y publica lo que encuentra en esa carpeta.
+3. **¿Qué dice el build?** Vercel → *Deployments → el último → Build Logs*. Debe aparecer
+   `Framework: Astro`, `Build Command: npm run build`, `Output Directory: dist` y al final
+   `Build Completed`. Si ves `No framework detected` o un build de Node puro, vuelve al punto 1.
+4. **¿`dist` se generó?** En *Deployment → Source* o *Output*, debe existir `dist/index.html`.
+5. **¿Caché del navegador?** Prueba en ventana privada o añade `/index.html` a la URL.
+
+Regla práctica: `git ls-tree --name-only HEAD` en tu clon debe listar `src` y `package.json`.
+Si no los lista, GitHub tiene el commit equivocado y Vercel heredó el 404.
