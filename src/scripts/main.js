@@ -309,6 +309,7 @@ function enviar(texto) {
     actualizarPasos();
     if (r.listoParaPdf) {
       $('pdfbtn').style.display = 'block'; enviarLead(); quick([]);
+      marcarSalidaListo();
       funnel.marcar('lead');
       memoria.guardar({
         nombre: agente.lead.nombre, negocio: agente.lead.sector,
@@ -565,6 +566,7 @@ function asegurarVoz() {
       $('ll-respuesta').textContent = 'patrón: ' + (($('ll-respuesta').dataset.patron) || '—') + '\n' + t.slice(0, 200);
       if (r && r.listoParaPdf) {
         $('pdfbtn').style.display = 'block';
+        marcarSalidaListo();
         enviarLead();
         burbuja('sys', 'Brief listo: el botón de PDF está abajo en el chat.');
       }
@@ -698,28 +700,57 @@ if (ctaEscribir) ctaEscribir.addEventListener('click', () => {
   setTimeout(() => { try { entrada.focus(); } catch (_) {} }, 160);
 });
 
-/* Captura de email opcional: segunda puerta para quien no usa WhatsApp.
-   Valida, registra en el funnel (local + remoto si hay backend) y confirma. */
-const formEmail = $('form-email');
-if (formEmail) formEmail.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const campo = $('campo-email');
-  const valor = (campo.value || '').trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valor)) {
-    campo.setAttribute('aria-invalid', 'true');
-    campo.focus();
+/* Salida sin email (#contacto): brief en PDF + WhatsApp. La tarjeta nunca promete
+   lo que no cumple: si la conversación aún no completó el lead, el botón de PDF
+   abre el chat y lo dice; si ya está listo, descarga y el copy cambia. */
+let briefListo = false;
+const SALIDA_LISTO = {
+  kicker: 'Tu resumen está listo',
+  texto: 'Llévate el brief con tus datos, el dolor que me contaste y los próximos pasos. Sin dejar email, sin formularios.',
+};
+const SALIDA_INICIAL = {
+  kicker: 'Tu brief, sin formularios',
+  texto: 'Conversa con Nexa y al terminar te llevas el brief en PDF con tu diagnóstico y los próximos pasos. Sin dejar email, sin formularios.',
+};
+function pintarSalida() {
+  const caja = $('salida-opciones');
+  if (!caja) return;
+  const c = briefListo ? SALIDA_LISTO : SALIDA_INICIAL;
+  caja.classList.toggle('lista', briefListo);
+  const k = $('salida-kicker'), t = $('salida-texto');
+  if (k) k.textContent = c.kicker;
+  if (t) t.textContent = c.texto;
+}
+function marcarSalidaListo() { briefListo = true; pintarSalida();
+
+/* Lead magnet sin puerta de email: la auditoría se abre directo; solo contamos el clic. */
+const lmAbrir = $('lm-abrir');
+if (lmAbrir) lmAbrir.addEventListener('click', () => bd.registrar('cta', { evento2: 'auditoria_abrir' })); }
+const btnSalidaPdf = $('salida-pdf');
+if (btnSalidaPdf) btnSalidaPdf.addEventListener('click', () => {
+  if (briefListo) {
+    bd.registrar('cta', { evento2: 'brief_pdf' });
+    generarPdf();
     return;
   }
-  campo.removeAttribute('aria-invalid');
-  funnel.marcar('email', { email: valor });
-  bd.registrar('lead:email', { email: valor });
-  campo.value = '';
-  const ok = $('email-ok');
-  if (ok) ok.hidden = false;
-  campo.closest('.captura-row').hidden = true;
-  const etiqueta = formEmail.querySelector('label');
-  if (etiqueta) etiqueta.hidden = true;
+  bd.registrar('cta', { evento2: 'brief_sin_datos' });
+  abrir();
+  setTimeout(() => burbuja('sys', 'Aún no tengo tus datos. Cuéntame de tu negocio y al terminar la conversación genero tu brief.'), 500);
 });
+const btnSalidaWa = $('salida-wa');
+if (btnSalidaWa) btnSalidaWa.addEventListener('click', () => {
+  bd.registrar('cta', { evento2: 'wa_salida' });
+  const L = agente ? agente.lead : null;
+  if (!L || !(L.nombre || L.empresa || L.sector || L.dolor)) return;   // sin lead: mensaje genérico del href
+  const partes = [];
+  if (L.nombre) partes.push('Soy ' + L.nombre);
+  if (L.empresa) partes.push('de ' + L.empresa);
+  if (L.sector) partes.push('(' + L.sector + ')');
+  if (L.dolor) partes.push('y quiero resolver: ' + String(L.dolor).slice(0, 80));
+  const texto = 'Hola, vengo del agente de SINAPTIA. ' + partes.join(' ') + '. ¿Retomamos?';
+  btnSalidaWa.setAttribute('href', CONFIG.marca.waLink + '?text=' + encodeURIComponent(texto));
+});
+pintarSalida();
 $('enviar').onclick = () => enviar();
 $('pdfbtn').onclick = generarPdf;
 entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } });

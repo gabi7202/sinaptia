@@ -364,9 +364,10 @@ const blobs = [];
     /Solo hay 3 lugares/.test(mFund[0]) &&
     /te devolvemos el 100%/.test(mFund[0]) &&
     !/USD|\$/.test(mFund[0]));
-  t('captura de email opcional en #contacto (segunda puerta junto a WhatsApp)',
-    /id="form-email"/.test(htmlCrudo) && /id="campo-email" type="email"/.test(htmlCrudo) &&
-    /wa\.me\/529834066179/.test(htmlCrudo));
+  t('salida de #contacto sin email: brief en PDF + WhatsApp (cero campos de correo)',
+    /id="salida-opciones"/.test(htmlCrudo) && /id="salida-pdf"/.test(htmlCrudo) &&
+    /id="salida-wa"[^>]*href="https:\/\/wa\.me\/529834066179/.test(htmlCrudo) &&
+    !/type="email"/.test(htmlCrudo) && !/form-email/.test(htmlCrudo));
   t('con urlPublica configurada, canonical y og:url son absolutos',
     /rel="canonical" href="https:\/\/sinaptia\.vercel\.app\/"/.test(htmlCrudo) && /property="og:url" content="https:\/\/sinaptia\.vercel\.app\/"/.test(htmlCrudo));
   t('og:image y twitter:card presentes siempre',

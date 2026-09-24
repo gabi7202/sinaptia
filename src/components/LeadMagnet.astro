@@ -24,29 +24,9 @@
         <div><b>sin reloj</b><span>a tu ritmo</span></div>
         <div><b>72</b><span>puntos máx.</span></div>
       </div>
-      <form class="lm-form" id="lmform">
-        <input type="email" name="email" id="lm-email" placeholder="Tu email de trabajo" aria-label="Email" />
-        <button type="submit" class="btn p">Abrir la auditoría</button>
-      </form>
-      <p class="lm-note" id="lmnote">Te enviamos el documento y nada más. Sin secuencias de correo automáticas.<br />
-        ¿No quieres dejar tu email? <a href="./auditoria.html">Ábrela directamente aquí</a>.</p>
+      <a class="btn p lm-abrir" id="lm-abrir" href="./auditoria.html">Abrir la auditoría</a>
+      <p class="lm-note" id="lmnote">Sin email y sin registro: se abre en tu navegador y la puntuación
+        sale al instante. Si al terminar quieres el diagnóstico completo, hablas con Nexa.</p>
     </div>
   </div>
-  <script>
-    import { CONFIG } from '../config.js';
-    const form = document.getElementById('lmform');
-    if (form) {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = (document.getElementById('lm-email') as HTMLInputElement).value.trim();
-        const ir = () => { location.href = './auditoria.html'; };
-        if (email && CONFIG.webhookUrl) {
-          fetch(CONFIG.webhookUrl, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ origen: 'lead-magnet', evento: 'solicitud_auditoria', email, ts: new Date().toISOString() }),
-          }).then(ir).catch(ir);
-        } else { ir(); }
-      });
-    }
-  </script>
 </section>
