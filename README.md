@@ -201,6 +201,14 @@ incumplido cuesta más confianza de la que gana la promesa. Los objetivos de dur
 Hay un test que falla si cualquier "X días / semanas / meses / minutos" vuelve al texto visible
 de la página, y otro que falla si el agente lo dice en una respuesta.
 
+## Despliegue (`DEPLOY.md`)
+
+Repo git-listo con commit inicial. Recomendación: **Vercel** (Astro sin configuración, funciones
+serverless gratis para `/api/ia`, previews por rama, SSL automático con dominio propio).
+Firebase queda como alternativa si vives en Google, con el cerebro en el Cloudflare Worker.
+`vercel.json` y `firebase.json` ya están escritos; las claves viven como secretos del entorno,
+nunca en el repo (verificado: ninguna clave hardcoded).
+
 ## Robustez y SEO (respondiendo a la revisión externa)
 
 | Punto señalado | Qué se hizo |
