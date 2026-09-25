@@ -80,12 +80,23 @@ export function json(res, status, cuerpo) {
 export function crearSupabase(env, fetchImpl) {
   const f = fetchImpl || ((...a) => globalThis.fetch(...a));
   const url = String((env && env.SUPABASE_URL) || '').replace(/\/+$/, '');
-  const key = String((env && env.SUPABASE_SERVICE_KEY) || '');
+  // La clave del servidor tiene varios nombres según cómo se vinculó Supabase:
+  //   · SUPABASE_SERVICE_KEY  → el que usa este proyecto (service_role, histórico)
+  //   · SUPABASE_SECRET_KEY   → el que inyecta la integración de Vercel (nomenclatura nueva)
+  //   · SUPABASE_SERVICE_ROLE_KEY → nombre largo que usan otras guías
+  // Se aceptan los tres para que "vincular Supabase desde Vercel" funcione sin
+  // pasos extra. NUNCA la publishable/anon: esa no salta RLS y las tablas están
+  // cerradas a propósito (ver server/schema.sql).
+  const key = String((env && (env.SUPABASE_SERVICE_KEY || env.SUPABASE_SECRET_KEY || env.SUPABASE_SERVICE_ROLE_KEY)) || '');
   const base = `${url}/rest/v1`;
   const auth = { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
 
   async function llamar(path, opts = {}) {
-    return f(base + path, { ...opts, headers: { ...auth, ...(opts.headers || {}) } });
+    const r = await f(base + path, { ...opts, headers: { ...auth, ...(opts.headers || {}) } });
+    // Diagnóstico en los logs de Vercel: un 404 aquí casi siempre es "falta correr
+    // schema.sql" y un 401/403 es "la clave no es la secret/service_role".
+    if (!r.ok) console.error(`[supabase] ${(opts.method || 'GET')} ${path.split('?')[0]} → ${r.status}`);
+    return r;
   }
 
   return {

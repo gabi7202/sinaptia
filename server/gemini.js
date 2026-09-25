@@ -13,9 +13,10 @@
  *   · Streaming: :streamGenerateContent?alt=sse (eventos data: con candidates).
  *
  * Detalles que importan aquí:
- *   · gemini-flash-latest es modelo pensante: con thinkingBudget alto se gasta
- *     los maxOutputTokens "pensando" y no dice nada. Por defecto budget 0
- *     (latencia de voz); se sube con GEMINI_THINKING.
+ *   · Es un modelo pensante: con thinkingBudget alto se gasta los maxOutputTokens
+ *     "pensando" y no dice nada. Por defecto budget 0 (latencia de voz); se sube
+ *     con GEMINI_THINKING. En la familia Gemini 3 la perilla es OTRA:
+ *     thinkingLevel (GEMINI_LEVEL=minimal|low|medium|high) — ver configPensamiento.
  *   · Las partes con thought:true NUNCA se emiten por onTexto: no se hablan.
  *   · El free tier devuelve 429/503 esporádicos ("high demand"): se reintenta
  *     una vez y, si el stream sigue cerrado, se degrada a no-stream (la
@@ -29,14 +30,39 @@ const BASE = 'https://generativelanguage.googleapis.com/v1beta';
 /** Modelo por defecto (verificables con CHAT_MODEL / EXTRACT_MODEL en Vercel).
  *  gemini-2.5-flash y no *-latest (3.x): con system prompt, los 3.x IGNORAN el
  *  thinkingBudget:0 — "piensan" ~300 tokens, recortan la salida y duplican la
- *  latencia. El 2.5-flash sí lo respeta: 0 pensamientos, ~1.5 s, ideal para voz. */
+ *  latencia. El 2.5-flash sí lo respeta: 0 pensamientos, ~1.5 s, ideal para voz.
+ *  OJO: Google retira la familia 2.5 el 2026-10-20. El salto a 3.x ya está
+ *  soportado (configPensamiento manda thinkingLevel en vez de thinkingBudget):
+ *  en Vercel, CHAT_MODEL=gemini-3.5-flash + GEMINI_LEVEL=low y listo. */
 export const MODELO_CHAT = 'gemini-2.5-flash';
 export const MODELO_EXTRACT = 'gemini-2.5-flash';
 export const THINKING_DEFECTO = 0;
 
+/** Niveles de razonamiento de la familia Gemini 3 (docs: minimal|low|medium|high). */
+export const NIVELES = ['minimal', 'low', 'medium', 'high'];
+export const NIVEL_DEFECTO = 'low';
+
 /** La clave vive solo en el entorno del servidor. GEMINI_API_KEY es el nombre oficial. */
 export function claveGemini(env) {
   return String((env && (env.GEMINI_API_KEY || env.GOOGLE_API_KEY)) || '');
+}
+
+/**
+ * Control del "pensamiento" según la familia del modelo — cada una usa su perilla:
+ *   · Gemini 2.5 → `thinkingBudget` (tokens). 0 = cero pensamientos: latencia de voz.
+ *   · Gemini 3.x → `thinkingLevel` (minimal|low|medium|high). NO acepta
+ *     thinkingBudget (la API lo rechaza), así que con gemini-3.5-flash /
+ *     3.8-flash se manda el nivel: 'low' por defecto, subible con GEMINI_LEVEL.
+ * Esto es lo que permite cambiar de modelo con una variable en Vercel
+ * (CHAT_MODEL=gemini-3.5-flash) sin romper la llamada ni pagar latencia de más.
+ */
+export function configPensamiento(env, modelo) {
+  if (/^gemini-3/i.test(String(modelo || ''))) {
+    const nivel = String((env && env.GEMINI_LEVEL) || NIVEL_DEFECTO).toLowerCase();
+    return { thinkingLevel: NIVELES.includes(nivel) ? nivel : NIVEL_DEFECTO };
+  }
+  const budget = Number((env && env.GEMINI_THINKING) ?? THINKING_DEFECTO);
+  return Number.isFinite(budget) && budget >= 0 ? { thinkingBudget: budget } : null;
 }
 
 function safeJson(s) {
@@ -252,7 +278,7 @@ export async function gemini(env, opts, fetchImpl) {
   } = opts;
 
   const nombreModelo = model || MODELO_CHAT;
-  const budget = Number((env && env.GEMINI_THINKING) ?? THINKING_DEFECTO);
+  const pensar = configPensamiento(env, nombreModelo);
   const cuerpo = {
     contents: aContents(messages),
     ...(system ? { systemInstruction: { parts: [{ text: String(system) }] } } : {}),
@@ -262,7 +288,7 @@ export async function gemini(env, opts, fetchImpl) {
     generationConfig: {
       maxOutputTokens: max_tokens,
       ...(json ? { responseMimeType: 'application/json' } : {}),
-      ...(Number.isFinite(budget) && budget >= 0 ? { thinkingConfig: { thinkingBudget: budget } } : {}),
+      ...(pensar ? { thinkingConfig: pensar } : {}),
     },
   };
 

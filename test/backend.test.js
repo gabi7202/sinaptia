@@ -10,7 +10,7 @@
  */
 import { isUUID, norm, digits, mismoOrigen, leerCookies, crearSupabase, eq, ilikeContiene } from '../server/nucleo.js';
 import { grok, parsearSSE, MODELO_CHAT } from '../server/grok.js';
-import { gemini, parsearSSEGemini, aContents, aDeclaraciones, MODELO_CHAT as GEM_MODELO } from '../server/gemini.js';
+import { gemini, parsearSSEGemini, aContents, aDeclaraciones, configPensamiento, MODELO_CHAT as GEM_MODELO } from '../server/gemini.js';
 import { llm, proveedor, modeloChat } from '../server/llm.js';
 import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA } from '../server/agente.js';
 import { resumirSesion } from '../server/resumen.js';
@@ -327,6 +327,19 @@ console.log('\n\x1b[36m  2 · Cliente Supabase (cero dependencias)\x1b[0m');
   const m2 = mundo();
   const db2 = crearSupabase({ SUPABASE_URL: '', SUPABASE_SERVICE_KEY: '' }, m2.fetch);
   t('sin URL/clave el backend se declara no disponible (503, no rompe)', db2.disponible() === false && db.disponible() === true);
+
+  // La integración de Vercel inyecta SUPABASE_SECRET_KEY (nomenclatura nueva de
+  // Supabase), no SUPABASE_SERVICE_KEY: se aceptan ambas para que "vincular
+  // Supabase desde Vercel" funcione sin añadir la variable a mano.
+  const m3 = mundo();
+  const db3 = crearSupabase({ SUPABASE_URL: 'https://fake.supabase.co', SUPABASE_SECRET_KEY: 'sb_secret_test' }, m3.fetch);
+  await db3.insertar('visitors', {});
+  t('SUPABASE_SECRET_KEY (el nombre que inyecta la integración de Vercel) habilita el backend y autentica',
+    db3.disponible() === true && m3.sim.llamadas[0].headers.Authorization === 'Bearer sb_secret_test');
+  t('SUPABASE_SERVICE_ROLE_KEY (nombre largo) también vale',
+    crearSupabase({ SUPABASE_URL: 'https://fake.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'sr' }, m3.fetch).disponible() === true);
+  t('la clave publishable/anon NO habilita el backend (no salta RLS: las tablas están cerradas)',
+    crearSupabase({ SUPABASE_URL: 'https://fake.supabase.co', SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_x' }, m3.fetch).disponible() === false);
 }
 
 /* ══════════ 3 · historial normalizado para Grok ══════════ */
@@ -474,6 +487,26 @@ console.log('\n\x1b[36m  6b · Gemini: adaptador, streaming y bucle de tools\x1b
     proveedor({ GEMINI_API_KEY: 'x' }) === 'gemini' && proveedor({ XAI_API_KEY: 'y' }) === 'grok' &&
     proveedor({ GEMINI_API_KEY: 'x', XAI_API_KEY: 'y', LLM_PROVIDER: 'grok' }) === 'grok' &&
     modeloChat({ GEMINI_API_KEY: 'x' }) === GEM_MODELO && modeloChat({ XAI_API_KEY: 'y' }) === MODELO_CHAT);
+
+  // perilla de razonamiento por familia: 2.5 → thinkingBudget, 3.x → thinkingLevel
+  t('configPensamiento: Gemini 2.5 → thinkingBudget 0 (cero pensamientos, latencia de voz)',
+    configPensamiento(envG, GEM_MODELO).thinkingBudget === 0 &&
+    configPensamiento({ ...envG, GEMINI_THINKING: '2048' }, GEM_MODELO).thinkingBudget === 2048);
+  t('configPensamiento: Gemini 3.x → thinkingLevel (ahí la API no acepta thinkingBudget)',
+    configPensamiento(envG, 'gemini-3.5-flash').thinkingLevel === 'low' &&
+    configPensamiento(envG, 'gemini-3.8-flash').thinkingLevel === 'low' &&
+    configPensamiento({ ...envG, GEMINI_LEVEL: 'high' }, 'gemini-3.5-flash').thinkingLevel === 'high' &&
+    configPensamiento({ ...envG, GEMINI_LEVEL: 'basura' }, 'gemini-3.5-flash').thinkingLevel === 'low' &&
+    configPensamiento(envG, 'gemini-3.5-flash').thinkingBudget === undefined);
+  const m3x = mundoGemini({ guiones: [{ deltas: ['Listo.'] }] });
+  const r3x = await gemini(envG, { model: 'gemini-3.5-flash', system: 's', messages: [{ role: 'user', content: 'hola' }], stream: true }, m3x.fetch);
+  t('CHAT_MODEL=gemini-3.5-flash: endpoint del 3.5, thinkingLevel:low y SIN thinkingBudget', (() => {
+    const p = m3x.gem.peticiones[0]; const b = m3x.gem.llamadas[0];
+    return r3x.texto === 'Listo.' &&
+      p.url === 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent?alt=sse' &&
+      b.generationConfig.thinkingConfig.thinkingLevel === 'low' &&
+      b.generationConfig.thinkingConfig.thinkingBudget === undefined;
+  })());
 
   // traducción OpenAI → Gemini (mensajes, tools, resultado de tool con id→name)
   const c = aContents([

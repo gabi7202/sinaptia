@@ -158,6 +158,15 @@ estático; las rutas `api/voz/*` necesitan servidor).
 1. **Supabase** (plan Free alcanza): crea un proyecto → *SQL Editor* → pega
    `server/schema.sql` → *Run*. Crea las 4 tablas (`visitors`, `sessions`, `messages`,
    `leads`) con RLS activado y sin políticas: solo tu servidor las toca.
+
+   > **Las tablas NO se crean solas.** Vincular Supabase desde Vercel (Storage →
+   > Create Database / Marketplace) solo aprovisiona el proyecto e inyecta variables
+   > de entorno; el esquema lo aplicas tú con ese copy-paste (30 s, es idempotente:
+   > `create table if not exists`). Comprueba en *Table Editor* que aparecen las 4.
+   > La integración de Vercel inyecta `SUPABASE_URL` + `SUPABASE_SECRET_KEY`
+   > (nomenclatura nueva): el backend acepta ese nombre, así que no hace falta
+   > duplicarla como `SUPABASE_SERVICE_KEY`. La clave **publishable/anon no sirve**:
+   > no salta RLS y las tablas están cerradas a propósito.
 2. **Google AI Studio**: crea una API key gratis en aistudio.google.com (Get API key).
    Verifica clave y modelo en 10 segundos (debe contestar algo en español):
    ```bash
@@ -181,6 +190,27 @@ estático; las rutas `api/voz/*` necesitan servidor).
    #             GEMINI_THINKING (default 0: latencia de voz) · LLM_PROVIDER (gemini|grok)
    #             con Grok: XAI_API_KEY · GROK_EFFORT (default low)
    ```
+   *Si vinculaste Supabase desde Vercel, `SUPABASE_URL` y `SUPABASE_SECRET_KEY` ya
+   están (ese nombre también vale). Tras tocar variables: **Redeploy** obligatorio.*
+
+   **Modelo de Gemini.** Por defecto `gemini-2.5-flash` con `thinkingBudget: 0`
+   (cero razonamiento = latencia de voz). Google retira la familia 2.5 el
+   **2026-10-20**; el salto a 3.x ya está soportado y se hace solo con variables:
+   ```
+   CHAT_MODEL=gemini-3.5-flash     # o gemini-3.8-flash
+   EXTRACT_MODEL=gemini-3.5-flash
+   GEMINI_LEVEL=low                # minimal|low|medium|high (en 3.x sustituye a GEMINI_THINKING)
+   ```
+   En la familia 3.x la API no acepta `thinkingBudget`: `server/gemini.js` manda
+   `thinkingLevel` automáticamente según el modelo que vea en `CHAT_MODEL`.
+
+   **Diagnóstico rápido** — `POST /api/voz/session` con `{"consent":true,"lang":"es"}`:
+   | Respuesta | Significa |
+   |---|---|
+   | `200 {sessionId,…}` | Todo conectado: tablas, clave y cerebro funcionando |
+   | `503 backend sin configurar` | Faltan `SUPABASE_URL` o la clave secret/service_role en Vercel |
+   | `500 db` | Las variables están pero la BD falla: **correr `schema.sql`** (404) o clave equivocada/anon (401/403). El motivo exacto queda en Vercel → *Logs* como `[supabase] … → <status>` |
+   | `400 bad` | La función está viva; solo faltó el cuerpo de prueba |
 4. **`src/config.js`**: `ia: { voz: '/api/voz' }` → commit → deploy.
 5. **Verifica**:
    - `/voz` → primer toque pide **consentimiento** → aceptar → saludo del servidor.
