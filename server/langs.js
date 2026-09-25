@@ -11,6 +11,9 @@
 
 export const MARCA = 'Sinaptia';
 export const AGENTE = 'Nexa';
+/** La humana detrás de la marca: el agente la nombra en los guiones aprobados
+ *  (consultoría, descuentos, viabilidad). Cambia aquí y cambia en todo el prompt. */
+export const HUMANO = 'Gabi';
 
 export const LANGS = {
   es: {

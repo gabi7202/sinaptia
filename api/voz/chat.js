@@ -8,11 +8,14 @@
  * Seguridad y costo (heredado de B): mismo origen, UUID estrictos, sesión
  * propiedad del visitante, límite de 60 mensajes/hora/visitante, texto ≤1000.
  * Bucle de herramientas ≤4 rondas (buscar_cliente) y respuesta final guardada
- * en messages para el resumen de cierre.
+ * en messages para el resumen de cierre. Límite duro de llamada: si la sesión
+ * supera MAX_MINUTOS_LLAMADA, el system prompt del turno lleva avisoLimite()
+ * (el agente concreta el pago, redirige firme o se despide — nunca se alarga).
  */
 import { crearSupabase, isUUID, mismoOrigen, leerCookies, leerCuerpo, json, eq } from '../../server/nucleo.js';
 import { llm, modeloChat } from '../../server/llm.js';
-import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA, RONDAS_TOOLS } from '../../server/agente.js';
+import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA, RONDAS_TOOLS,
+  MAX_MINUTOS_LLAMADA, minutosTranscurridos, avisoLimite } from '../../server/agente.js';
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
@@ -29,7 +32,7 @@ export default async function handler(req, res) {
   if (!text || !isUUID(vid) || !isUUID(b && b.sessionId)) return json(res, 400, { error: 'bad' });
 
   const { data: s } = await db.select('sessions',
-    `select=id,lang&${eq('id', b.sessionId)}&${eq('visitor_id', vid)}`, { single: true });
+    `select=id,lang,created_at&${eq('id', b.sessionId)}&${eq('visitor_id', vid)}`, { single: true });
   if (!s) return json(res, 403, { error: 'session' });
 
   // límite de gasto por visitante: mensajes de usuario en la última hora
@@ -51,7 +54,9 @@ export default async function handler(req, res) {
   const lead = v && v.lead_id
     ? (await db.select('leads', `select=*&${eq('id', v.lead_id)}`, { single: true })).data
     : null;
-  const system = buildSystem(s.lang, lead);
+  // límite duro de llamada: pasado el tope, el turno viaja con el aviso de cierre
+  const system = buildSystem(s.lang, lead) +
+    (minutosTranscurridos(s.created_at) >= MAX_MINUTOS_LLAMADA ? `\n\n${avisoLimite()}` : '');
 
   // ── stream ── (la cabecera 200 sale con el primer delta: si el LLM falla
   //    antes de producir nada, aún podemos responder un 502 JSON limpio)

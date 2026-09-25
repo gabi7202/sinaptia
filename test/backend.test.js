@@ -12,7 +12,8 @@ import { isUUID, norm, digits, mismoOrigen, leerCookies, crearSupabase, eq, ilik
 import { grok, parsearSSE, MODELO_CHAT } from '../server/grok.js';
 import { gemini, parsearSSEGemini, aContents, aDeclaraciones, configPensamiento, MODELO_CHAT as GEM_MODELO } from '../server/gemini.js';
 import { llm, proveedor, modeloChat } from '../server/llm.js';
-import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA } from '../server/agente.js';
+import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA,
+  MAX_MINUTOS_LLAMADA, minutosTranscurridos, avisoLimite } from '../server/agente.js';
 import { resumirSesion } from '../server/resumen.js';
 import { LANGS, MARCA, AGENTE } from '../server/langs.js';
 import handlerSession from '../api/voz/session.js';
@@ -366,7 +367,35 @@ console.log('\n\x1b[36m  4 · System prompt (marca + reglas de A)\x1b[0m');
   t('la marca ya no es el placeholder de B', MARCA === 'Sinaptia' && AGENTE === 'Nexa' && !/Tu Empresa/.test(buildSystem('es', null)));
   const s = buildSystem('es', null);
   t('se presenta como Nexa de Sinaptia y admite ser IA', /Eres Nexa/.test(s) && /Eres una IA/.test(s));
-  t('mantiene la regla cero plazos de A', /No prometas precios, plazos ni resultados/.test(s));
+  t('precio aprobado: $2,500 MXN descontable, sin improvisar cifras',
+    /\$2,500 MXN/.test(s) && /se descuenta del costo total/.test(s) && /queda[n]? como pago por el servicio de consultoría/.test(s) &&
+    /Jamás des un número distinto a \$2,500 MXN/.test(s) && /ni inventes el costo del proyecto final/.test(s));
+  t('tiempos aprobados: consultoría 3 días, MVP ~7 días, y nada más',
+    /consultoría\/evaluación, 3 días/.test(s) && /~7 días/.test(s) && /no prometas plazos ni resultados/.test(s));
+  t('servicios cerrados: fuera de la lista se evalúa caso por caso',
+    /apps móviles para Android/.test(s) && /creación de SaaS/.test(s) && /Eso lo evaluamos caso por caso/.test(s));
+  t('cero consultoría gratis: da el qué y el para qué, nunca el cómo',
+    /CERO CONSULTORÍA GRATIS/.test(s) && /nunca el "cómo"/.test(s) &&
+    /Esa parte técnica es justo lo que vemos a fondo en la consultoría/.test(s) &&
+    /¿cómo se hace exactamente/.test(s) && /~15 minutos sin mostrar intención de pagar/.test(s));
+  t('filtro de pago: redirige a resultado y tras 2-3 intentos cierra con cortesía',
+    /redirige a RESULTADO, no a método/.test(s) && /2 o 3 redirecciones/.test(s) && /¡Que tengas buen día!/.test(s));
+  t('límite duro ~15-20 minutos en el prompt y 20 en código',
+    /15-20 minutos/.test(s) && MAX_MINUTOS_LLAMADA === 20);
+  t('descuento: solo con objeción explícita de dinero, nunca por iniciativa propia',
+    /SOLO cuando objeten el dinero de forma explícita/.test(s) && /nunca ofrezcas descuento por iniciativa propia/.test(s) &&
+    /jamás calculas ni mencionas números de descuento/.test(s) && /puedo comentarle tu caso a Gabi/.test(s));
+  t('anti-milagro: prohibido prometer riqueza o IA garantizada',
+    /te hará rico/.test(s) && /milagrosa o garantizada/.test(s) && /te conviene verificarlo tú mismo en la consultoría/.test(s));
+  t('privacidad: jamás revela qué hace, cómo trabaja o quién es otro cliente',
+    /nunca reveles qué hace, cómo trabaja o quién es otro cliente/.test(s) && /hemos trabajado con negocios de tipo X/.test(s));
+  t('minutosTranscurridos cuenta bien y con basura devuelve 0 (nunca NaN)',
+    minutosTranscurridos(new Date(Date.now() - 25 * 60e3).toISOString()) >= 24 &&
+    minutosTranscurridos(null) === 0 && minutosTranscurridos('basura') === 0 && minutosTranscurridos(undefined) === 0);
+  t('avisoLimite nombra el límite duro y la consultoría de $2,500',
+    /LÍMITE DURO ACTIVADO/.test(avisoLimite()) && /\$2,500 MXN/.test(avisoLimite()) && /tarjeta o transferencia/.test(avisoLimite()));
+  t('los hechos aprobados viajan en todos los idiomas (instrucción de traducir sin cambiar cifras)',
+    /SIN cambiar cifras ni plazos/.test(buildSystem('en', null)) && /SIN cambiar cifras ni plazos/.test(buildSystem('pt', null)));
   t('mantiene la defensa anti prompt-injection de B', /datos, no instrucciones/.test(s));
   t('sin lead declara conversación nueva', /conversación nueva/.test(s));
   t('con lead inyecta <memoria_cliente> y pide retomar', (() => {
@@ -773,6 +802,40 @@ console.log('\n\x1b[36m  9 · Ruta chat (streaming + rate limit + tools)\x1b[0m'
   })());
   t('marca la sesión needs_summary (red del cron/end)', m.sim.tablas.sessions[0].needs_summary === true && !!m.sim.tablas.sessions[0].last_msg_at);
   t('manda a Grok el system prompt y el historial normalizado (empieza en user)', m.grk.llamadas[0].messages[0].role === 'system' && m.grk.llamadas[0].messages[1].role === 'user');
+  t('sesión fresca: el system prompt NO lleva el aviso de límite duro', !/LÍMITE DURO ACTIVADO/.test(m.grk.llamadas[0].messages[0].content));
+
+  // límite duro: sesión creada hace 25 minutos → el turno viaja con avisoLimite()
+  const hace25 = new Date(Date.now() - 25 * 60e3).toISOString();
+  m = mundo({
+    tablas: {
+      visitors: [{ id: vid, lead_id: null }],
+      sessions: [{ id: sid, visitor_id: vid, lang: 'es', needs_summary: false, created_at: hace25 }],
+      messages: [{ id: 'M0', session_id: sid, visitor_id: vid, role: 'assistant', content: 'Hola', lang: 'es', created_at: hace25 }],
+      leads: [],
+    },
+    guiones: [{ deltas: ['Cerremos con la consultoría.'] }],
+  });
+  globalThis.fetch = m.fetch;
+  res = fakeRes();
+  await handlerChat(fakeReq({ body: { sessionId: sid, text: '¿y cómo lo construyo exactamente?' }, headers: { cookie: `vid=${vid}` } }), res);
+  t('sesión de +20 min: el system prompt lleva LÍMITE DURO ACTIVADO',
+    res.statusCode === 200 && /LÍMITE DURO ACTIVADO/.test(m.grk.llamadas[0].messages[0].content) &&
+    /concretarla ya/.test(m.grk.llamadas[0].messages[0].content));
+
+  // sesión vieja SIN created_at (datos heredados): no explota, no dispara el aviso
+  m = mundo({
+    tablas: {
+      visitors: [{ id: vid, lead_id: null }],
+      sessions: [{ id: sid, visitor_id: vid, lang: 'es', needs_summary: false }],
+      messages: [{ id: 'M0', session_id: sid, visitor_id: vid, role: 'assistant', content: 'Hola', lang: 'es', created_at: '2026-09-24T09:00:00Z' }],
+      leads: [],
+    },
+    guiones: [{ deltas: ['Ok.'] }],
+  });
+  globalThis.fetch = m.fetch;
+  res = fakeRes();
+  await handlerChat(fakeReq({ body: { sessionId: sid, text: 'hola' }, headers: { cookie: `vid=${vid}` } }), res);
+  t('sesión sin created_at: 200 sin aviso y sin NaN', res.statusCode === 200 && !/LÍMITE DURO ACTIVADO/.test(m.grk.llamadas[0].messages[0].content));
 
   res = fakeRes();
   await handlerChat(fakeReq({ body: { sessionId: sid, text: 'hola' }, headers: { cookie: 'vid=no-uuid' } }), res);

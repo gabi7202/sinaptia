@@ -241,6 +241,32 @@ backend caído, `/voz` avisa una vez y **degrada al motor local sin cortar la ll
 degrada, no se rompe. Las conversaciones en modo local no viajan a Supabase (no hay
 consentimiento de por medio): el recall vuelve a ser por `localStorage`.
 
+### Reglas de negocio del agente (guiones aprobados)
+
+Todo lo que el agente puede afirmar vive en el system prompt de `server/agente.js`
+(base de conocimiento aprobada por el negocio, 2026-09):
+
+- **Servicios cerrados**: apps Android, apps/sitios web, agentes de voz, software a
+  medida, SaaS, herramientas. Fuera de eso: "se evalúa caso por caso en la consultoría".
+- **Precio único aprobado**: consultoría **$2,500 MXN**, descontable del proyecto si
+  avanza; si no avanza, queda como pago de la consultoría. Demo/MVP se cotiza aparte
+  considerando lo ya pagado. El agente jamás da otro número ni inventa el costo final.
+- **Tiempos aprobados**: consultoría 3 días, MVP ~7 días (varía). Nada más.
+- **Cero consultoría gratis**: el agente da el "qué" y el "para qué", nunca el "cómo"
+  (arquitectura, herramientas exactas, paso a paso → se ven en la consultoría).
+- **Límite duro de llamada**: a los ~15 min sin intención de pago, señal de alerta;
+  a los **20 min** (`MAX_MINUTOS_LLAMADA`) el backend inyecta `avisoLimite()` en el
+  turno: el agente concreta el pago, redirige firme o se despide. Nunca se alarga.
+- **Descuento**: solo cuando el cliente objeta el dinero explícitamente ("está caro",
+  "¿hay descuento?"). El agente solo abre la puerta ("puedo comentarle tu caso a
+  Gabi"); nunca calcula ni menciona números de descuento. Decisión: la humana.
+- **Privacidad**: nunca revela qué hace, cómo trabaja o quién es otro cliente.
+
+Para editar nombre de la humana, precio, tiempos o guiones: `HUMANO` en
+`server/langs.js` y el prompt en `server/agente.js`. Los tests de `backend.test.js`
+(sección 4) verifican que el prompt mantenga estas reglas: si cambias el guion,
+actualiza el test.
+
 ---
 
 ## 7 · Si la web abre con 404 (diagnóstico en 60 segundos)
