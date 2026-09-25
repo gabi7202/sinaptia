@@ -4,12 +4,12 @@
  * Decisión de fusión: CERO dependencias nuevas. La implementación B usaba
  * @supabase/supabase-js y el SDK del proveedor de IA; aquí se sustituyen por
  * fetch plano contra la API REST de Supabase (PostgREST) y la API de xAI/Grok
- * (grok.js), que es OpenAI-compatible.
+ * (llm.js → gemini.js/grok.js).
  * Ventajas: mismas claves y mismas tablas que B, pero el repo sigue instalándose
  * con dos dependencias, funciona igual en Vercel, y los tests corren sin red.
  *
  * Las claves viven SOLO en el entorno del servidor (Vercel → Environment
- * Variables): SUPABASE_URL, SUPABASE_SERVICE_KEY, XAI_API_KEY, CRON_SECRET,
+ * Variables): SUPABASE_URL, SUPABASE_SERVICE_KEY, GEMINI_API_KEY (o XAI_API_KEY), CRON_SECRET,
  * PANEL_SECRET. Ver .env.ejemplo y DEPLOY.md §6.
  */
 

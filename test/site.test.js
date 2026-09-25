@@ -513,6 +513,7 @@ const blobs = [];
         stop() { this.onend && this.onend(); }
         abort() { this.onend && this.onend(); }
       };
+      wv.sessionStorage.setItem('sinaptia:consentVoz', 'v1');   // visitante que ya dio consentimiento
       wv.localStorage.setItem('sinaptia:memoria', JSON.stringify([{
         id: 'p1', nombre: 'José Pérez', negocio: 'pastelería', necesidad: 'implementar IA',
         ultimo: new Date().toISOString(), veces: 1, resumen: 'quiere automatizar pedidos',
@@ -536,17 +537,19 @@ const blobs = [];
     return !!c && c.hidden === true && !!dv.getElementById('consent-si') && !!dv.getElementById('consent-no');
   })());
   t('el paso de consentimiento queda horneado en el bundle', /sinaptia:consentVoz/.test(htmlConBundle('voz/index.html')));
-  t('con el backend apagado (default), el bundle NO incluye llamadas remotas: dead-code elimination',
-    !/backend_no_disponible/.test(htmlConBundle('voz/index.html')) && !/\/api\/voz/.test(htmlConBundle('voz/index.html')));
+  t('con el backend activado (ia.voz=/api/voz), el bundle de /voz SÍ cablea el remoto',
+    /backend_no_disponible/.test(htmlConBundle('voz/index.html')) && /\/api\/voz/.test(htmlConBundle('voz/index.html')));
   dv.getElementById('orb').click();
   await esperar(500);
   t('saluda por voz en cuanto tocas el orbe', domV.window.__habladas.length >= 1,
     domV.window.__habladas[0] && domV.window.__habladas[0].text.slice(0, 50));
   dv.getElementById('orb').click();   // segundo toque: arranca la escucha
   await esperar(1600);
-  const primera = wv.__respuestas[0] || '';
+  t('si el backend no contesta, avisa una vez y sigue en modo local (degrada, no se rompe)',
+    wv.__respuestas.some((r) => /modo local/.test(r)), wv.__respuestas.map((r) => r.slice(0, 40)).join(' | '));
+  const primera = wv.__respuestas.find((r) => /no empezamos de cero/i.test(r)) || '';
   t('reconoce al cliente recurrente y NO empieza de cero',
-    /Jos[eé]/.test(primera) && /pasteler/i.test(primera) && /no empezamos de cero/i.test(primera),
+    /Jos[eé]/.test(primera) && /pasteler/i.test(primera),
     primera.slice(0, 90));
   t('ninguna respuesta vuelve a preguntar datos que ya tenía',
     wv.__respuestas.length > 0 && !wv.__respuestas.some((r) => /a qu[eé] se dedica|qu[eé] proceso te quita/i.test(r)),

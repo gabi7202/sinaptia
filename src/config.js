@@ -49,7 +49,7 @@ export const CONFIG = {
   // memoria de clientes en Supabase + resumen automático a lead. Rutas en
   // api/voz/* (solo Vercel; ver DEPLOY.md §6). En '/voz' activa el paso de
   // consentimiento y la memoria en servidor. Vacío = todo local, como siempre.
-  ia: { endpoint: '', voz: '' },   // ej. voz: '/api/voz' desplegado en Vercel con las claves
+  ia: { endpoint: '', voz: '/api/voz' },   // backend real en Vercel (Gemini/Grok + Supabase); si falla, /voz degrada a local
 
   ui: { abrirAgenteSolo: false, efectoEscritura: true },
 };

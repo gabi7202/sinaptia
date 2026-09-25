@@ -10,6 +10,8 @@
  */
 import { isUUID, norm, digits, mismoOrigen, leerCookies, crearSupabase, eq, ilikeContiene } from '../server/nucleo.js';
 import { grok, parsearSSE, MODELO_CHAT } from '../server/grok.js';
+import { gemini, parsearSSEGemini, aContents, aDeclaraciones, MODELO_CHAT as GEM_MODELO } from '../server/gemini.js';
+import { llm, proveedor, modeloChat } from '../server/llm.js';
 import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA } from '../server/agente.js';
 import { resumirSesion } from '../server/resumen.js';
 import { LANGS, MARCA, AGENTE } from '../server/langs.js';
@@ -180,6 +182,69 @@ function simuladorGrok(guiones) {
     };
   };
   return { fetch: fetchSim, llamadas, peticiones };
+}
+
+
+/** Gemini falso: guion por llamada, en SSE real de streamGenerateContent o JSON plano. */
+function simuladorGemini(guiones) {
+  const llamadas = [];      // cuerpos parseados (lo que auditan los tests)
+  const peticiones = [];    // { url, headers, body }
+  const enc = new TextEncoder();
+  const fetchSim = async (url, opts = {}) => {
+    const body = JSON.parse(opts.body);
+    llamadas.push(body);
+    peticiones.push({ url: String(url), headers: opts.headers || {}, body });
+    const script = guiones.length > 1 ? guiones.shift() : guiones[0];
+    if (script.error) {
+      return { ok: false, status: script.error, text: async () => `{"error":{"code":${script.error},"message":"fallo ${script.error}"}}` };
+    }
+    const esStream = String(url).includes(':streamGenerateContent');
+    const finish = script.finish || (script.stop_reason === 'length' ? 'MAX_TOKENS' : 'STOP');
+    const usage = { promptTokenCount: 120, candidatesTokenCount: 20, totalTokenCount: 140 };
+
+    const txtParts = [];
+    const txt = script.texto ?? (script.deltas || []).join('') ?? null;
+    if (txt != null) txtParts.push({ text: txt });
+    const fcParts = [];
+    if (script.toolUse) {
+      const fc = { name: script.toolUse.name || 'buscar_cliente', args: script.toolUse.input || {} };
+      if (script.toolUse.id) fc.id = script.toolUse.id;
+      const part = { functionCall: fc };
+      if (script.toolUse.sig) part.thoughtSignature = script.toolUse.sig;
+      fcParts.push(part);
+    }
+
+    if (!esStream) {
+      return {
+        ok: true, status: 200,
+        json: async () => ({ candidates: [{ content: { role: 'model', parts: [...txtParts, ...fcParts] }, finishReason: finish, index: 0 }], usageMetadata: usage }),
+      };
+    }
+    let sse = '';
+    const chunk = (obj) => { sse += `data: ${JSON.stringify(obj)}\n\n`; };
+    const chunkTexto = (x) => chunk({ candidates: [{ content: { role: 'model', parts: [{ text: x }] }, index: 0 }] });
+    if (script.razonamiento) chunk({ candidates: [{ content: { role: 'model', parts: [{ text: script.razonamiento, thought: true }] }, index: 0 }] });
+    for (const d of script.deltas || (script.texto != null ? [script.texto] : [])) { if (d != null) chunkTexto(d); }
+    if (fcParts.length) chunk({ candidates: [{ content: { role: 'model', parts: fcParts }, index: 0 }] });
+    chunk({ candidates: [{ finishReason: finish, index: 0 }], usageMetadata: usage });
+    const bytes = enc.encode(sse);
+    const trozos = [];   // trozos de 37 bytes: parten UTF-8 y eventos a la mitad
+    for (let i = 0; i < bytes.length; i += 37) trozos.push(bytes.slice(i, i + 37));
+    let k = 0;
+    return {
+      ok: true, status: 200,
+      body: { getReader: () => ({ read: async () => (k < trozos.length ? { done: false, value: trozos[k++] } : { done: true, value: undefined }) }) },
+    };
+  };
+  return { fetch: fetchSim, llamadas, peticiones };
+}
+
+function mundoGemini({ tablas = {}, guiones = [{ deltas: ['Ok.'] }] } = {}) {
+  const sim = simuladorSupabase(tablas);
+  const gem = simuladorGemini(guiones);
+  const fetchMundo = async (url, opts) =>
+    String(url).startsWith('https://generativelanguage') ? gem.fetch(url, opts) : sim.fetch(url, opts);
+  return { sim, gem, fetch: fetchMundo };
 }
 
 /** Cuerpo SSE crudo para probar parsearSSE en directo (sin pasar por grok()). */
@@ -397,6 +462,143 @@ console.log('\n\x1b[36m  6 · Streaming SSE de Grok (parser + deltas)\x1b[0m');
   ]), null);
   t('tool_call sin índice ni arguments fragmentados también se ensambla',
     sinIndice.tools.length === 1 && sinIndice.tools[0].input.nombre === 'Ana' && sinIndice.finish === 'tool_calls');
+}
+
+/* ══════════ 6b · cliente Gemini (Google AI Studio) ══════════ */
+
+console.log('\n\x1b[36m  6b · Gemini: adaptador, streaming y bucle de tools\x1b[0m');
+{
+  const envG = { ...process.env, GEMINI_API_KEY: 'gem-test', GEMINI_RETRY_MS: '0' };
+
+  t('llm.js elige proveedor: GEMINI_API_KEY → gemini; solo XAI → grok; LLM_PROVIDER fuerza',
+    proveedor({ GEMINI_API_KEY: 'x' }) === 'gemini' && proveedor({ XAI_API_KEY: 'y' }) === 'grok' &&
+    proveedor({ GEMINI_API_KEY: 'x', XAI_API_KEY: 'y', LLM_PROVIDER: 'grok' }) === 'grok' &&
+    modeloChat({ GEMINI_API_KEY: 'x' }) === GEM_MODELO && modeloChat({ XAI_API_KEY: 'y' }) === MODELO_CHAT);
+
+  // traducción OpenAI → Gemini (mensajes, tools, resultado de tool con id→name)
+  const c = aContents([
+    { role: 'user', content: 'soy José' },
+    { role: 'assistant', content: 'Déjame revisar.', tool_calls: [{ id: 'call_1', type: 'function', sig: 'SIG-9', function: { name: 'buscar_cliente', arguments: '{"nombre":"José"}' } }] },
+    { role: 'tool', tool_call_id: 'call_1', content: '{"estado":"confirmado"}' },
+  ]);
+  t('aContents: user→user, assistant→model con functionCall y thoughtSignature',
+    c[0].role === 'user' && c[0].parts[0].text === 'soy José' &&
+    c[1].role === 'model' && c[1].parts[0].text === 'Déjame revisar.' &&
+    c[1].parts[1].functionCall.args.nombre === 'José' && c[1].parts[1].thoughtSignature === 'SIG-9');
+  t('aContents: el resultado de tool viaja como functionResponse (name resuelto por tool_call_id)',
+    c[2].role === 'user' && c[2].parts[0].functionResponse.name === 'buscar_cliente' &&
+    c[2].parts[0].functionResponse.id === 'call_1' && c[2].parts[0].functionResponse.response.estado === 'confirmado');
+  t('aContents: sin id en el functionCall (Gemini 2.5), el name se resuelve por orden', (() => {
+    const c25 = aContents([
+      { role: 'user', content: 'soy José' },
+      { role: 'assistant', content: null, tool_calls: [{ id: '', type: 'function', function: { name: 'buscar_cliente', arguments: '{}' } }] },
+      { role: 'tool', tool_call_id: '', content: '{"estado":"confirmado"}' },
+    ]);
+    const fr = c25[2].parts[0].functionResponse;
+    return fr.name === 'buscar_cliente' && fr.id === undefined && c25[1].parts[0].functionCall.id === undefined;
+  })());
+  t('aContents: contenido de tool que no es JSON se envuelve, no se pierde',
+    aContents([{ role: 'tool', tool_call_id: 'x', content: 'texto plano' }])[0].parts[0].functionResponse.response.resultado === 'texto plano');
+  const dec = aDeclaraciones(tools)[0];
+  t('aDeclaraciones: esquema OpenAI → Gemini con tipos en MAYÚSCULAS',
+    dec.name === 'buscar_cliente' && dec.parameters.type === 'OBJECT' &&
+    dec.properties === undefined && dec.parameters.properties.telefono.type === 'STRING');
+
+  // streaming real: deltas, thoughts mudos, UTF-8 partido
+  const deltas = [];
+  const m = mundoGemini({ guiones: [{ razonamiento: 'Pienso un saludo corto.', deltas: ['¡Hola', ', José! ', 'Qué gusto.'] }] });
+  const r = await gemini(envG, { system: 'Eres Nexa.', messages: [{ role: 'user', content: 'hola' }], stream: true, onTexto: (x) => deltas.push(x) }, m.fetch);
+  t('onTexto recibe cada delta del stream de Gemini', deltas.length === 3 && deltas[0] === '¡Hola');
+  t('ensambla el texto final completo', r.texto === '¡Hola, José! Qué gusto.' && r.finish === 'stop');
+  t('las partes thought:true NO se hablan ni se transcriben', !/Pienso/.test(r.texto) && deltas.join('') === r.texto);
+  t('trozos que parten UTF-8 a la mitad no corrompen el texto', /José/.test(r.texto));
+  t('apunta a generativelanguage con la clave en x-goog-api-key y thinking apagado', (() => {
+    const p = m.gem.peticiones[0]; const b = m.gem.llamadas[0];
+    return p.url === `https://generativelanguage.googleapis.com/v1beta/models/${GEM_MODELO}:streamGenerateContent?alt=sse` &&
+      p.headers['x-goog-api-key'] === 'gem-test' &&
+      b.systemInstruction.parts[0].text === 'Eres Nexa.' &&
+      b.generationConfig.maxOutputTokens === 350 && b.generationConfig.thinkingConfig.thinkingBudget === 0;
+  })());
+  t('usage de Gemini llega en vocabulario interno (para vigilar el gasto)', r.uso && r.uso.total_tokens === 140);
+
+  // tool call en stream: id + thoughtSignature capturados, finish forzado a tool_calls
+  const m2 = mundoGemini({ guiones: [{ deltas: ['Un momento.'], toolUse: { id: 'call_9', name: 'buscar_cliente', input: { nombre: 'José', negocio: 'pastelería' }, sig: 'SIG-A' } }] });
+  const r2 = await gemini(envG, { system: 's', messages: [{ role: 'user', content: 'ya hablé antes' }], stream: true, tools }, m2.fetch);
+  t('functionCall: id, args y thoughtSignature capturados; finish→tool_calls (Gemini dice STOP)',
+    r2.tools.length === 1 && r2.tools[0].id === 'call_9' && r2.tools[0].input.negocio === 'pastelería' &&
+    r2.tools[0].sig === 'SIG-A' && r2.finish === 'tool_calls');
+  t('las tools viajan como functionDeclarations con toolConfig AUTO',
+    m2.gem.llamadas[0].tools[0].functionDeclarations[0].name === 'buscar_cliente' &&
+    m2.gem.llamadas[0].toolConfig.functionCallingConfig.mode === 'AUTO');
+
+  // no-stream (resumen): json → responseMimeType
+  const m3 = mundoGemini({ guiones: [{ texto: '{"ok":1}' }] });
+  const r3 = await gemini(envG, { system: 's', json: true, messages: [{ role: 'user', content: 'x' }] }, m3.fetch);
+  t('modo no-stream (resumen) devuelve el texto y fuerza responseMimeType json',
+    r3.texto === '{"ok":1}' && r3.finish === 'stop' &&
+    m3.gem.llamadas[0].generationConfig.responseMimeType === 'application/json' &&
+    !m3.gem.peticiones[0].url.includes('streamGenerateContent'));
+
+  // free tier: 503 → reintento → degrade a no-stream (la frase llega completa)
+  const vistos = [];
+  const m4 = mundoGemini({ guiones: [{ error: 503 }, { error: 503 }, { texto: 'Frase completa sin goteo.' }] });
+  const r4 = await gemini(envG, { system: 's', messages: [{ role: 'user', content: 'x' }], stream: true, onTexto: (x) => vistos.push(x) }, m4.fetch);
+  t('503 del free tier: reintenta stream y degrada a no-stream sin romper la llamada',
+    m4.gem.peticiones.length === 3 && r4.texto === 'Frase completa sin goteo.' && vistos.join('') === r4.texto &&
+    !m4.gem.peticiones[2].url.includes('streamGenerateContent'));
+
+  // error duro: 400 sin reintento, mensaje claro
+  const m5 = mundoGemini({ guiones: [{ error: 400 }] });
+  let err = null;
+  try { await gemini(envG, { system: 's', messages: [{ role: 'user', content: 'x' }] }, m5.fetch); } catch (e) { err = e; }
+  t('clave mala → error claro "gemini 400" sin reintentar (no un crash mudo)',
+    !!err && /gemini 400/.test(err.message) && m5.gem.peticiones.length === 1);
+
+  // parser SSE directo: basura intermedia y MAX_TOKENS
+  const directo = await parsearSSEGemini(cuerpoSSE([
+    'data: {"candidates":[{"content":{"role":"model","parts":[{"text":"ho"}]},"index":0}]}',
+    ': keep-alive',
+    'data: esto-no-es-json',
+    'data: {"candidates":[{"content":{"role":"model","parts":[{"text":"la"}]},"finishReason":"MAX_TOKENS","index":0}],"usageMetadata":{"totalTokenCount":9}}',
+  ]), null);
+  t('parsearSSEGemini tolera basura y mapea MAX_TOKENS→length', directo.texto === 'hola' && directo.finish === 'length' && directo.uso.total_tokens === 9);
+
+  // ── ruta /chat completa con Gemini: bucle de tools + thoughtSignature de vuelta ──
+  const viejo = { ...process.env };
+  process.env.GEMINI_API_KEY = 'gem-test'; process.env.GEMINI_RETRY_MS = '0';
+  const vid = '11111111-2222-4333-8444-555555555555';
+  const sid = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';
+  const m6 = mundoGemini({
+    tablas: {
+      visitors: [{ id: vid, lead_id: null }],
+      sessions: [{ id: sid, visitor_id: vid, lang: 'es', needs_summary: false }],
+      messages: [{ id: 'M0', session_id: sid, visitor_id: vid, role: 'assistant', content: 'Hola', created_at: '2026-09-24T09:00:00Z' }],
+      leads: [{ id: 'L-JOSE', nombre: 'José Pérez', negocio: 'La Espiga', giro: 'pastelería', nombre_norm: 'jose perez', negocio_norm: 'la espiga', telefono_norm: '3001234567', updated_at: '2026-09-20' }],
+    },
+    guiones: [
+      { deltas: ['Déjame revisar.'], toolUse: { id: 'call_1', name: 'buscar_cliente', input: { nombre: 'José Pérez', telefono: '3001234567' }, sig: 'SIG-9' } },
+      { deltas: ['¡José! Retomamos donde quedamos.'] },
+    ],
+  });
+  globalThis.fetch = m6.fetch;
+  const res = fakeRes();
+  await handlerChat(fakeReq({ body: { sessionId: sid, text: 'soy José, ya hablé con ustedes' }, headers: { cookie: `vid=${vid}` } }), res);
+  t('/chat con Gemini: 2 llamadas, texto de ambas ruedas en el stream',
+    m6.gem.llamadas.length === 2 && /Déjame revisar/.test(res.cuerpo) && /retomamos/i.test(res.cuerpo));
+  t('la 2ª llamada devuelve el functionCall CON su thoughtSignature (Gemini 3 la exige)', (() => {
+    const contents = m6.gem.llamadas[1].contents;
+    const modelo = contents.find((x) => x.role === 'model' && x.parts.some((p) => p.functionCall));
+    return !!modelo && modelo.parts.find((p) => p.functionCall).thoughtSignature === 'SIG-9';
+  })());
+  t('el resultado de la tool viaja como functionResponse con name y estado confirmado', (() => {
+    const contents = m6.gem.llamadas[1].contents;
+    const turno = contents.find((x) => x.role === 'user' && x.parts.some((p) => p.functionResponse));
+    return !!turno && turno.parts[0].functionResponse.name === 'buscar_cliente' &&
+      turno.parts[0].functionResponse.response.estado === 'confirmado';
+  })());
+  t('la rueda tool vincula visitante↔lead también con Gemini', m6.sim.tablas.visitors[0].lead_id === 'L-JOSE');
+  for (const k of Object.keys(process.env)) if (!(k in viejo)) delete process.env[k];
+  Object.assign(process.env, viejo);
 }
 
 /* ══════════ 7 · pipeline de resumen ══════════ */
@@ -705,7 +907,7 @@ console.log('\n\x1b[36m  13 · Degradación (degrada, no se rompe)\x1b[0m');
 
 console.log('\n  \x1b[90m' + '─'.repeat(46) + '\x1b[0m');
 const total = ok + fallos.length;
-if (!fallos.length) console.log('  \x1b[32m' + ok + '/' + total + ' EN VERDE (100%)\x1b[0m · backend de voz (Grok+Supabase) verificado');
+if (!fallos.length) console.log('  \x1b[32m' + ok + '/' + total + ' EN VERDE (100%)\x1b[0m · backend de voz (Gemini/Grok+Supabase) verificado');
 else { console.log('  \x1b[31;1m' + ok + '/' + total + ' — ' + fallos.length + ' FALLO(S)\x1b[0m'); fallos.forEach((f) => console.log('   · ' + f)); }
 console.log('');
 process.exit(fallos.length ? 1 : 0);

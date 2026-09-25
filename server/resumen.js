@@ -2,7 +2,7 @@
  * resumen.js — Conversación → lead estructurado (el oro del análisis).
  *
  * Pipeline heredado de B: al cerrar la sesión (o por el cron de rescate),
- * Grok lee la transcripción completa y devuelve SOLO un JSON con
+ * el LLM (Gemini o Grok) lee la transcripción completa y devuelve SOLO un JSON con
  * intención, urgencia, frases textuales, objeciones, herramientas actuales y
  * siguiente paso. Pide el JSON con response_format json_object y, si aun así
  * llega roto, la sesión queda needs_summary=true y el cron reintenta: nunca se
@@ -14,7 +14,7 @@
  */
 
 import { norm, digits, eq } from './nucleo.js';
-import { grok, MODELO_EXTRACT } from './grok.js';
+import { llm, modeloExtract } from './llm.js';
 import { MARCA } from './langs.js';
 
 const SYS = `Analizas conversaciones de ventas de ${MARCA}. Devuelve SOLO un JSON válido, sin texto extra ni backticks, con este esquema:
@@ -47,8 +47,8 @@ export async function resumirSesion(db, env, sessionId, fetchImpl) {
     .map((m) => `${m.role === 'user' ? 'USUARIO' : 'ASISTENTE'}: ${m.content}`)
     .join('\n');
 
-  const r = await grok(env, {
-    model: (env && env.EXTRACT_MODEL) || MODELO_EXTRACT,
+  const r = await llm(env, {
+    model: (env && env.EXTRACT_MODEL) || modeloExtract(env),
     max_tokens: 900,
     system: SYS,
     json: true,          // response_format: json_object → el JSON llega limpio

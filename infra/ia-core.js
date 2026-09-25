@@ -10,7 +10,7 @@
  *   { traducir: { texto, de, a } }                       → { traducido }
  *   { resumir: { conversacion, idioma } }                → { resumen }
  *
- * Las claves viven como secretos del entorno (XAI_API_KEY / OPENAI_KEY),
+ * Las claves viven como secretos del entorno (GEMINI_API_KEY / XAI_API_KEY / OPENAI_KEY),
  * nunca en el cliente.
  */
 
@@ -64,7 +64,40 @@ async function conGrok(env, sistema, mensajes, json = true) {
   return typeof msg.content === 'string' ? msg.content : null;
 }
 
+/** Gemini (Google AI Studio): generateContent sin stream, thinking apagado (voz/chat = latencia). */
+async function conGemini(env, sistema, mensajes, json = true) {
+  const modelo = env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const base = env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta';
+  const r = await fetch(`${base}/models/${modelo}:generateContent`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-goog-api-key': env.GEMINI_API_KEY || env.GOOGLE_API_KEY || '',
+    },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: sistema }] },
+      contents: mensajes.map((m) => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: String(m.content ?? '') }],
+      })),
+      generationConfig: {
+        maxOutputTokens: 400,
+        thinkingConfig: { thinkingBudget: 0 },
+        ...(json ? { responseMimeType: 'application/json' } : {}),
+      },
+    }),
+  });
+  if (!r.ok) throw new Error(`gemini ${r.status}`);
+  const j = await r.json();
+  const cand = (j.candidates && j.candidates[0]) || {};
+  const texto = ((cand.content && cand.content.parts) || [])
+    .filter((p) => typeof p.text === 'string' && !p.thought)
+    .map((p) => p.text).join('');
+  return texto || null;
+}
+
 async function llamar(env, sistema, mensajes, json = true) {
+  if (env.GEMINI_API_KEY || env.GOOGLE_API_KEY) return conGemini(env, sistema, mensajes, json);
   if (env.XAI_API_KEY || env.GROK_API_KEY) return conGrok(env, sistema, mensajes, json);
   if (env.OPENAI_KEY) return conOpenAI(env, sistema, mensajes, json);
   return null;

@@ -1,5 +1,5 @@
 /**
- * api/voz/chat.js — Un turno de conversación con Grok (xAI), en streaming real.
+ * api/voz/chat.js — Un turno de conversación con el LLM (Gemini o Grok, ver server/llm.js), en streaming real.
  *
  * POST { sessionId, text } · cookie vid
  *   → text/plain en stream: el cliente habla la primera frase antes de que el
@@ -11,7 +11,7 @@
  * en messages para el resumen de cierre.
  */
 import { crearSupabase, isUUID, mismoOrigen, leerCookies, leerCuerpo, json, eq } from '../../server/nucleo.js';
-import { grok, MODELO_CHAT } from '../../server/grok.js';
+import { llm, modeloChat } from '../../server/llm.js';
 import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA, RONDAS_TOOLS } from '../../server/agente.js';
 
 export default async function handler(req, res) {
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     : null;
   const system = buildSystem(s.lang, lead);
 
-  // ── stream ── (la cabecera 200 sale con el primer delta: si Grok falla
+  // ── stream ── (la cabecera 200 sale con el primer delta: si el LLM falla
   //    antes de producir nada, aún podemos responder un 502 JSON limpio)
   const CABECERAS = {
     'Content-Type': 'text/plain; charset=utf-8',
@@ -73,8 +73,8 @@ export default async function handler(req, res) {
 
   try {
     for (let ronda = 0; ronda < RONDAS_TOOLS; ronda++) {
-      const r = await grok(env, {
-        model: env.CHAT_MODEL || MODELO_CHAT,
+      const r = await llm(env, {
+        model: env.CHAT_MODEL || modeloChat(env),
         max_tokens: 350,
         system,
         tools,
@@ -90,7 +90,7 @@ export default async function handler(req, res) {
         role: 'assistant',
         content: r.texto || null,
         tool_calls: r.tools.map((tc) => ({
-          id: tc.id, type: 'function',
+          id: tc.id, type: 'function', sig: tc.sig || '',   // Gemini: thoughtSignature de vuelta
           function: { name: tc.name, arguments: JSON.stringify(tc.input || {}) },
         })),
       });
