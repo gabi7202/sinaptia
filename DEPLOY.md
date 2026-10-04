@@ -187,8 +187,10 @@ estático; las rutas `api/voz/*` necesitan servidor).
    CRON_SECRET=<cadena larga al azar>        ← autentica el cron diario de vercel.json
    PANEL_SECRET=<otra cadena al azar>        ← protege la analítica de /panel
    # opcionales: CHAT_MODEL / EXTRACT_MODEL (default gemini-2.5-flash)
-   #             GEMINI_THINKING (default 0: latencia de voz) · LLM_PROVIDER (gemini|grok)
+   #             GEMINI_THINKING (default 0: latencia de voz) · LLM_PROVIDER (gemini|grok|groq)
    #             con Grok: XAI_API_KEY · GROK_EFFORT (default low)
+   #             con Groq: GROQ_API_KEY (groq.com; default compound-mini — latencia
+   #                       LPU, ideal para voz; se fuerza con LLM_PROVIDER=groq)
    ```
    *Si vinculaste Supabase desde Vercel, `SUPABASE_URL` y `SUPABASE_SECRET_KEY` ya
    están (ese nombre también vale). Tras tocar variables: **Redeploy** obligatorio.*
