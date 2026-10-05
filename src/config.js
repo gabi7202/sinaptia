@@ -38,6 +38,12 @@ export const CONFIG = {
     velocidad: 1.04,
     tono: 1,
   },
+  // Música ambiental de la sala (home): muy bajita, se pausa al entrar en modo voz.
+  // En /voz no suena. src = '' ⇒ sin música (útil para desactivarla sin tocar código).
+  ambiente: {
+    src: 'https://cdn.pixabay.com/audio/2026-03-28/audio_d4d1650584.mp3',
+    volumen: 0.1,          // 0–1; 0.1 ≈ susurro por debajo de la voz del agente
+  },
   // Base de datos: todo queda en JSON en el navegador y, si conectas un remoto,
   // se sincroniza en lotes. Supabase: {url, key, tabla}. Genérico: url de POST.
   bd: { url: '', supabase: null },

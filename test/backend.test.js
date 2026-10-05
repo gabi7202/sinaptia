@@ -382,6 +382,16 @@ console.log('\n\x1b[36m  4 · System prompt (marca + reglas de A)\x1b[0m');
     /redirige a RESULTADO, no a método/.test(s) && /2 o 3 redirecciones/.test(s) && /¡Que tengas buen día!/.test(s));
   t('límite duro ~15-20 minutos en el prompt y 20 en código',
     /15-20 minutos/.test(s) && MAX_MINUTOS_LLAMADA === 20);
+  t('modo solo plática: sin interés comercial no entra en conversión, despide amable',
+    /MODO SOLO PLÁTICA \(no entrar en modo conversión\)/.test(s) &&
+    /NO insistas con la venta ni con la consultoría/.test(s) &&
+    /finaliza con una despedida amable y breve, sin culpabilizar/.test(s) &&
+    /¡Que te vaya súper bien!/.test(s) &&
+    /Tras esa despedida no hagas ninguna otra pregunta/.test(s));
+  t('modo solo plática distingue charla casual del "todavía no" (objeción real sí se acompaña)',
+    /Distingue esto del simple "todavía no"/.test(s) &&
+    /redirección suave al resultado/.test(s) &&
+    /nunca persigas; ofrece una vez con calidez/.test(s));
   t('descuento: solo con objeción explícita de dinero, nunca por iniciativa propia',
     /SOLO cuando objeten el dinero de forma explícita/.test(s) && /nunca ofrezcas descuento por iniciativa propia/.test(s) &&
     /jamás calculas ni mencionas números de descuento/.test(s) && /puedo comentarle tu caso a Gabi/.test(s));

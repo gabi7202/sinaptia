@@ -1,4 +1,11 @@
 <div class="llamada" id="llamada" data-estado="inactiva" role="dialog" aria-label="Llamada de voz con el agente" aria-hidden="true">
+  <!-- Control discreto de música ambiental (la sala de espera). main.js lo
+       borra en /voz, donde por regla de producto nunca hay música. -->
+  <button class="amb-btn" id="amb-boton" type="button" title="Pausar o reanudar la música de fondo" aria-label="Música de fondo">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+    </svg>
+  </button>
   <div class="ll-inner">
     <div class="ll-orb" aria-hidden="true">
       <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
