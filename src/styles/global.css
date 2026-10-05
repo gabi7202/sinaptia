@@ -57,6 +57,10 @@ section{padding:72px 0}
 .nav-cta{background:var(--azul);color:#fff;border:none;font-weight:700;font-size:13px;
   padding:9px 18px;border-radius:8px;cursor:pointer;font-family:inherit;transition:.15s}
 .nav-cta:hover{background:var(--azul-osc);transform:translateY(-1px)}
+.nav-link{color:var(--tinta,inherit);font-size:13px;font-weight:600;text-decoration:none;
+  padding:9px 12px;border-radius:8px;transition:.15s;white-space:nowrap}
+.nav-link:hover{color:var(--azul);text-decoration:underline}
+@media (max-width:720px){.nav-link{display:none}}
 
 /* ── hero ────────────────────────────────────────────── */
 .hero{position:relative;padding:74px 0 66px;overflow:hidden;
@@ -262,7 +266,7 @@ section{padding:72px 0}
 .step h4{font-size:15.5px;color:var(--tinta);margin-bottom:8px}
 .step p{font-size:13px;color:var(--tinta2)}
 
-/* ── situaciones (sin precios) ───────────────────────── */
+/* ── situaciones ─────────────────────────────────────── */
 .situations{display:grid;gap:12px;margin-top:8px}
 .situation{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);
   overflow:hidden;transition:border-color .3s ease, box-shadow .3s ease;box-shadow:var(--sombra)}
@@ -289,6 +293,11 @@ section{padding:72px 0}
 .win-num{font-size:44px;font-weight:700;color:var(--azul);letter-spacing:-.04em;line-height:1;
   font-variant-numeric:tabular-nums}
 .win-txt{font-size:12.5px;color:var(--tinta2);line-height:1.45}
+/* precio publicado de la primera pieza (única cifra propia visible por decisión) */
+.sit-precio{display:inline-block;margin:2px 0 10px;padding:6px 12px;border:1px solid var(--azul-borde);
+  border-radius:999px;font-size:13.5px;color:var(--tinta2);background:var(--fondo)}
+.sit-precio b{color:var(--azul-osc);font-weight:700}
+
 .sit-detail{list-style:none;margin:12px 0 16px;display:grid;gap:8px}
 .sit-detail .why{background:var(--blanco);border:1px dashed var(--azul-borde);color:var(--tinta3);
   font-size:12.5px;padding:6px 12px;border-radius:99px;cursor:pointer;font-family:inherit;transition:.2s}

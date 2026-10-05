@@ -3,19 +3,33 @@
  * Fundadoras.astro — Programa de empresas fundadoras.
  * Framing de selección, no de pedido: SINAPTIA elige 3 empresas cuyos casos
  * se puedan documentar, y a cambio da condiciones que no se vuelven a ofrecer.
- * Sin precios visibles (regla de marca) y sin plazos: el diagnóstico se paga,
- * se descuenta del proyecto completo y se devuelve íntegro si no hay caso claro.
+ * Sin plazos: el diagnóstico se paga, se descuenta del proyecto completo y se
+ * devuelve íntegro si no hay caso claro. El precio de la primera pieza sí está
+ * publicado (en Precios.astro), por decisión explícita del checklist P0-8.
+ *
+ * ── Cómo actualizar la escasez (P1-3) ──────────────────────────────────────
+ * Edita los tres números abajo cuando se ocupen lugares:
+ *   QUEDAN  → lugares libres visibles en el contador ("Quedan X de 3")
+ *   OCUPADO → true cuando haya al menos 1 empresa fundada; entonces aparece la
+ *             línea de prueba con sector y país (sin nombre si firmaste NDA).
+ * La sección desaparece del sitio cuando QUEDAN llegue a 0 (borra el include
+ * de <Fundadoras /> en index.astro).
  */
 import CtaStrip from './CtaStrip.astro';
+
+const QUEDAN = 3;                       // bájalo a mano: 3 → 2 → 1 → 0
+const OCUPADO = false;                  // true cuando el primer lugar se llene
+const PRIMER_CASO = { sector: 'tu sector', pais: 'tu país' };  // p. ej. { sector: 'clínica dental', pais: 'México' }
 ---
 <section id="fundadoras" class="alt">
   <div class="wrap wrap-narrow">
     <div class="sec-head" style="text-align:center;margin-left:auto;margin-right:auto">
       <div class="eyebrow" style="justify-content:center"><i></i> programa fundador · selección abierta</div>
-      <h2>Estamos seleccionando 3 empresas fundadoras</h2>
-      <p class="sec-lead">No pedimos que nos des una oportunidad: estamos construyendo nuestros casos
-        de referencia y <b>elegimos con quién</b>. Si tu operación se puede documentar y mostrar,
-        entras a condiciones que no volveremos a ofrecer.</p>
+      <h2>Estoy seleccionando 3 empresas fundadoras</h2>
+      <div class="fund-count" id="fund-count">Quedan <b>{QUEDAN}</b> de 3 lugares{OCUPADO ? ` — ${3 - QUEDAN} ocupado${3 - QUEDAN > 1 ? 's' : ''}: sector ${PRIMER_CASO.sector}, ${PRIMER_CASO.pais}` : ''}</div>
+      <p class="sec-lead">No te pido que me des una oportunidad: estoy construyendo mis casos
+        de referencia y <b>elijo con quién</b>. Si tu operación se puede documentar y mostrar,
+        entras a condiciones que no voy a volver a ofrecer.</p>
     </div>
     <div class="fund-grid">
       <div class="fund-card">
@@ -37,7 +51,7 @@ import CtaStrip from './CtaStrip.astro';
         <h3>Cómo funciona</h3>
         <ul>
           <li>El diagnóstico se paga: es trabajo real y deja fuera a quien no va en serio.</li>
-          <li>Si no encontramos un caso claro de retorno, te devolvemos el 100%.</li>
+          <li>Si no encuentro un caso claro de retorno, te devuelvo el 100%.</li>
           <li>Solo hay 3 lugares. Cuando se llenan, esta sección desaparece del sitio.</li>
         </ul>
       </div>

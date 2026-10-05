@@ -310,9 +310,9 @@ const pt = {
 
 export const PACKS = { es, en, pt };
 export const IDIOMAS = [
-  { codigo: 'es', etiqueta: 'ES', nombre: 'Español' },
-  { codigo: 'en', etiqueta: 'EN', nombre: 'English' },
-  { codigo: 'pt', etiqueta: 'PT', nombre: 'Português' },
+  { codigo: 'es', etiqueta: '🇪🇸 ES', bandera: '🇪🇸', nombre: 'Español' },
+  { codigo: 'en', etiqueta: '🇺🇸 EN', bandera: '🇺🇸', nombre: 'English' },
+  { codigo: 'pt', etiqueta: '🇧🇷 PT', bandera: '🇧🇷', nombre: 'Português' },
 ];
 
 /** Resuelve el paquete por código o por navigator.language ('en-US' → 'en'). */
