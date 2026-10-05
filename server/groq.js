@@ -117,7 +117,6 @@ export async function groq(env, opts, fetchImpl) {
     throw new Error(`groq ${r.status} ${detalle.slice(0, 200)}`);
   }
 
-  // reutiliza el parser SSE probado de grok.js (mismo formato OpenAI-compatible)
   if (!stream) {
     const j = await r.json();
     const ch = (j && j.choices && j.choices[0]) || {};
@@ -129,6 +128,74 @@ export async function groq(env, opts, fetchImpl) {
       uso: j && j.usage ? j.usage : null,
     };
   }
-  const { parsearSSE } = await import('./grok.js');
   return parsearSSE(r.body, onTexto);
+}
+
+/**
+ * Parser SSE del dialecto OpenAI-compatible (antes vivía en grok.js; con la
+ * eliminación de Gemini/Grok, groq.js es su único dueño). Lee eventos
+ * chat.completion.chunk separados por línea en blanco — tolera UTF-8 partido,
+ * keep-alives (líneas ':'), basura intermedia y [DONE] — y devuelve el turno
+ * ensamblado { texto, tools:[{id,name,input}], finish, uso }.
+ * El delta.reasoning_content (modelos que razonan) NUNCA se habla ni transcribe.
+ */
+export async function parsearSSE(cuerpo, onTexto) {
+  const reader = cuerpo.getReader();
+  const dec = new TextDecoder();
+  let buf = '';
+  let texto = '';
+  let finish = null;
+  let uso = null;
+  const llamadas = new Map();   // índice → { id, name, args }
+
+  const procesarEvento = (evento) => {
+    for (const linea of evento.split('\n')) {
+      if (!linea.startsWith('data:')) continue;
+      const crudo = linea.slice(5).trim();
+      if (!crudo || crudo === '[DONE]') continue;
+      let d;
+      try { d = JSON.parse(crudo); } catch (e) { continue; }
+
+      if (d.usage) uso = d.usage;
+      const ch = (d.choices && d.choices[0]) || null;
+      if (!ch) continue;
+      const delta = ch.delta || {};
+
+      // el razonamiento se ignora a propósito: no se habla ni se transcribe
+      if (typeof delta.content === 'string' && delta.content) {
+        texto += delta.content;
+        if (onTexto) onTexto(delta.content);
+      }
+      if (ch.finish_reason) finish = ch.finish_reason;
+
+      for (const tc of delta.tool_calls || []) {
+        const i = Number.isInteger(tc.index) ? tc.index : llamadas.size;
+        let acc = llamadas.get(i);
+        if (!acc) { acc = { id: '', name: '', args: '' }; llamadas.set(i, acc); }
+        if (tc.id) acc.id = tc.id;
+        const fn = tc.function || {};
+        if (fn.name) acc.name += fn.name;
+        if (fn.arguments) acc.args += fn.arguments;
+      }
+    }
+  };
+
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true }).replace(/\r/g, '');
+    let idx;
+    while ((idx = buf.indexOf('\n\n')) >= 0) {
+      procesarEvento(buf.slice(0, idx));
+      buf = buf.slice(idx + 2);
+    }
+  }
+  buf += dec.decode();
+  if (buf.trim()) procesarEvento(buf.replace(/\r/g, ''));
+
+  const tools = [...llamadas.values()]
+    .filter((a) => a.name)
+    .map((a) => ({ id: a.id, name: a.name, input: safeJson(a.args) }));
+
+  return { texto, tools, finish: mapearFinish(finish), uso };
 }

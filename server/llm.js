@@ -1,45 +1,29 @@
 /**
- * llm.js — Un solo cerebro, tres proveedores.
+ * llm.js — Un solo cerebro, UN proveedor: Groq (groq.com).
  *
- * Regla simple: LLM_PROVIDER=gemini|grok|groq fuerza uno; sin forzar, se elige
- * por la clave presente: GEMINI_API_KEY → gemini, GROQ_API_KEY → groq,
- * si no XAI_API_KEY → grok. Los modelos por defecto cambian con el proveedor;
- * CHAT_MODEL / EXTRACT_MODEL en Vercel mandan sobre los tres.
+ * Decisión de producto (2026-10): Gemini y Grok/xAI quedaron ELIMINADOS del
+ * proyecto. La API OpenAI-compatible de Groq es gratis, rapidísima (LPU) y ya
+ * está verificada contra el catálogo real de la cuenta. No hay enrutado por
+ * claves ni prioridades: GROQ_API_KEY manda y punto.
+ *   · CHAT_MODEL    → conversación (default openai/gpt-oss-120b)
+ *   · EXTRACT_MODEL → resumen a lead (default openai/gpt-oss-20b)
  *
- * chat.js y resumen.js importan SOLO de aquí: nunca saben qué marca contesta.
+ * chat.js y resumen.js importan SOLO de aquí. El viejo parsearSSE vive ahora
+ * en groq.js (único dueño del dialecto OpenAI-compatible).
  */
-import { grok, MODELO_CHAT as GROK_CHAT, MODELO_EXTRACT as GROK_EXTRACT, claveGrok } from './grok.js';
-import { gemini, MODELO_CHAT as GEMINI_CHAT, MODELO_EXTRACT as GEMINI_EXTRACT, claveGemini } from './gemini.js';
-import { groq, modeloChat as GROQ_CHAT_FN, modeloExtract as GROQ_EXTRACT_FN, claveGroq } from './groq.js';
+import { groq, modeloChat as GROQ_CHAT_FN, modeloExtract as GROQ_EXTRACT_FN, claveGroq, parsearSSE } from './groq.js';
 
-export function proveedor(env) {
-  const e = env || {};
-  const p = String(e.LLM_PROVIDER || '').toLowerCase();
-  if (p === 'grok' || p === 'xai') return 'grok';
-  if (p === 'gemini' || p === 'google') return 'gemini';
-  if (p === 'groq') return 'groq';
-  if (claveGemini(e)) return 'gemini';
-  if (claveGroq(e)) return 'groq';
-  return 'grok';
-}
+/** Único proveedor posible. Se mantiene la firma para tests y compatibilidad. */
+export function proveedor() { return 'groq'; }
 
-export function modeloChat(env) {
-  const p = proveedor(env);
-  // Groq lee CHAT_MODEL en tiempo de llamada (catálogo verificado en vivo:
-  // modelos que no existen en la cuenta devuelven 400 y rompen el chat).
-  return p === 'gemini' ? GEMINI_CHAT : p === 'groq' ? GROQ_CHAT_FN(env) : GROK_CHAT;
-}
-export function modeloExtract(env) {
-  const p = proveedor(env);
-  return p === 'gemini' ? GEMINI_EXTRACT : p === 'groq' ? GROQ_EXTRACT_FN(env) : GROK_EXTRACT;
-}
+// Groq lee CHAT_MODEL/EXTRACT_MODEL en tiempo de llamada (catálogo verificado
+// en vivo: modelos que no existen en la cuenta devuelven 400 y rompen el chat).
+export function modeloChat(env) { return GROQ_CHAT_FN(env); }
+export function modeloExtract(env) { return GROQ_EXTRACT_FN(env); }
 
-/** Mismo contrato que grok()/gemini(): { texto, tools, finish, uso }. */
+/** Contrato único: { texto, tools, finish, uso }. */
 export function llm(env, opts, fetchImpl) {
-  const p = proveedor(env);
-  if (p === 'gemini') return gemini(env, opts, fetchImpl);
-  if (p === 'groq') return groq(env, opts, fetchImpl);
-  return grok(env, opts, fetchImpl);
+  return groq(env, opts, fetchImpl);
 }
 
-export { claveGrok, claveGemini, claveGroq };
+export { claveGroq, parsearSSE };
