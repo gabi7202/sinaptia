@@ -1,9 +1,26 @@
 ---
 import { CONFIG } from '../config.js';
+const anio = new Date().getFullYear();
 ---
 <footer class="footer">
+  <div class="wrap legal-links">
+    <a href="/privacidad/">Política de Privacidad</a>
+    <a href="/terminos/">Términos de Uso</a>
+    <a href="/politica-ia/">Política de IA</a>
+    <a href="/sobre-mi/">Quién soy</a>
+  </div>
+  <div class="wrap legal-note">
+    Cumplimiento: GDPR (Reglamento UE 2016/679) · LOPD · EU AI Act (Reglamento UE 2024/1689).
+    Sin cookies de rastreo ni píxeles publicitarios. Tus datos son cifrados y borrables a petición.
+  </div>
   <div class="wrap footer-in">
-    <span>{CONFIG.marca.nombre} · {CONFIG.marca.tagline}</span>
+    <span>© {anio} {CONFIG.marca.nombre} · {CONFIG.marca.tagline}</span>
     <span>{CONFIG.marca.ubicacion}</span>
   </div>
 </footer>
+<style is:global>
+  .legal-links{display:flex;flex-wrap:wrap;gap:6px 22px;padding-bottom:14px}
+  .legal-links a{color:var(--tinta,inherit);font-size:13.5px;font-weight:600;text-decoration:none;opacity:.85}
+  .legal-links a:hover{opacity:1;text-decoration:underline;text-underline-offset:3px}
+  .legal-note{font-size:12px;line-height:1.55;opacity:.65;max-width:760px;padding-bottom:16px}
+</style>

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import { CONFIG } from '../config.js';
 import { faqJsonLd } from '../lib/faq.js';
 import Nav from '../components/Nav.astro';
+import LegalBanner from '../components/LegalBanner.astro';
 import Hero from '../components/Hero.astro';
 import QueHace from '../components/QueHace.astro';
 import Problema from '../components/Problema.astro';
@@ -33,6 +34,7 @@ const faqLd = JSON.stringify(faqJsonLd(CONFIG.urlPublica));
 >
   <script type="application/ld+json" set:html={faqLd} />
   <Nav />
+  <LegalBanner />
   <Hero />
   <QueHace />
   <Problema />
