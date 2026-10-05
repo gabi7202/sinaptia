@@ -78,7 +78,10 @@ export default async function handler(req, res) {
     for (let ronda = 0; ronda < RONDAS_TOOLS; ronda++) {
       const r = await llm(env, {
         model: env.CHAT_MODEL || modeloChat(env),
-        max_tokens: 350,
+        // gpt-oss (Groq) consume tokens de razonamiento ANTES del texto:
+        // con 350 el modelo agota el presupuesto en reasoning y devuelve
+        // content:"" (verificado en vivo 2026-10-05). 800 deja margen real.
+        max_tokens: Number(env.CHAT_MAX_TOKENS) || 800,
         system,
         tools,
         messages: msgs,

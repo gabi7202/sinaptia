@@ -47,7 +47,9 @@ export async function resumirSesion(db, env, sessionId, fetchImpl) {
 
   const r = await llm(env, {
     model: (env && env.EXTRACT_MODEL) || modeloExtract(env),
-    max_tokens: 900,
+    // gpt-oss razona antes de responder: 900 se agotaba en reasoning y el
+    // JSON salía vacío. Overridable con EXTRACT_MAX_TOKENS.
+    max_tokens: Number(env && env.EXTRACT_MAX_TOKENS) || 1400,
     system: SYS,
     json: true,          // response_format: json_object → el JSON llega limpio
     messages: [{
