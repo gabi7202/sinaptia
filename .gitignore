@@ -1,9 +1,3 @@
-# Astro build artifacts
-.astro/
-
-# Vercel build output
-.vercel/
-
-# General build outputs
+node_modules/
 dist/
-build/
+.vercel/
