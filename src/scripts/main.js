@@ -15,6 +15,7 @@ import { razonar } from '../lib/ia.js';
 import { perfilPor, motorNegocio } from '../lib/negocio.js';
 import { Funnel } from '../lib/funnel.js';
 import { Memoria, textoRecuerdo } from '../lib/memoria.js';
+import { Ambiente } from '../lib/ambiente.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -543,6 +544,46 @@ const TEXTO_ESTADO = {
   [ESTADOS.HABLANDO]: 'hablando',
   [ESTADOS.INACTIVA]: 'en pausa',
 };
+
+/* ══════════ 5c · Música ambiental de la sala ══════════
+   Reglas del producto: suena muy bajita al llegar; entra el modo voz → se
+   pausa (y retoma al salir); en /voz nunca hay música. main.js solo corre
+   en la home, pero además lo blindamos por ruta por si alguien lo reusa. */
+const EN_VOZ = /^\/voz\/?/.test(location.pathname);
+const ambBtn = $('amb-boton');
+if (EN_VOZ) { if (ambBtn) ambBtn.remove(); }        // en /voz ni existe el control
+const ambiente = new Ambiente({
+  src: (CONFIG.ambiente && CONFIG.ambiente.src) || undefined,   // '' ⇒ sin música
+  volumen: CONFIG.ambiente && CONFIG.ambiente.volumen,
+  puedeSonar: () => !EN_VOZ && !!$('llamada') && !$('llamada').classList.contains('abierta'),
+});
+function pintarAmbiente() {
+  if (!ambBtn) return;
+  const a = ambiente.el;
+  const sonando = !!a && !a.paused && a.volume > 0.01;
+  ambBtn.classList.toggle('suena', sonando);
+  ambBtn.classList.toggle('muda', ambiente.silenciado);
+  ambBtn.setAttribute('aria-pressed', String(sonando));
+}
+if (ambBtn) {
+  ambBtn.addEventListener('click', () => {
+    ambiente.alternarSilencio();
+    funnel.marcar('ambiente', { silenciado: ambiente.silenciado });
+    pintarAmbiente();
+  });
+}
+// cuando la llamada cambia de estado, la música respira con ella
+const llObs = new MutationObserver(() => {
+  if (ambiente.puedeSonar()) ambiente.reanudar(); else ambiente.pausar();
+  setTimeout(pintarAmbiente, 900);   // tras el fade-out/in
+});
+const ovLlamada = $('llamada');
+if (ovLlamada && !EN_VOZ) llObs.observe(ovLlamada, { attributes: true, attributeFilter: ['class'] });
+if (!EN_VOZ) {
+  ambiente.conectarGestos();          // primer click/tecla/scroll enciende la sala
+  setInterval(pintarAmbiente, 4000);  // el indicador sigue fiel al estado real
+}
+
 let voz = null;
 
 function asegurarVoz() {
