@@ -18,12 +18,12 @@ const LINKEDIN = 'https://www.linkedin.com/in/yunior-rafael-ortiz-carela';
       </svg>
       <span>{CONFIG.marca.nombre}</span>
     </a>
+    <div class="nav-live resolviendo" id="nav-live"><i></i><span id="nav-live-txt">resolviendo tu contexto…</span></div>
     <div class="nav-derecha">
-      <div class="nav-live resolviendo" id="nav-live"><i></i><span id="nav-live-txt">resolviendo tu contexto…</span></div>
+      <div class="nav-id" id="nav-id" role="group" aria-label="Idioma"></div>
       <a class="nav-link" href="/sobre-mi/">Quién soy</a>
       <a class="nav-link" href="#auditoria">Auditoría gratis</a>
       <button class="nav-cta" id="nav-agente">Hablar con el agente</button>
-      <div class="nav-id" id="nav-id" role="group" aria-label="Idioma"></div>
       <div class="nav-perfil">
         <a class="nav-foto" href={LINKEDIN} target="_blank" rel="noopener me" aria-label={`LinkedIn de ${NOMBRE}`}>
           <img src="/perfil.png" alt={`Foto de ${NOMBRE}`} width="40" height="40" />
@@ -37,10 +37,12 @@ const LINKEDIN = 'https://www.linkedin.com/in/yunior-rafael-ortiz-carela';
 </nav>
 
 <style>
-  /* Head más respirado y perfil SIEMPRE pegado al borde derecho */
+  /* Head respirado: contexto vivo a la izquierda del grupo derecho,
+     banderas + perfil SIEMPRE pegados al borde derecho */
   :global(.nav-in){padding:16px 26px;gap:18px}
-  .nav-derecha{margin-left:auto;display:flex;align-items:center;gap:14px}
   .nav-live{margin-left:0}
+  .nav-derecha{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  :global(.nav-id){margin-left:0}
   .nav-perfil{display:flex;align-items:center;gap:10px;padding-left:14px;border-left:1px solid var(--borde)}
   .nav-foto img{width:40px;height:40px;border-radius:50%;object-fit:cover;display:block;
     border:2px solid var(--azul-borde);box-shadow:0 0 0 3px var(--azul-suave);transition:.15s}
