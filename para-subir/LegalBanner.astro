@@ -1,0 +1,57 @@
+---
+/**
+ * LegalBanner.astro — Aviso de cumplimiento legal europeo (GDPR / EU AI Act).
+ * Se muestra en todas las páginas, justo debajo del nav: es el primer mensaje
+ * visible sobre privacidad y regula los enlaces legales del footer.
+ * El visitante puede cerrarlo; la decisión se recuerda en localStorage
+ * (no es una cookie, no requiere consentimiento previo).
+ */
+---
+<div class="legal-banner" id="legal-banner" role="note">
+  <span class="legal-dot" aria-hidden="true"></span>
+  <p>
+    Cumplo con las leyes europeas de privacidad (GDPR) y con la EU AI Act: sin cookies
+    de rastreo, sin píxeles, datos cifrados y borrables cuando me lo pidas.
+    Lee cómo trato tus datos en
+    <a href="/privacidad/">Privacidad</a>,
+    <a href="/terminos/">Términos</a> y
+    <a href="/politica-ia/">Política de IA</a>.
+  </p>
+  <button class="legal-x" id="legal-close" aria-label="Cerrar aviso de cumplimiento">Entendido ✕</button>
+</div>
+<style is:global>
+  .legal-banner{
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    max-width:1180px;margin:0 auto;padding:10px 26px;
+    font-size:13px;line-height:1.5;color:var(--tinta2);
+    background:var(--azul-suave,#E8F1FC);
+    border-bottom:1px solid var(--azul-borde,#BBD4F2);
+  }
+  .legal-banner p{margin:0;flex:1 1 420px}
+  .legal-banner a{color:var(--azul);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+  .legal-dot{width:8px;height:8px;border-radius:50%;background:#047857;flex:none;
+    box-shadow:0 0 0 3px rgba(4,120,87,.15)}
+  .legal-x{
+    background:transparent;border:1px solid var(--azul-borde,#BBD4F2);color:var(--tinta3);
+    font-family:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:8px;
+    cursor:pointer;white-space:nowrap;transition:.15s;
+  }
+  .legal-x:hover{color:var(--azul);border-color:var(--azul)}
+  @media (max-width:700px){
+    .legal-banner{padding:10px 18px;font-size:12.5px}
+    .legal-x{margin-left:auto}
+  }
+</style>
+<script>
+  // La preferencia de cierre vive en localStorage: no identifica al visitante
+  // entre sesiones para fines de rastreo, así que no es cookie sujeta a consentimiento.
+  try {
+    const b = document.getElementById('legal-banner');
+    const x = document.getElementById('legal-close');
+    if (localStorage.getItem('sinaptia-legal-ok') === '1' && b) b.remove();
+    x && x.addEventListener('click', () => {
+      localStorage.setItem('sinaptia-legal-ok', '1');
+      b && b.remove();
+    });
+  } catch (e) { /* almacenamiento bloqueado: el banner simplemente queda visible */ }
+</script>
