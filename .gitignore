@@ -1,2 +1,8 @@
-(empty)node_modules/
+node_modules/
+dist/
+.astro/
+.vercel/
 para-subir/
+.env
+.env.local
+.DS_Store
