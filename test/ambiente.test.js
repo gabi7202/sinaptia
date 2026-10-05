@@ -34,7 +34,7 @@ const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
   }
   w.Audio = FakeAudio;
   globalThis.Audio = FakeAudio;
-  globalThis.window = w;   // ambiente.js usa window.addEventListener (conectarGestos)
+  globalThis.window = w;   // ambiente.js usa window.addEventListener (conectarScroll)
 
   let rafId = 0;
   const rafs = [];
@@ -105,15 +105,17 @@ const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
   t('play() rechazado ⇒ falla silencioso (no rompe) y queda en pausa',
     !revento && amb2.el !== elPrimero && amb2.el.paused === true);
 
-  // 7 · conectarGestos arma los gatillos de una sola vez
+  // 7 · conectarScroll arma UN solo gatillo: el scroll
   const amb3 = new Ambiente({});
   let disparos = 0;
   amb3.iniciar = () => { disparos++; };
-  amb3.conectarGestos();
-  w.dispatchEvent(new w.Event('pointerdown'));
-  w.dispatchEvent(new w.Event('keydown'));
-  w.dispatchEvent(new w.Event('scroll'));
-  t('click/tecla/scroll encienden la sala (once por evento)', disparos === 3, 'disparos=' + disparos);
+  amb3.conectarScroll();
+  w.dispatchEvent(new w.Event('pointerdown'));   // click ya NO enciende la música
+  w.dispatchEvent(new w.Event('keydown'));       // tecla tampoco
+  w.dispatchEvent(new w.Event('scroll'));        // único activador: scroll
+  t('solo el scroll enciende la sala (click/tecla ignorados)', disparos === 1, 'disparos=' + disparos);
+  w.dispatchEvent(new w.Event('scroll'));        // once:true ⇒ no vuelve a disparar
+  t('el gatillo es de una sola vez', disparos === 1, 'disparos=' + disparos);
 
   // 8 · volumen configurado desde fuera respeta límites
   const amb4 = new Ambiente({ volumen: 5 });

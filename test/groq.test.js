@@ -6,7 +6,7 @@
  * cuerpo de petición OpenAI-compatible, streaming SSE con onTexto,
  * tool_calls ensamblados y errores claros. Sin red real: fetch inyectado.
  */
-import { groq, claveGroq, MODELO_CHAT } from '../server/groq.js';
+import { groq, claveGroq, modeloChat as MODELO_CHAT_FN, campoLimite } from '../server/groq.js';
 import { llm, proveedor, modeloChat, modeloExtract } from '../server/llm.js';
 
 let ok = 0; const fallos = [];
@@ -30,7 +30,7 @@ t('proveedor: GROQ_API_KEY elige groq (antes que grok); GEMINI gana por defecto;
   proveedor({}) === 'grok');
 
 t('modelos por defecto cambian con el proveedor',
-  modeloChat({ GROQ_API_KEY: 'g' }) === MODELO_CHAT &&
+  modeloChat({ GROQ_API_KEY: 'g' }) === MODELO_CHAT_FN({}) &&
   typeof modeloExtract({ GROQ_API_KEY: 'g' }) === 'string' &&
   modeloExtract({ GROQ_API_KEY: 'g' }).length > 0);
 
@@ -49,7 +49,7 @@ t('claveGroq solo lee GROQ_API_KEY',
     r.texto === 'Hola, soy Nexa.' && r.finish === 'stop' && r.tools.length === 0 &&
     visto.url === 'https://api.groq.com/openai/v1/chat/completions' &&
     visto.init.headers.Authorization === 'Bearer k' &&
-    cuerpo.model === MODELO_CHAT && cuerpo.messages[0].role === 'system' && !cuerpo.stream);
+    cuerpo.model === MODELO_CHAT_FN({}) && campoLimite(cuerpo.model) in cuerpo && cuerpo.messages[0].role === 'system' && !cuerpo.stream);
 }
 
 {

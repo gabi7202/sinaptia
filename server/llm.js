@@ -10,7 +10,7 @@
  */
 import { grok, MODELO_CHAT as GROK_CHAT, MODELO_EXTRACT as GROK_EXTRACT, claveGrok } from './grok.js';
 import { gemini, MODELO_CHAT as GEMINI_CHAT, MODELO_EXTRACT as GEMINI_EXTRACT, claveGemini } from './gemini.js';
-import { groq, MODELO_CHAT as GROQ_CHAT, MODELO_EXTRACT as GROQ_EXTRACT, claveGroq } from './groq.js';
+import { groq, modeloChat as GROQ_CHAT_FN, modeloExtract as GROQ_EXTRACT_FN, claveGroq } from './groq.js';
 
 export function proveedor(env) {
   const e = env || {};
@@ -25,11 +25,13 @@ export function proveedor(env) {
 
 export function modeloChat(env) {
   const p = proveedor(env);
-  return p === 'gemini' ? GEMINI_CHAT : p === 'groq' ? GROQ_CHAT : GROK_CHAT;
+  // Groq lee CHAT_MODEL en tiempo de llamada (catálogo verificado en vivo:
+  // modelos que no existen en la cuenta devuelven 400 y rompen el chat).
+  return p === 'gemini' ? GEMINI_CHAT : p === 'groq' ? GROQ_CHAT_FN(env) : GROK_CHAT;
 }
 export function modeloExtract(env) {
   const p = proveedor(env);
-  return p === 'gemini' ? GEMINI_EXTRACT : p === 'groq' ? GROQ_EXTRACT : GROK_EXTRACT;
+  return p === 'gemini' ? GEMINI_EXTRACT : p === 'groq' ? GROQ_EXTRACT_FN(env) : GROK_EXTRACT;
 }
 
 /** Mismo contrato que grok()/gemini(): { texto, tools, finish, uso }. */

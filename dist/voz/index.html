@@ -9,38 +9,38 @@
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
-  // dist/_astro/funnel._2lJKVq4.js
-  var c = { marca: { whatsappLegible: "+52 983 406 6179", waLink: "https://wa.me/529834066179", ubicacion: "Tapachula de C\xF3rdova y Ord\xF3\xF1ez, Chiapas 30794, M\xE9xico", web: "sinaptialabs.com" }, ciudadRespaldo: "Bogot\xE1", pdf: { nombreArchivo: "brief-implementacion-ia", pie: "Documento generado autom\xE1ticamente por el agente de diagn\xF3stico de Sinaptia." }, voz: { lang: "es-ES", genero: "femenina", prefVoz: "", autoEscucha: true, velocidad: 1.04, tono: 1 }, ambiente: { src: "https://cdn.pixabay.com/audio/2026-03-28/audio_d4d1650584.mp3", volumen: 0.1 }, ia: { endpoint: "", voz: "/api/voz" } };
+  // dist/_astro/funnel.DZYyK7yj.js
+  var r = { marca: { whatsappLegible: "+52 983 406 6179", waLink: "https://wa.me/529834066179", ubicacion: "Tapachula de C\xF3rdova y Ord\xF3\xF1ez, Chiapas 30794, M\xE9xico", web: "sinaptialabs.com" }, ciudadRespaldo: "Bogot\xE1", pdf: { nombreArchivo: "brief-implementacion-ia", pie: "Documento generado autom\xE1ticamente por el agente de diagn\xF3stico de Sinaptia." }, voz: { lang: "es-ES", genero: "femenina", prefVoz: "", autoEscucha: true, velocidad: 1.04, tono: 1 }, ambiente: { src: "/ambiente.mp3", volumen: 0.1 }, ia: { endpoint: "", voz: "/api/voz" } };
   var n = ["visita", "calculadora", "calculadora_cta", "lead", "llamada"];
   var o = "sinaptia:visita";
-  var r = class {
-    constructor(a) {
-      this.bd = a;
+  var c = class {
+    constructor(e) {
+      this.bd = e;
     }
-    marcar(a, t2 = {}) {
-      if (a === "visita") try {
+    marcar(e, a = {}) {
+      if (e === "visita") try {
         if (sessionStorage.getItem(o)) return null;
         sessionStorage.setItem(o, "1");
       } catch {
       }
-      return this.bd.registrar("funnel:" + a, { paso: a, ...t2 });
+      return this.bd.registrar("funnel:" + e, { paso: e, ...a });
     }
     recuento() {
-      const a = {};
-      for (const t2 of n) a[t2] = this.bd.porEvento("funnel:" + t2).length;
-      return a.invitacion = this.bd.porEvento("funnel:invitacion").length, a;
+      const e = {};
+      for (const a of n) e[a] = this.bd.porEvento("funnel:" + a).length;
+      return e.invitacion = this.bd.porEvento("funnel:invitacion").length, e;
     }
     tasas() {
-      const a = this.recuento(), t2 = [];
-      for (let e = 1; e < n.length; e++) {
-        const i2 = a[n[e - 1]];
-        t2.push({ de: n[e - 1], a: n[e], tasa: i2 ? a[n[e]] / i2 : 0 });
+      const e = this.recuento(), a = [];
+      for (let t2 = 1; t2 < n.length; t2++) {
+        const i2 = e[n[t2 - 1]];
+        a.push({ de: n[t2 - 1], a: n[t2], tasa: i2 ? e[n[t2]] / i2 : 0 });
       }
-      return t2;
+      return a;
     }
     resumen() {
-      const a = this.recuento();
-      return { ...a, tasaGlobal: a.visita ? a.llamada / a.visita : 0, pendientes: this.bd.pendiente };
+      const e = this.recuento();
+      return { ...e, tasaGlobal: e.visita ? e.llamada / e.visita : 0, pendientes: this.bd.pendiente };
     }
   };
 
@@ -615,7 +615,7 @@ E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\
     }
   };
 
-  // dist/_astro/voz.astro_astro_type_script_index_0_lang.CTRVdkcT.js
+  // dist/_astro/voz.astro_astro_type_script_index_0_lang.BOhCjgnZ.js
   function K2({ base: e, idioma: o3 = "es", fetchImpl: s2 } = {}) {
     const c2 = s2 || ((...r2) => fetch(...r2)), l3 = (r2) => String(e || "").replace(/\/+$/, "") + r2;
     let a = null;
@@ -679,14 +679,14 @@ E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\
   }
   var t = (e) => document.getElementById(e);
   var v = new l2({});
-  var h = new r(v);
+  var h = new c(v);
   var R = new J();
   var n2 = Z("es");
   var g = Q(n2, { ciudad: "", temp: null, clima: "", hora: "", saludo: "", tipKey: "nublado", dispositivo: "voz" });
   var p = null;
   var C = false;
   var b = false;
-  var y = c.ia && c.ia.voz || "";
+  var y = r.ia && r.ia.voz || "";
   var q = "sinaptia:consentVoz";
   var E2 = "v1";
   var d = null;
@@ -743,7 +743,7 @@ E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\
       t("respuesta").textContent = o3;
     }, onError: (o3) => {
       t("respuesta").textContent = x2(o3 === "limit" ? "limit" : "fallo");
-    }, conf: { lang: n2.stt, genero: c.voz && c.voz.genero || "femenina", prefVoz: n2.voz } };
+    }, conf: { lang: n2.stt, genero: r.voz && r.voz.genero || "femenina", prefVoz: n2.voz } };
     return y && (e.responderStream = async (o3, s2) => {
       if (!d) {
         const a = await Promise.resolve(_2(o3)), r2 = String(a && a.texto || ""), i2 = r2.split(/(?<=[.!?])\s+/).filter(Boolean).slice(0, 2).join(" ");

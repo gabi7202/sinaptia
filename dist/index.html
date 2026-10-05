@@ -62,38 +62,38 @@ Seguir por WhatsApp
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
-  // dist/_astro/funnel._2lJKVq4.js
-  var c = { marca: { whatsappLegible: "+52 983 406 6179", waLink: "https://wa.me/529834066179", ubicacion: "Tapachula de C\xF3rdova y Ord\xF3\xF1ez, Chiapas 30794, M\xE9xico", web: "sinaptialabs.com" }, ciudadRespaldo: "Bogot\xE1", pdf: { nombreArchivo: "brief-implementacion-ia", pie: "Documento generado autom\xE1ticamente por el agente de diagn\xF3stico de Sinaptia." }, voz: { lang: "es-ES", genero: "femenina", prefVoz: "", autoEscucha: true, velocidad: 1.04, tono: 1 }, ambiente: { src: "https://cdn.pixabay.com/audio/2026-03-28/audio_d4d1650584.mp3", volumen: 0.1 }, ia: { endpoint: "", voz: "/api/voz" } };
+  // dist/_astro/funnel.DZYyK7yj.js
+  var r = { marca: { whatsappLegible: "+52 983 406 6179", waLink: "https://wa.me/529834066179", ubicacion: "Tapachula de C\xF3rdova y Ord\xF3\xF1ez, Chiapas 30794, M\xE9xico", web: "sinaptialabs.com" }, ciudadRespaldo: "Bogot\xE1", pdf: { nombreArchivo: "brief-implementacion-ia", pie: "Documento generado autom\xE1ticamente por el agente de diagn\xF3stico de Sinaptia." }, voz: { lang: "es-ES", genero: "femenina", prefVoz: "", autoEscucha: true, velocidad: 1.04, tono: 1 }, ambiente: { src: "/ambiente.mp3", volumen: 0.1 }, ia: { endpoint: "", voz: "/api/voz" } };
   var n = ["visita", "calculadora", "calculadora_cta", "lead", "llamada"];
   var o = "sinaptia:visita";
-  var r = class {
-    constructor(a) {
-      this.bd = a;
+  var c = class {
+    constructor(e) {
+      this.bd = e;
     }
-    marcar(a, t = {}) {
-      if (a === "visita") try {
+    marcar(e, a = {}) {
+      if (e === "visita") try {
         if (sessionStorage.getItem(o)) return null;
         sessionStorage.setItem(o, "1");
       } catch {
       }
-      return this.bd.registrar("funnel:" + a, { paso: a, ...t });
+      return this.bd.registrar("funnel:" + e, { paso: e, ...a });
     }
     recuento() {
-      const a = {};
-      for (const t of n) a[t] = this.bd.porEvento("funnel:" + t).length;
-      return a.invitacion = this.bd.porEvento("funnel:invitacion").length, a;
+      const e = {};
+      for (const a of n) e[a] = this.bd.porEvento("funnel:" + a).length;
+      return e.invitacion = this.bd.porEvento("funnel:invitacion").length, e;
     }
     tasas() {
-      const a = this.recuento(), t = [];
-      for (let e = 1; e < n.length; e++) {
-        const i2 = a[n[e - 1]];
-        t.push({ de: n[e - 1], a: n[e], tasa: i2 ? a[n[e]] / i2 : 0 });
+      const e = this.recuento(), a = [];
+      for (let t = 1; t < n.length; t++) {
+        const i2 = e[n[t - 1]];
+        a.push({ de: n[t - 1], a: n[t], tasa: i2 ? e[n[t]] / i2 : 0 });
       }
-      return t;
+      return a;
     }
     resumen() {
-      const a = this.recuento();
-      return { ...a, tasaGlobal: a.visita ? a.llamada / a.visita : 0, pendientes: this.bd.pendiente };
+      const e = this.recuento();
+      return { ...e, tasaGlobal: e.visita ? e.llamada / e.visita : 0, pendientes: this.bd.pendiente };
     }
   };
 
@@ -669,7 +669,7 @@ E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\
     }
   };
 
-  // dist/_astro/index.astro_astro_type_script_index_0_lang.DRn03FnF.js
+  // dist/_astro/index.astro_astro_type_script_index_0_lang.FLT1nEjg.js
   var ia = { 0: "cielo despejado", 1: "cielo mayormente despejado", 2: "parcialmente nublado", 3: "nublado", 45: "niebla", 48: "niebla con escarcha", 51: "llovizna ligera", 53: "llovizna", 55: "llovizna intensa", 56: "llovizna helada", 57: "llovizna helada intensa", 61: "lluvia ligera", 63: "lluvia", 65: "lluvia intensa", 66: "lluvia helada", 67: "lluvia helada intensa", 71: "nevada ligera", 73: "nevada", 75: "nevada intensa", 77: "granizo fino", 80: "chubascos ligeros", 81: "chubascos", 82: "chubascos fuertes", 85: "nevadas intermitentes", 86: "nevadas fuertes", 95: "tormenta", 96: "tormenta con granizo", 99: "tormenta con granizo fuerte" };
   var ra = { 0: "clear sky", 1: "mainly clear", 2: "partly cloudy", 3: "overcast", 45: "fog", 48: "freezing fog", 51: "light drizzle", 53: "drizzle", 55: "heavy drizzle", 56: "freezing drizzle", 57: "heavy freezing drizzle", 61: "light rain", 63: "rain", 65: "heavy rain", 66: "freezing rain", 67: "heavy freezing rain", 71: "light snow", 73: "snow", 75: "heavy snow", 77: "snow grains", 80: "light showers", 81: "showers", 82: "heavy showers", 85: "snow showers", 86: "heavy snow showers", 95: "thunderstorm", 96: "thunderstorm with hail", 99: "severe thunderstorm with hail" };
   var sa = { 0: "c\xE9u limpo", 1: "c\xE9u quase limpo", 2: "parcialmente nublado", 3: "encoberto", 45: "neblina", 48: "neblina com geada", 51: "garoa leve", 53: "garoa", 55: "garoa forte", 56: "garoa congelante", 57: "garoa congelante forte", 61: "chuva leve", 63: "chuva", 65: "chuva forte", 66: "chuva congelante", 67: "chuva congelante forte", 71: "neve leve", 73: "neve", 75: "neve forte", 77: "gr\xE3os de neve", 80: "pancadas leves", 81: "pancadas de chuva", 82: "pancadas fortes", 85: "pancadas de neve", 86: "pancadas de neve fortes", 95: "tempestade", 96: "tempestade com granizo", 99: "tempestade forte com granizo" };
@@ -809,7 +809,7 @@ E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\
     for (const n2 of String(e)) t += va(n2);
     return t * a / 1e3;
   }
-  function G2(e, a, t) {
+  function Q2(e, a, t) {
     const n2 = String(e).split(/\s+/).filter(Boolean), i2 = [];
     let r2 = "";
     for (const l3 of n2) {
@@ -829,7 +829,7 @@ E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\
   };
   g.prototype._text = function(e, a) {
     a = a || {};
-    const t = a.size || 10, n2 = a.color || [0.2, 0.25, 0.31], i2 = G2(e, t, a.maxW != null ? a.maxW : C - (a.indent || 0)), r2 = a.lh != null ? a.lh : t * 1.42;
+    const t = a.size || 10, n2 = a.color || [0.2, 0.25, 0.31], i2 = Q2(e, t, a.maxW != null ? a.maxW : C - (a.indent || 0)), r2 = a.lh != null ? a.lh : t * 1.42;
     for (const l3 of i2) {
       this._ensure(r2);
       const f = x2 + (a.indent || 0);
@@ -847,7 +847,7 @@ E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\
     return this._text(e, { size: 10, lh: 14.6, after: 7 });
   };
   g.prototype.vineta = function(e) {
-    const a = G2(e, 10, C - 16), t = 14.6;
+    const a = Q2(e, 10, C - 16), t = 14.6;
     for (let n2 = 0; n2 < a.length; n2++) {
       this._ensure(t), this.y -= t;
       const i2 = this.pages[this.pages.length - 1];
@@ -860,7 +860,7 @@ E o que eu N\xC3O faria: {no}`, ofrecerPdf: "Deixo tudo isto em um PDF de uma p\
   };
   g.prototype.aviso = function(e) {
     this._ensure(40);
-    const t = G2(e, 9.5, C - 24).length * 13 + 14;
+    const t = Q2(e, 9.5, C - 24).length * 13 + 14;
     this._ensure(t);
     const n2 = this.y;
     return this.pages[this.pages.length - 1].push(`0.99 0.95 0.80 rg ${x2} ${(n2 - t).toFixed(2)} ${C} ${t} re f 0.96 0.62 0.04 rg ${x2} ${(n2 - t).toFixed(2)} 2.4 ${t} re f`), this.y -= 11, this._text(e, { size: 9.5, lh: 13, indent: 12, maxW: C - 24, color: [0.42, 0.25, 0.03] }), this.y -= 8, this;
@@ -926,8 +926,8 @@ ${R}
 %%EOF
 `, c2($2);
     const U = p, F = new Uint8Array(U);
-    let Ze = 0;
-    for (const d of f) for (let b = 0; b < d.length; b++) F[Ze++] = d[b];
+    let Ge = 0;
+    for (const d of f) for (let b = 0; b < d.length; b++) F[Ge++] = d[b];
     return F;
   };
   g.prototype.descargar = function(e) {
@@ -937,7 +937,7 @@ ${R}
     }, 400), this;
   };
   g._measure = Ne;
-  g._wrap = G2;
+  g._wrap = Q2;
   var ya = { clinica: { id: "clinica", nombre: "Cl\xEDnica Dental Sonrisa", sector: "salud", saludo: "Hola, soy el asistente de Cl\xEDnica Dental Sonrisa. Dime qu\xE9 necesitas: agendar una cita, cambiarla, o saber horarios y precios.", servicios: [{ cuando: /limpieza|profilaxis|higiene/i, desc: "La limpieza dental dura 40 minutos e incluye revisi\xF3n completa. Sin dolor y sin cita previa larga: suelo tener huecos libres." }, { cuando: /blanqueamiento|estetica|estética/i, desc: "El blanqueamiento es una sesi\xF3n de 90 minutos con resultado desde el primer d\xEDa. Incluye control a la semana." }, { cuando: /ortodoncia|brackets|brackets|alinead/i, desc: "La ortodoncia empieza con un estudio de 30 minutos con radiograf\xEDa y plan de tratamiento escrito, sin compromiso." }], faq: [{ cuando: /horario|abren|cierran|s[áa]bado/i, a: "Abrimos de lunes a viernes de 9 a 19 y s\xE1bados de 9 a 14. Los domingos cerramos, pero el asistente sigue atendiendo y dejando citas para el lunes." }, { cuando: /precio|costo|cu[áa]nto (cuesta|vale|cobran)/i, a: "La valoraci\xF3n inicial es sin costo. Una limpieza son 60 USD, un blanqueamiento 180 y el estudio de ortodoncia 45. Todo se confirma por escrito antes de empezar." }, { cuando: /seguro|aseguradora|cobertura/i, a: "Trabajamos con las principales aseguradoras. Trae tu credencial y verificamos cobertura antes de citar, para que no haya sorpresas en el mostrador." }], cita: { cuando: /agendar|cita|reservar|apartar/i, a: "Puedo agendarte ahora mismo: dime qu\xE9 d\xEDa y hora te vienen bien y te lo confirmo en esta misma conversaci\xF3n." }, humano: { cuando: /emergencia|dolor fuerte|urgencia|sangr|golpe|accidente/i, a: "Esto necesita atenci\xF3n de una persona ya. Te paso con el equipo de urgencias ahora mismo; no cuelgues." }, fuera: "Eso lo revisa mejor alguien del equipo en persona. Te dejo con una persona para que te ayude con eso, sin que tengas que repetir nada." }, taller: { id: "taller", nombre: "Taller Mec\xE1nico El Pist\xF3n", sector: "automotriz", saludo: "Hola, soy el asistente de Taller Mec\xE1nico El Pist\xF3n. Dime qu\xE9 le pasa a tu carro o qu\xE9 servicio necesitas, y te digo si hay cupo hoy.", servicios: [{ cuando: /aceite|cambio de aceite|lubric/i, desc: "El cambio de aceite toma 45 minutos con filtro incluido. Si llegas antes de las 4, sales el mismo d\xEDa." }, { cuando: /freno|brake|pastilla/i, desc: "El cambio de pastillas toma 2 horas por eje. Revisamos disco y l\xEDquido sin costo y te mostramos las piezas antes de cambiarlas." }, { cuando: /diagnost|falla|check|luz/i, desc: "El diagn\xF3stico con esc\xE1ner toma 1 hora y te lo explicamos con la lectura en la mano, no con suposiciones." }], faq: [{ cuando: /horario|abren|cierran/i, a: "Lunes a viernes de 8 a 18 y s\xE1bados de 8 a 13. El carro puede quedarse en el patio cerrado si lo traes fuera de horario." }, { cuando: /precio|costo|cu[áa]nto|cotiz/i, a: "Te doy un rango ahora y el n\xFAmero cerrado cuando el carro est\xE9 en el elevador: mano de obra de diagn\xF3stico 40 USD, y toda pieza se aprueba contigo antes de montarla." }, { cuando: /garant|garant[ií]a/i, a: "Toda pieza que montamos lleva 6 meses de garant\xEDa por escrito, y la mano de obra 3. Si algo vuelve a fallar, lo ves sin cita." }], cita: { cuando: /cupo|agendar|cita|reservar|traer|hoy/i, a: "Dime marca, modelo y qu\xE9 le pasa, y te aparto el cupo: si es antes de las 4, sale el mismo d\xEDa." }, humano: { cuando: /accidente|grua|grúa|no arranca|humo|humo|huele a/i, a: "Eso no lo toco por tel\xE9fono: te paso con el mec\xE1nico de guardia ahora, y si no arranca te mando la gr\xFAa nuestra." }, fuera: "Eso lo ve mejor el mec\xE1nico con el carro enfrente. Te paso con alguien del equipo para que te d\xE9 el n\xFAmero cerrado." }, inmobiliaria: { id: "inmobiliaria", nombre: "Inmobiliaria Costa Norte", sector: "inmobiliario", saludo: "Hola, soy el asistente de Inmobiliaria Costa Norte. Dime qu\xE9 buscas: comprar, alquilar o vender, y en qu\xE9 zona.", servicios: [{ cuando: /comprar|compra|busco (piso|casa|apartamento)/i, desc: "Dime zona, presupuesto y habitaciones, y te mando ahora mismo las opciones reales que encajan, con fotos y precio. Sin listas infladas." }, { cuando: /alquilar|alquiler|renta/i, desc: "Para alquiler necesito zona y renta m\xE1xima: te mando las disponibles hoy y agendamos visitas en bloque el mismo d\xEDa." }, { cuando: /vender|venta|tasar|tasaci/i, desc: "La valoraci\xF3n es en tu propiedad, con comparables de la zona y un n\xFAmero por escrito. Sin compromiso de exclusividad para empezar." }], faq: [{ cuando: /horario|abren|cierran/i, a: "Oficina de lunes a viernes de 9 a 19 y s\xE1bados de 10 a 14. Las visitas se agendan tambi\xE9n fuera de horario, seg\xFAn la propiedad." }, { cuando: /comisi|comisi[oó]n|cu[áa]nto (cuesta|cobran)|precio del servicio/i, a: "La comisi\xF3n la paga quien vende y es un porcentaje cerrado que se firma por escrito antes de empezar. Quien compra no paga comisi\xF3n de agencia." }, { cuando: /hipoteca|financ|cr[eé]dito/i, a: "No somos banco, pero te conectamos con dos entidades que pre-aprueban en pocos d\xEDas y te dicen el n\xFAmero m\xE1ximo antes de visitar nada." }], cita: { cuando: /visita|visitar|agendar|ver (el|la|la propiedad)/i, a: "Dime qu\xE9 propiedad y qu\xE9 d\xEDa puedes, y te confirmo la visita con el asesor que tiene las llaves." }, humano: { cuando: /negoci|oferta|rebaj|contrato|firmar|legal/i, a: "Negociaci\xF3n y firmas las lleva una persona, no yo. Te paso con el asesor de la propiedad ahora mismo." }, fuera: "Eso lo responde mejor el asesor que conoce la propiedad. Te dejo con una persona para que te d\xE9 el dato exacto." } };
   function ba(e) {
     return { perfil: e, saludo: e.saludo, responder(a) {
@@ -953,11 +953,11 @@ ${R}
   function wa(e) {
     return ya[String(e).toLowerCase()] || null;
   }
-  var xa = "https://cdn.pixabay.com/audio/2026-03-28/audio_d4d1650584.mp3";
+  var xa = "/ambiente.mp3";
   var Ea = 0.1;
   var _a = 2500;
-  var La = 700;
-  var za = class {
+  var za = 700;
+  var La = class {
     constructor(a = {}) {
       this.puedeSonar = a.puedeSonar || (() => true), this.src = a.src || xa, this.volumen = Number.isFinite(a.volumen) ? Math.min(1, Math.max(0, a.volumen)) : Ea, this.el = null, this._raf = null, this.silenciado = false;
     }
@@ -978,7 +978,7 @@ ${R}
     }
     pausar() {
       const a = this.el;
-      !a || a.paused || this._fade(a, a.volume, 0, La, () => a.pause());
+      !a || a.paused || this._fade(a, a.volume, 0, za, () => a.pause());
     }
     reanudar() {
       !this.el || this.silenciado || !this.puedeSonar() || !this.el.paused && this.el.volume > 0 || this.iniciar();
@@ -986,12 +986,10 @@ ${R}
     alternarSilencio() {
       return this.silenciado = !this.silenciado, this.silenciado ? this.pausar() : this.iniciar(), this.silenciado;
     }
-    conectarGestos() {
-      const a = () => {
+    conectarScroll() {
+      window.addEventListener("scroll", () => {
         this.iniciar();
-      }, t = ["pointerdown", "keydown"];
-      for (const n2 of t) window.addEventListener(n2, a, { once: true, passive: true });
-      window.addEventListener("scroll", a, { once: true, passive: true });
+      }, { once: true, passive: true });
     }
     _fade(a, t, n2, i2, r2) {
       this._raf && cancelAnimationFrame(this._raf);
@@ -1058,14 +1056,14 @@ ${R}
       const i2 = await ha(t);
       n2 = await J2({ ciudad: i2.ciudad, pais: i2.pais, lat: i2.lat, lon: i2.lon });
     } catch {
-      n2 = await J2({ ciudad: c.ciudadRespaldo });
+      n2 = await J2({ ciudad: r.ciudadRespaldo });
     }
-    else n2 = await J2({ ciudad: c.ciudadRespaldo });
+    else n2 = await J2({ ciudad: r.ciudadRespaldo });
     return Math.round(performance.now() - e), Pe(n2), n2;
   }
   function Fe(e, a, t) {
     const n2 = e.querySelector(".cur");
-    if (X2) {
+    if (Z2) {
       e.textContent = a, n2 && (n2.hidden = false, e.appendChild(n2)), t && t();
       return;
     }
@@ -1077,11 +1075,11 @@ ${R}
       i2.textContent = a.slice(0, l3), l3 <= a.length ? (l3++, setTimeout(f, 15 + Math.random() * 24)) : (r2.remove(), t && t());
     })();
   }
-  var L = new URLSearchParams(location.search);
-  var I = wa(L.get("negocio"));
+  var z = new URLSearchParams(location.search);
+  var I = wa(z.get("negocio"));
   var w = null;
   var h = new l2({ remoto: null, supabase: null });
-  var E2 = new r(h);
+  var E2 = new c(h);
   var He = new J();
   var ve = false;
   setInterval(() => h.sincronizar(), 2e4);
@@ -1105,25 +1103,25 @@ ${R}
     let i2 = n2.texto, r2 = "motor", l3 = n2.guion.intencion, f = null;
     return n2.texto = i2, h.registrar("turno", { canal: a, idioma: m.codigo, modo: r2, usuario: e, intencion: l3, confianza: f, respuesta: i2, guion: n2.guion }), n2;
   }
-  var m = Z(L.get("lang") || navigator.language || "es");
+  var m = Z(z.get("lang") || navigator.language || "es");
   var s2 = null;
   var y = null;
   var A2 = false;
   var Y2 = false;
   var ne = [];
-  var z = o3("mensajes");
+  var L = o3("mensajes");
   var N2 = o3("entrada");
   function P2(e, a) {
     const t = document.createElement("div");
-    return t.className = "msg " + e, t.textContent = a, z.appendChild(t), z.scrollTop = z.scrollHeight, t;
+    return t.className = "msg " + e, t.textContent = a, L.appendChild(t), L.scrollTop = L.scrollHeight, t;
   }
-  function Q2(e) {
+  function X2(e) {
     const a = P2("bot", "");
-    return a.innerHTML = e.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"), z.scrollTop = z.scrollHeight, a;
+    return a.innerHTML = e.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"), L.scrollTop = L.scrollHeight, a;
   }
   function qa() {
     const e = document.createElement("div");
-    return e.className = "typing", e.innerHTML = "<i></i><i></i><i></i>", z.appendChild(e), z.scrollTop = z.scrollHeight, e;
+    return e.className = "typing", e.innerHTML = "<i></i><i></i><i></i>", L.appendChild(e), L.scrollTop = L.scrollHeight, e;
   }
   function q(e) {
     const a = o3("quick");
@@ -1138,7 +1136,7 @@ ${R}
     o3("p-estado").textContent = a >= 5 ? "brief listo para generar" : "diagn\xF3stico en curso \xB7 paso " + Math.max(1, a) + " de 5";
   }
   function M2() {
-    o3("panel").classList.add("abierto"), o3("fab-badge").style.display = "none", !window.__saludado && A2 && (window.__saludado = true, Q2(window.__primerMensaje), Re(), q(["Vendemos repuestos", "Somos una cl\xEDnica", "Software para log\xEDstica"])), N2.focus();
+    o3("panel").classList.add("abierto"), o3("fab-badge").style.display = "none", !window.__saludado && A2 && (window.__saludado = true, X2(window.__primerMensaje), Re(), q(["Vendemos repuestos", "Somos una cl\xEDnica", "Software para log\xEDstica"])), N2.focus();
   }
   function Da() {
     o3("panel").classList.remove("abierto");
@@ -1150,7 +1148,7 @@ ${R}
     setTimeout(async () => {
       a.remove();
       const t = await Oe(e, "chat");
-      Q2(t.texto), ne.push({ role: "bot", content: t.texto }), Re(), t.listoParaPdf ? (o3("pdfbtn").style.display = "block", Ue(), q([]), Ke(), E2.marcar("lead"), He.guardar({ nombre: s2.lead.nombre, negocio: s2.lead.sector, necesidad: s2.lead.dolor, idioma: m.codigo, resumen: (s2.lead.dolor || "").slice(0, 200) }), h.registrar("lead", { lead: s2.lead, correcciones: s2.estado.correcciones }), h.registrar("pdf", { lead: s2.lead }), h.sincronizar()) : s2.estado.etapa === "sector" ? q(["Vendemos repuestos", "Somos una cl\xEDnica", "Software para log\xEDstica"]) : s2.estado.etapa === "volumen" ? q(["Unas 300 al mes", "No s\xE9"]) : (s2.estado.etapa === "propuesta" || s2.estado.etapa === "pdf_ofrecido") && q(["S\xED, dame el PDF", "No, gracias"]), Y2 = false, o3("enviar").disabled = false, N2.focus();
+      X2(t.texto), ne.push({ role: "bot", content: t.texto }), Re(), t.listoParaPdf ? (o3("pdfbtn").style.display = "block", Ue(), q([]), Ke(), E2.marcar("lead"), He.guardar({ nombre: s2.lead.nombre, negocio: s2.lead.sector, necesidad: s2.lead.dolor, idioma: m.codigo, resumen: (s2.lead.dolor || "").slice(0, 200) }), h.registrar("lead", { lead: s2.lead, correcciones: s2.estado.correcciones }), h.registrar("pdf", { lead: s2.lead }), h.sincronizar()) : s2.estado.etapa === "sector" ? q(["Vendemos repuestos", "Somos una cl\xEDnica", "Software para log\xEDstica"]) : s2.estado.etapa === "volumen" ? q(["Unas 300 al mes", "No s\xE9"]) : (s2.estado.etapa === "propuesta" || s2.estado.etapa === "pdf_ofrecido") && q(["S\xED, dame el PDF", "No, gracias"]), Y2 = false, o3("enviar").disabled = false, N2.focus();
     }, 420 + Math.random() * 420);
   }
   function Ue() {
@@ -1170,11 +1168,11 @@ ${R}
     const e = s2.lead, a = y, t = new g({ titulo: "Brief de implementaci\xF3n de IA \u2014 " + (e.empresa || e.nombre) });
     t.titulo("Brief de implementaci\xF3n de IA"), t.parrafo("Preparado para " + (e.empresa || "\u2014") + " \xB7 " + a.ciudad + " \xB7 " + Ia() + " \xB7 Primer contacto: " + a.hora + " hora local, " + a.temp + "\xB0 y " + a.clima + "."), t.sub("1 \xB7 Datos del prospecto"), t.claveValor("Contacto", e.nombre || "\u2014"), t.claveValor("Email", e.email || "\u2014"), e.telefono && t.claveValor("Tel\xE9fono", e.telefono), t.claveValor("Empresa", e.empresa || "\u2014"), t.claveValor("Sector", e.sector || "\u2014"), t.claveValor("Volumen declarado", e.volumen || "sin dato"), t.sub("2 \xB7 Dolor declarado"), t.parrafo(e.dolor || "\u2014"), t.sub("3 \xB7 Propuesta");
     const n2 = s2.estado.propuesta || E.propuestas.porDefecto;
-    t.parrafo(n2.titulo + ". " + n2.que), t.parrafo(n2.fases), t.claveValor("Inversi\xF3n estimada", n2.inversion), t.sub("4 \xB7 Expectativas ajustadas durante la conversaci\xF3n"), s2.estado.correcciones.length ? s2.estado.correcciones.forEach((i2) => t.vineta(i2.porque)) : t.vineta("No fue necesario ajustar expectativas: el planteamiento inicial era correcto."), t.aviso("Lo que NO recomendamos automatizar: " + n2.no), t.sub("5 \xB7 Siguientes pasos"), t.vineta("Revisar este brief con quien decida contigo."), t.vineta("Escr\xEDbenos por WhatsApp: " + c.marca.whatsappLegible + " (" + c.marca.waLink + ")"), t.vineta("Si se aprueba: kickoff y acceso a sistemas en la semana 1."), t.separador(), t.parrafo(c.pdf.pie + " \xB7 WhatsApp " + c.marca.whatsappLegible + " \xB7 " + c.marca.web + " \xB7 " + c.marca.ubicacion), t.descargar(c.pdf.nombreArchivo + "-" + ka(e.empresa || e.nombre || "brief") + ".pdf"), P2("sys", "PDF generado y descargado.");
+    t.parrafo(n2.titulo + ". " + n2.que), t.parrafo(n2.fases), t.claveValor("Inversi\xF3n estimada", n2.inversion), t.sub("4 \xB7 Expectativas ajustadas durante la conversaci\xF3n"), s2.estado.correcciones.length ? s2.estado.correcciones.forEach((i2) => t.vineta(i2.porque)) : t.vineta("No fue necesario ajustar expectativas: el planteamiento inicial era correcto."), t.aviso("Lo que NO recomendamos automatizar: " + n2.no), t.sub("5 \xB7 Siguientes pasos"), t.vineta("Revisar este brief con quien decida contigo."), t.vineta("Escr\xEDbenos por WhatsApp: " + r.marca.whatsappLegible + " (" + r.marca.waLink + ")"), t.vineta("Si se aprueba: kickoff y acceso a sistemas en la semana 1."), t.separador(), t.parrafo(r.pdf.pie + " \xB7 WhatsApp " + r.marca.whatsappLegible + " \xB7 " + r.marca.web + " \xB7 " + r.marca.ubicacion), t.descargar(r.pdf.nombreArchivo + "-" + ka(e.empresa || e.nombre || "brief") + ".pdf"), P2("sys", "PDF generado y descargado.");
   }
-  var X2 = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var Z2 = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function ja(e, a, t) {
-    if (X2) {
+    if (Z2) {
       e.textContent = String(a);
       return;
     }
@@ -1195,7 +1193,7 @@ ${R}
       t.setAttribute("data-reveal", ""), t.style.transitionDelay = Math.min(n2 % 4, 3) * 70 + "ms";
     }), document.querySelectorAll(".fill").forEach((t) => {
       t.dataset.w = t.style.width, t.style.width = "0%";
-    }), X2 || !("IntersectionObserver" in window)) {
+    }), Z2 || !("IntersectionObserver" in window)) {
       e.forEach(ge);
       return;
     }
@@ -1207,7 +1205,7 @@ ${R}
     e.forEach((t) => a.observe(t));
   }
   function Pa() {
-    if (X2 || !("IntersectionObserver" in window)) return;
+    if (Z2 || !("IntersectionObserver" in window)) return;
     const e = document.querySelectorAll(".hero, header, nav, .panel, .ticker, .lm, .qr-grid, section[id]"), a = new IntersectionObserver((t) => {
       t.forEach((n2) => n2.target.classList.toggle("anim-pausada", !n2.isIntersecting));
     }, { rootMargin: "250px" });
@@ -1265,10 +1263,10 @@ ${R}
     E2.marcar("calculadora_cta", { anual: e }), h.registrar("calculadora", { anual: e, consultas: o3("c-consultas").value, valor: o3("c-valor").value, pierde: o3("c-pierde").value, horas: o3("c-horas").value, costohora: o3("c-costohora").value }), M2(), k2("Seg\xFAn la calculadora de tu sitio, estoy dejando en la mesa unos " + V2(e) + " al a\xF1o. Quiero recuperar ese dinero: \xBFpor d\xF3nde empezamos?");
   });
   var Fa = { [l.ESCUCHANDO]: "escuch\xE1ndote", [l.PENSANDO]: "pensando\u2026", [l.HABLANDO]: "hablando", [l.INACTIVA]: "en pausa" };
-  var Z2 = /^\/voz\/?/.test(location.pathname);
+  var G2 = /^\/voz\/?/.test(location.pathname);
   var S = o3("amb-boton");
-  Z2 && S && S.remove();
-  var T = new za({ src: c.ambiente && c.ambiente.src || void 0, volumen: c.ambiente && c.ambiente.volumen, puedeSonar: () => !Z2 && !!o3("llamada") && !o3("llamada").classList.contains("abierta") });
+  G2 && S && S.remove();
+  var T = new La({ src: r.ambiente && r.ambiente.src || void 0, volumen: r.ambiente && r.ambiente.volumen, puedeSonar: () => !G2 && !!o3("llamada") && !o3("llamada").classList.contains("abierta") });
   function ce() {
     if (!S) return;
     const e = T.el, a = !!e && !e.paused && e.volume > 0.01;
@@ -1281,8 +1279,8 @@ ${R}
     T.puedeSonar() ? T.reanudar() : T.pausar(), setTimeout(ce, 900);
   });
   var we = o3("llamada");
-  we && !Z2 && Ha.observe(we, { attributes: true, attributeFilter: ["class"] });
-  Z2 || (T.conectarGestos(), setInterval(ce, 4e3));
+  we && !G2 && Ha.observe(we, { attributes: true, attributeFilter: ["class"] });
+  G2 || (T.conectarScroll(), setInterval(ce, 4e3));
   var _2 = null;
   function O2() {
     return _2 || (_2 = new j({ responder: (e) => Oe(e, "voz"), onEstado: (e) => {
@@ -1293,9 +1291,9 @@ ${R}
     }, onPatron: (e) => {
       o3("ll-respuesta").dataset.patron = e;
     }, onRespuesta: (e, a) => {
-      Q2(e), ne.push({ role: "bot", content: e }), o3("ll-respuesta").textContent = "patr\xF3n: " + (o3("ll-respuesta").dataset.patron || "\u2014") + `
+      X2(e), ne.push({ role: "bot", content: e }), o3("ll-respuesta").textContent = "patr\xF3n: " + (o3("ll-respuesta").dataset.patron || "\u2014") + `
 ` + e.slice(0, 200), a && a.listoParaPdf && (o3("pdfbtn").style.display = "block", Ke(), Ue(), P2("sys", "Brief listo: el bot\xF3n de PDF est\xE1 abajo en el chat."));
-    }, fusionar: async (e) => null, conf: { lang: m.stt || c.voz && c.voz.lang || "es-ES", autoEscucha: !c.voz || c.voz.autoEscucha !== false, genero: c.voz && c.voz.genero || "femenina", prefVoz: m.voz || c.voz && c.voz.prefVoz || "", velocidad: c.voz && c.voz.velocidad || 1.04, tono: c.voz && c.voz.tono || 1 } }), _2);
+    }, fusionar: async (e) => null, conf: { lang: m.stt || r.voz && r.voz.lang || "es-ES", autoEscucha: !r.voz || r.voz.autoEscucha !== false, genero: r.voz && r.voz.genero || "femenina", prefVoz: m.voz || r.voz && r.voz.prefVoz || "", velocidad: r.voz && r.voz.velocidad || 1.04, tono: r.voz && r.voz.tono || 1 } }), _2);
   }
   function Be() {
     const e = o3("llamada");
@@ -1305,7 +1303,7 @@ ${R}
       o3("ll-aviso").textContent = a.stt ? "Tu navegador no tiene s\xEDntesis de voz: ver\xE1s las respuestas escritas." : "Tu navegador no reconoce voz. Usa Chrome, Edge o Safari. El chat de texto sigue funcionando.", o3("ll-estado").textContent = "voz no disponible";
       return;
     }
-    if (L.get("voz") === "1" && !window.__vozIniciada) {
+    if (z.get("voz") === "1" && !window.__vozIniciada) {
       o3("ll-tap").hidden = false, o3("ll-estado").textContent = "listo para hablarte";
       return;
     }
@@ -1329,9 +1327,9 @@ ${R}
   ee && ee.addEventListener("click", () => {
     ee.hidden = true;
     const e = O2();
-    window.__vozIniciada = true, E2.marcar("llamada"), h.registrar("llamada", { evento2: "inicio", idioma: m.codigo, origen: L.get("voz") === "1" ? "qr" : "web" }), e.iniciar(w && w.saludo || m.saludoVoz || window.__primerMensaje);
+    window.__vozIniciada = true, E2.marcar("llamada"), h.registrar("llamada", { evento2: "inicio", idioma: m.codigo, origen: z.get("voz") === "1" ? "qr" : "web" }), e.iniciar(w && w.saludo || m.saludoVoz || window.__primerMensaje);
   });
-  if (L.get("voz") === "1") {
+  if (z.get("voz") === "1") {
     const e = setInterval(() => {
       A2 && (clearInterval(e), Be());
     }, 200);
@@ -1363,8 +1361,8 @@ ${R}
   o3("cerrar").onclick = Da;
   o3("nav-agente").onclick = M2;
   o3("cta-agente").onclick = M2;
-  var Le = o3("cta-escribir");
-  Le && Le.addEventListener("click", () => {
+  var ze = o3("cta-escribir");
+  ze && ze.addEventListener("click", () => {
     M2(), h.registrar("cta", { evento2: "chat_texto" }), setTimeout(() => {
       try {
         N2.focus();
@@ -1388,8 +1386,8 @@ ${R}
     const e = o3("lm-abrir");
     e && e.addEventListener("click", () => h.registrar("cta", { evento2: "auditoria_abrir" }));
   }
-  var ze = o3("salida-pdf");
-  ze && ze.addEventListener("click", () => {
+  var Le = o3("salida-pdf");
+  Le && Le.addEventListener("click", () => {
     if (W2) {
       h.registrar("cta", { evento2: "brief_pdf" }), Ve();
       return;
@@ -1404,7 +1402,7 @@ ${R}
     const a = [];
     e.nombre && a.push("Soy " + e.nombre), e.empresa && a.push("de " + e.empresa), e.sector && a.push("(" + e.sector + ")"), e.dolor && a.push("y quiero resolver: " + String(e.dolor).slice(0, 80));
     const t = "Hola, vengo del agente de SINAPTIA. " + a.join(" ") + ". \xBFRetomamos?";
-    ae.setAttribute("href", c.marca.waLink + "?text=" + encodeURIComponent(t));
+    ae.setAttribute("href", r.marca.waLink + "?text=" + encodeURIComponent(t));
   });
   We();
   o3("enviar").onclick = () => k2();
@@ -1412,7 +1410,7 @@ ${R}
   N2.addEventListener("keydown", (e) => {
     e.key === "Enter" && !e.shiftKey && (e.preventDefault(), k2());
   });
-  function Ge() {
+  function Qe() {
     const e = o3("nav-id");
     e && (e.innerHTML = "", X.forEach((a) => {
       const t = document.createElement("button");
@@ -1420,17 +1418,17 @@ ${R}
     }));
   }
   function Ba(e) {
-    if (m.codigo !== e && (m = Z(e), document.documentElement.lang = m.codigo, Ge(), _2 && (_2.detener(), _2 = null, window.__vozIniciada = false), z.innerHTML = "", q([]), window.__saludado = false, y)) {
-      y.saludo = Qe(y), y.clima = H2(y.code, m.codigo);
+    if (m.codigo !== e && (m = Z(e), document.documentElement.lang = m.codigo, Qe(), _2 && (_2.detener(), _2 = null, window.__vozIniciada = false), L.innerHTML = "", q([]), window.__saludado = false, y)) {
+      y.saludo = Xe(y), y.clima = H2(y.code, m.codigo);
       const a = o3("ctx-cond");
       a && (a.textContent = y.clima), s2 = Q(m, y);
       const t = s2.iniciar();
-      A2 = true, window.__primerMensaje = t, Q2(t), Fe(o3("saludo"), t.split(`
+      A2 = true, window.__primerMensaje = t, X2(t), Fe(o3("saludo"), t.split(`
 
 `)[0]), o3("llamada").classList.contains("abierta") && (O2(), o3("ll-tap").hidden = false, o3("ll-estado").textContent = "listo");
     }
   }
-  Ge();
+  Qe();
   se(() => {
     $a(), Na(), Pa();
   });
@@ -1456,18 +1454,18 @@ ${R}
       t.addEventListener("click", () => setTimeout(() => Ka("situacion"), 1400));
     });
   });
-  function Qe(e) {
+  function Xe(e) {
     const a = parseInt(String(e.hora).slice(0, 2), 10);
     return m.cuerdas && m.cuerdas.saludoHora ? m.cuerdas.saludoHora(a) : e.saludo;
   }
-  var Xe = {};
+  var Ze = {};
   for (const e of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {
-    const a = L.get(e);
-    a && (Xe[e] = String(a).slice(0, 80));
+    const a = z.get(e);
+    a && (Ze[e] = String(a).slice(0, 80));
   }
-  E2.marcar("visita", { origen: L.get("voz") === "1" ? "qr" : L.get("negocio") ? "demo-" + L.get("negocio") : document.referrer ? "referido" : "directo", idioma: m.codigo, ...Xe });
+  E2.marcar("visita", { origen: z.get("voz") === "1" ? "qr" : z.get("negocio") ? "demo-" + z.get("negocio") : document.referrer ? "referido" : "directo", idioma: m.codigo, ...Ze });
   Ma().then((e) => {
-    y = e, e.saludo = Qe(e), s2 = Q(m, e), I && (w = ba(I));
+    y = e, e.saludo = Xe(e), s2 = Q(m, e), I && (w = ba(I));
     const a = w ? w.saludo : s2.iniciar();
     if (I) {
       const t = o3("nav-live-txt");

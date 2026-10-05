@@ -1,22 +1,22 @@
 /**
- * ambiente.js — Música ambiental del sitio (la sala de espera).
+ * ambiente.js — Reproductor ambiental del sitio (la sala de espera).
  *
  * Reglas del producto:
- *   · suena al llegar, MUY bajita y en bucle — acompaña, nunca molesta;
+ *   · suena SOLO al hacer scroll (el gesto que demuestra presencia),
+ *     MUY bajita y en bucle — acompaña, nunca molesta;
  *   · entra el modo voz → se pausa (Nexa no compite con la música);
  *   · sale el modo voz → retoma donde quedó;
  *   · en /voz NO hay música: esa página ES la sala de voz.
  *
- * El audio solo puede arrancar tras un gesto del usuario (política de
- * autoplay de los navegadores), por eso se arma una red de gatillos:
- * click / tecla / toque / scroll. Si el visitante nunca interactúa,
- * simplemente no suena — comportamiento correcto, no un fallo.
+ * Fuente única: /ambiente.mp3 (public/, mismo origen — sin CDN externo).
+ * El navegador bloquea play() sin gesto previo; el scroll cuenta como
+ * gesto válido en todos los navegadores modernos. Sin scroll, silencio.
  */
 
-const SRC = 'https://cdn.pixabay.com/audio/2026-03-28/audio_d4d1650584.mp3';
-const VOLUMEN = 0.1;          // ~10%: casi susurro, por debajo de la voz
-const FASE_IN_MS = 2500;      // aparece despacio: nadie se asusta con música súbita
-const FASE_OUT_MS = 700;      // al pausar (modo voz) se apaga rápido pero suave
+const SRC = '/ambiente.mp3';   // único origen: archivo local en public/
+const VOLUMEN = 0.1;           // ~10%: casi susurro, por debajo de la voz
+const FASE_IN_MS = 2500;       // aparece despacio: nadie se asusta con música súbita
+const FASE_OUT_MS = 700;       // al pausar (modo voz) se apaga rápido pero suave
 
 export class Ambiente {
   /**
@@ -76,13 +76,9 @@ export class Ambiente {
     return this.silenciado;
   }
 
-  /** Encendido perezoso: el primer gesto del visitante dispara la música. */
-  conectarGestos() {
-    const encender = () => { this.iniciar(); };
-    const eventos = ['pointerdown', 'keydown'];
-    for (const ev of eventos) window.addEventListener(ev, encender, { once: true, passive: true });
-    // respaldo: quien solo hace scroll también es un visitante presente
-    window.addEventListener('scroll', encender, { once: true, passive: true });
+  /** Único gatillo: el primer scroll del visitante enciende la sala. */
+  conectarScroll() {
+    window.addEventListener('scroll', () => { this.iniciar(); }, { once: true, passive: true });
   }
 
   /** Rampa de volumen con requestAnimationFrame; cancela rampas anteriores. */

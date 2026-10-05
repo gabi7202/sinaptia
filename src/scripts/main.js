@@ -546,9 +546,9 @@ const TEXTO_ESTADO = {
 };
 
 /* ══════════ 5c · Música ambiental de la sala ══════════
-   Reglas del producto: suena muy bajita al llegar; entra el modo voz → se
-   pausa (y retoma al salir); en /voz nunca hay música. main.js solo corre
-   en la home, pero además lo blindamos por ruta por si alguien lo reusa. */
+   Reglas del producto: suena SOLO al hacer scroll, muy bajita; entra el
+   modo voz → se pausa (y retoma al salir); en /voz nunca hay música.
+   main.js solo corre en la home, pero además lo blindamos por ruta. */
 const EN_VOZ = /^\/voz\/?/.test(location.pathname);
 const ambBtn = $('amb-boton');
 if (EN_VOZ) { if (ambBtn) ambBtn.remove(); }        // en /voz ni existe el control
@@ -580,7 +580,7 @@ const llObs = new MutationObserver(() => {
 const ovLlamada = $('llamada');
 if (ovLlamada && !EN_VOZ) llObs.observe(ovLlamada, { attributes: true, attributeFilter: ['class'] });
 if (!EN_VOZ) {
-  ambiente.conectarGestos();          // primer click/tecla/scroll enciende la sala
+  ambiente.conectarScroll();        // el primer scroll enciende la sala
   setInterval(pintarAmbiente, 4000);  // el indicador sigue fiel al estado real
 }
 

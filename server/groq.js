@@ -20,9 +20,31 @@
 
 const API = 'https://api.groq.com/openai/v1/chat/completions';
 
-/** Modelos por defecto: rápidos y con tool calling (ver CHAT_MODEL/EXTRACT_MODEL). */
-export const MODELO_CHAT = 'compound-mini';
-export const MODELO_EXTRACT = 'llama-3.3-70b-versatile';
+/**
+ * Modelo de conversación. El default está VERIFICADO contra la API real de
+ * Groq (2026-10-05): el catálogo de cada cuenta se consulta con
+ * GET /openai/v1/models y los modelos que no existan devuelven 400
+ * model_not_found y rompen el chat — por eso NO se hardcodea aquí: se lee
+ * del entorno en cada llamada (los módulos ESM se memoizan y las env vars
+ * cambian entre despliegues sin tocar código).
+ *   · openai/gpt-oss-120b → razona + tool calling verificado en vivo
+ *   · compound-mini       → solo si aparece en el listado de TU cuenta
+ * Overridable con CHAT_MODEL / EXTRACT_MODEL.
+ */
+export function modeloChat(env) {
+  return String((env && env.CHAT_MODEL) || 'openai/gpt-oss-120b');
+}
+export function modeloExtract(env) {
+  return String((env && env.EXTRACT_MODEL) || 'openai/gpt-oss-20b');
+}
+
+/**
+ * Los modelos gpt-oss exigen max_completion_tokens; los demás aceptan
+ * max_tokens. Se decide por nombre para no romper ninguno.
+ */
+export function campoLimite(modelo) {
+  return String(modelo || '').includes('gpt-oss') ? 'max_completion_tokens' : 'max_tokens';
+}
 
 /** finish_reason de Groq → vocabulario interno ('tool_calls' | 'length' | 'stop'). */
 export function mapearFinish(f) {
@@ -66,9 +88,10 @@ export async function groq(env, opts, fetchImpl) {
     stream = false, json = false, onTexto = null,
   } = opts;
 
+  const modeloFinal = model || modeloChat(env);
   const cuerpo = {
-    model: model || MODELO_CHAT,
-    max_tokens,
+    model: modeloFinal,
+    [campoLimite(modeloFinal)]: max_tokens,   // gpt-oss → max_completion_tokens
     temperature: 0.6,
     messages: [
       ...(system ? [{ role: 'system', content: String(system) }] : []),

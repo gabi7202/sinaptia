@@ -8,11 +8,15 @@
  *
  * Variables del entorno (Vercel → Storage → Create Database → "Show CLI command"
  * o Environment Variables al vincular; las inyecta también `vercel link` tras
- * `vercel add kv KKV`):
- *   KKV_URL           redis://default:PASSWORD@host:port
- *   KKV_TOKEN         token de acceso (user default)
- *   KKV_REST_API_URL  https://x.upstash.io
- *   KKV_REST_API_TOKEN  <== la usamos (REST puro por fetch: funciona en serverless)
+ * `vercel add kv KKV`). Se aceptan AMBAS nomenclaturas, la nuestra y la que
+ * Vercel genera al crear/linkear una base KV (nombre de la base + _REST_API_*):
+ *   KKV_URL / <BASE>_URL              redis://default:PASSWORD@host:port
+ *   KKV_TOKEN / <BASE>_TOKEN          token de acceso (user default)
+ *   KKV_REST_API_URL / <BASE>_REST_API_URL   https://x.upstash.io
+ *   KKV_REST_API_TOKEN / <BASE>_REST_API_TOKEN
+ *     <== la que usamos (REST puro por fetch: funciona en serverless)
+ * Ej.: si tu base se llama "voz", Vercel inyecta VOZ_URL, VOZ_REST_API_URL y
+ * VOZ_REST_API_TOKEN — ya no hace falta renombrar nada a mano.
  *
  * Formato de comandos (protocolo RESP sobre JSON, el que habla Upstash REST):
  *   POST {base}/        body: ["SET","clave","valor"]        → {result:"OK"}
@@ -63,8 +67,17 @@ export function parsear(v) {
  */
 export function crearKV(env, fetchImpl) {
   const f = fetchImpl || ((...a) => globalThis.fetch(...a));
-  const base = String((env && env.KKV_REST_API_URL) || '').replace(/\/+$/, '');
-  const token = String((env && env.KKV_REST_API_TOKEN) || '');
+  // Nomenclatura flexible: KKV_* (nuestra) o <BASE>_REST_API_* (la que inyecta
+  // Vercel al crear/linkear una base KV — p. ej. VOZ_REST_API_URL / _TOKEN).
+  const e = env || {};
+  let base = '', token = '';
+  for (const [k, v] of Object.entries(e)) {
+    if (!/_REST_API_TOKEN$/.test(k)) continue;
+    const urlKey = `${k.slice(0, -'_TOKEN'.length)}_URL`;   // X_REST_API_URL
+    if (e[urlKey]) { base = String(e[urlKey]); token = String(v); break; }
+  }
+  base = String(base || e.KKV_REST_API_URL || '').replace(/\/+$/, '');
+  token = String(token || e.KKV_REST_API_TOKEN || '');
   const urlCmd = `${base}/`;
   const auth = {
     'Content-Type': 'application/json',
