@@ -19,6 +19,8 @@
   "license": "ISC",
   "description": "Sitio Astro que saluda con tu ciudad y tu clima, conversa como consultor, corrige planteamientos malos y entrega un brief en PDF. Estático (GitHub Pages) con backend opcional de voz real: Gemini (Google AI Studio, o Grok/xAI) en streaming + Supabase (api/voz, solo Vercel).",
   "dependencies": {
+    "@astrojs/vercel": "^9.0.5",
+    "@vercel/analytics": "^2.0.1",
     "astro": "^5.18.2",
     "esbuild": "0.28.2",
     "qrcode": "^1.5.4"
