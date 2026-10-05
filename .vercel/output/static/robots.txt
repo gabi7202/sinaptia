@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /panel
-Disallow: /interprete
-Sitemap: https://sinaptia.vercel.app/sitemap.xml

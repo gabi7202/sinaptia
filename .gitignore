@@ -1,3 +1,5 @@
-# Build artifacts
+# Dependencias y build
+node_modules/
+.astro/
 .vercel/
 dist/
