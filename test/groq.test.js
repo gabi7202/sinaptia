@@ -22,12 +22,12 @@ const sseBody = (chunks) => {
 
 console.log('\n\x1b[36m  Groq: proveedor, cuerpo, streaming y tools\x1b[0m');
 
-t('proveedor: GROQ_API_KEY elige groq (antes que grok); GEMINI gana por defecto; LLM_PROVIDER fuerza',
+t('proveedor: Groq es el ÚNICO proveedor (Gemini/Grok/xAI eliminados), sin importar qué claves haya',
   proveedor({ GROQ_API_KEY: 'g' }) === 'groq' &&
   proveedor({ XAI_API_KEY: 'x', GROQ_API_KEY: 'g' }) === 'groq' &&
-  proveedor({ GEMINI_API_KEY: 'm', GROQ_API_KEY: 'g' }) === 'gemini' &&
+  proveedor({ GEMINI_API_KEY: 'm', GROQ_API_KEY: 'g' }) === 'groq' &&
   proveedor({ XAI_API_KEY: 'x', LLM_PROVIDER: 'groq' }) === 'groq' &&
-  proveedor({}) === 'grok');
+  proveedor({}) === 'groq');
 
 t('modelos por defecto cambian con el proveedor',
   modeloChat({ GROQ_API_KEY: 'g' }) === MODELO_CHAT_FN({}) &&
