@@ -71,82 +71,12 @@ export function json(res, status, cuerpo) {
   res.status(status).send(JSON.stringify(cuerpo));
 }
 
-// ── cliente Supabase mínimo sobre PostgREST ──────────────────────
-//
-// Cubre exactamente lo que usaba B con supabase-js:
-//   select eq/ilike/order/limit · count exact · insert · update
-// Todo con fetch y las query strings de PostgREST, sin magia.
+/* ══════════ Vercel KV: la persistencia del backend (Sinaptia · 2026-10) ══════════
+   Antes esto era Supabase (PostgREST). Se ELIMINÓ: la memoria de clientes,
+   sesiones y transcripciones vive ahora en Vercel KV (Upstash Redis), que
+   Vercel trae en su plan — ver server/kv.js. Los helpers eq/ilikeContiene
+   desaparecieron con PostgREST: el matching de buscar_cliente usa índices de
+   clave exacta (ln:/le:/lt:) escritos por db.saveLead(). */
 
-export function crearSupabase(env, fetchImpl) {
-  const f = fetchImpl || ((...a) => globalThis.fetch(...a));
-  const url = String((env && env.SUPABASE_URL) || '').replace(/\/+$/, '');
-  // La clave del servidor tiene varios nombres según cómo se vinculó Supabase:
-  //   · SUPABASE_SERVICE_KEY  → el que usa este proyecto (service_role, histórico)
-  //   · SUPABASE_SECRET_KEY   → el que inyecta la integración de Vercel (nomenclatura nueva)
-  //   · SUPABASE_SERVICE_ROLE_KEY → nombre largo que usan otras guías
-  // Se aceptan los tres para que "vincular Supabase desde Vercel" funcione sin
-  // pasos extra. NUNCA la publishable/anon: esa no salta RLS y las tablas están
-  // cerradas a propósito (ver server/schema.sql).
-  const key = String((env && (env.SUPABASE_SERVICE_KEY || env.SUPABASE_SECRET_KEY || env.SUPABASE_SERVICE_ROLE_KEY)) || '');
-  const base = `${url}/rest/v1`;
-  const auth = { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
-
-  async function llamar(path, opts = {}) {
-    const r = await f(base + path, { ...opts, headers: { ...auth, ...(opts.headers || {}) } });
-    // Diagnóstico en los logs de Vercel: un 404 aquí casi siempre es "falta correr
-    // schema.sql" y un 401/403 es "la clave no es la secret/service_role".
-    if (!r.ok) console.error(`[supabase] ${(opts.method || 'GET')} ${path.split('?')[0]} → ${r.status}`);
-    return r;
-  }
-
-  return {
-    disponible: () => !!(url && key),
-
-    /** query = query string completa, ej: 'select=*&id=eq.X&order=created_at.desc&limit=1' */
-    async select(tabla, query = '', { single = false } = {}) {
-      const r = await llamar(`/${tabla}?${query}`);
-      if (!r.ok) return { data: null, error: `supabase ${r.status}`, status: r.status };
-      const data = await r.json();
-      const filas = Array.isArray(data) ? data : [data];
-      return { data: single ? (filas[0] ?? null) : filas, error: null };
-    },
-
-    /** COUNT exacto vía Prefer + Range (se lee del Content-Range). */
-    async contar(tabla, query = '') {
-      const sep = query ? '&' : '';
-      const r = await llamar(`/${tabla}?${query}${sep}select=id`, {
-        method: 'GET',
-        headers: { Prefer: 'count=exact', Range: '0-0' },
-      });
-      const cr = String(r.headers.get('content-range') || r.headers.get('Content-Range') || '');
-      const total = cr.split('/')[1];
-      return total != null && total !== '*' ? Number(total) : 0;
-    },
-
-    async insertar(tabla, fila) {
-      const r = await llamar(`/${tabla}`, {
-        method: 'POST',
-        headers: { Prefer: 'return=representation' },
-        body: JSON.stringify(fila),
-      });
-      if (!r.ok) return { data: null, error: `supabase ${r.status}` };
-      const j = await r.json();
-      return { data: Array.isArray(j) ? (j[0] ?? null) : j, error: null };
-    },
-
-    async actualizar(tabla, query, fila) {
-      const r = await llamar(`/${tabla}?${query}`, {
-        method: 'PATCH',
-        headers: { Prefer: 'return=representation' },
-        body: JSON.stringify(fila),
-      });
-      if (!r.ok) return { data: null, error: `supabase ${r.status}` };
-      const j = await r.json();
-      return { data: Array.isArray(j) ? (j[0] ?? null) : j, error: null };
-    },
-  };
-}
-
-/** Helpers de query strings PostgREST (valores siempre codificados). */
 export const eq = (col, val) => `${col}=eq.${encodeURIComponent(val)}`;
 export const ilikeContiene = (col, val) => `${col}=ilike.*${encodeURIComponent(val)}*`;

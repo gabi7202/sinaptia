@@ -1,19 +1,21 @@
 /**
  * resumen.js — Conversación → lead estructurado (el oro del análisis).
  *
- * Pipeline heredado de B: al cerrar la sesión (o por el cron de rescate),
- * el LLM (Gemini o Grok) lee la transcripción completa y devuelve SOLO un JSON con
- * intención, urgencia, frases textuales, objeciones, herramientas actuales y
- * siguiente paso. Pide el JSON con response_format json_object y, si aun así
- * llega roto, la sesión queda needs_summary=true y el cron reintenta: nunca se
- * pierde una conversación.
+ * Al cerrar la sesión (o por el cron de rescate), el LLM (Gemini, Groq o Grok)
+ * lee la transcripción completa y devuelve SOLO un JSON con intención, urgencia,
+ * frases textuales, objeciones, herramientas actuales y siguiente paso. Pide el
+ * JSON con response_format json_object y, si aun así llega roto, la sesión
+ * queda pendiente (needs_summary=true) y el cron reintenta: nunca se pierde una
+ * conversación.
  *
  * El lead solo se crea/actualiza si hay al menos un dato identificador
  * (nombre, negocio, teléfono o email), y los campos nuevos se fusionan con el
  * lead previo sin pisar datos: coalesce(nuevo, previo).
+ *
+ * Persistencia: Vercel KV (server/kv.js). Supabase quedó eliminado del proyecto.
  */
 
-import { norm, digits, eq } from './nucleo.js';
+import { norm, digits } from './nucleo.js';
 import { llm, modeloExtract } from './llm.js';
 import { MARCA } from './langs.js';
 
@@ -25,23 +27,19 @@ const SYS = `Analizas conversaciones de ventas de ${MARCA}. Devuelve SOLO un JSO
 Reglas: usa null si la persona no lo dijo explícitamente; no inventes. "frases_textuales" son citas literales del usuario sobre lo que busca (con sus propias palabras). "resumen": máximo 3 frases; si hay resumen previo, intégralo.`;
 
 export async function resumirSesion(db, env, sessionId, fetchImpl) {
-  const { data: s } = await db.select('sessions',
-    `select=id,visitor_id,needs_summary&${eq('id', sessionId)}`, { single: true });
+  const s = await db.getSession(sessionId);
   if (!s || !s.needs_summary) return { hecho: false, motivo: 'sin_flag' };
 
-  const { data: msgs } = await db.select('messages',
-    `select=role,content&${eq('session_id', sessionId)}&order=created_at.asc`);
+  const msgs = await db.getMessages(sessionId);
   if (!msgs || !msgs.some((m) => m.role === 'user')) {
-    await db.actualizar('sessions', eq('id', sessionId), { needs_summary: false });
+    await db.setSession(sessionId, { ...s, needs_summary: false });
+    await db.desmarcarPendiente(sessionId);
     return { hecho: false, motivo: 'sin_usuario' };
   }
 
-  const { data: v } = await db.select('visitors',
-    `select=lead_id&${eq('id', s.visitor_id)}`, { single: true });
   let prev = null;
-  if (v && v.lead_id) {
-    ({ data: prev } = await db.select('leads', `select=*&${eq('id', v.lead_id)}`, { single: true }));
-  }
+  const v = s.visitor_id ? await db.getVisitor(s.visitor_id) : null;
+  if (v && v.lead_id) prev = await db.getLead(v.lead_id);
 
   const transcript = msgs
     .map((m) => `${m.role === 'user' ? 'USUARIO' : 'ASISTENTE'}: ${m.content}`)
@@ -63,12 +61,12 @@ export async function resumirSesion(db, env, sessionId, fetchImpl) {
   try {
     a = JSON.parse(txt.replace(/```json|```/g, '').trim());
   } catch (e) {
-    return { hecho: false, motivo: 'json_invalido' }; // queda needs_summary=true: el cron reintenta
+    return { hecho: false, motivo: 'json_invalido' }; // queda pendiente: el cron reintenta
   }
 
   const now = new Date().toISOString();
-  await db.actualizar('sessions', eq('id', sessionId),
-    { analisis: a, needs_summary: false, summarized_at: now });
+  await db.setSession(sessionId, { ...s, analisis: a, needs_summary: false, summarized_at: now });
+  await db.desmarcarPendiente(sessionId);
 
   // Solo se crea/actualiza lead si hay algo que identifique a la persona
   if (a.nombre || a.negocio || a.telefono || a.email) {
@@ -81,18 +79,19 @@ export async function resumirSesion(db, env, sessionId, fetchImpl) {
       necesidad: a.necesidad ?? (prev && prev.necesidad) ?? null,
       resumen: a.resumen ?? (prev && prev.resumen) ?? null,
     };
-    const fila = {
+    const lead = {
+      ...(prev || {}),
+      id: (prev && prev.id) || crypto.randomUUID(),
       ...m,
       nombre_norm: norm(m.nombre) || null,
       negocio_norm: norm(m.negocio) || null,
       telefono_norm: digits(m.telefono) || null,
       updated_at: now,
     };
-    if (prev) {
-      await db.actualizar('leads', eq('id', prev.id), fila);
-    } else {
-      const { data: l } = await db.insertar('leads', fila);
-      if (l && l.id) await db.actualizar('visitors', eq('id', s.visitor_id), { lead_id: l.id });
+    await db.saveLead(lead);
+    if (!prev && s.visitor_id) {
+      const vv = await db.getVisitor(s.visitor_id);
+      if (vv) await db.setVisitor(s.visitor_id, { ...vv, lead_id: lead.id });
     }
   }
   return { hecho: true, analisis: a };

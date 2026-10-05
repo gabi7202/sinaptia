@@ -14,7 +14,7 @@
  * consultoría) y opera con límite duro de llamada (MAX_MINUTOS_LLAMADA).
  */
 
-import { norm, digits, eq, ilikeContiene } from './nucleo.js';
+import { norm, digits } from './nucleo.js';
 import { LANGS, MARCA, AGENTE, HUMANO } from './langs.js';
 
 /** Límite duro de llamada: pasado este tiempo sin intención de pago, el turno
@@ -102,12 +102,14 @@ export const tools = [{
 }];
 
 /**
- * Ejecuta buscar_cliente con la política de privacidad de B:
+ * Ejecuta buscar_cliente sobre Vercel KV con la política de privacidad de siempre:
  *   · FUERTE (teléfono ≥10 dígitos, o email, o nombre+negocio) → 'confirmado'
  *     con los datos del lead, y vincula visitante↔lead para la próxima cookie.
  *   · DÉBIL (solo nombre coincide) → 'posible_coincidencia': el modelo debe
  *     pedir confirmación SIN revelar qué hay guardado.
  *   · Nada → 'sin_coincidencia'.
+ * Los índices ln:/le:/lt: (escritos por db.saveLead) resuelven la coincidencia
+ * exacta en un GET; nombre+negocio se confirma leyendo el lead completo.
  */
 export async function runTool(db, name, input, ctx) {
   if (name !== 'buscar_cliente') return { error: 'herramienta desconocida' };
@@ -117,35 +119,36 @@ export async function runTool(db, name, input, ctx) {
   const tel = digits(input && input.telefono);
   const email = String((input && input.email) || '').toLowerCase().trim();
 
-  const orden = '&order=updated_at.desc&limit=1';
+  let hit = null;
+  if (tel.length >= 10) hit = await db.buscarIndice('lt', tel);
+  if (!hit && email) hit = await db.buscarIndice('le', email);
+  if (!hit && nombre && negocio) hit = await db.buscarIndice('ln', nombre);
+
   let lead = null;
-  if (tel.length >= 10) {
-    ({ data: lead } = await db.select('leads', `select=*${orden}&${eq('telefono_norm', tel)}`, { single: true }));
-  }
-  if (!lead && email) {
-    ({ data: lead } = await db.select('leads', `select=*${orden}&${eq('email', email)}`, { single: true }));
-  }
-  if (!lead && nombre && negocio) {
-    ({ data: lead } = await db.select('leads', `select=*${orden}&${eq('nombre_norm', nombre)}&${ilikeContiene('negocio_norm', negocio)}`, { single: true }));
+  if (hit && hit.lead_id) {
+    lead = await db.getLead(hit.lead_id);
+    // el índice por nombre es solo candidato: si además llegó el negocio,
+    // tiene que coincender (contains, sin acentos) o tiramos al suelo la fuerte
+    if (lead && nombre && negocio && !(norm(lead.negocio) || '').includes(negocio)) lead = null;
+  } else if (hit && hit.lead_id) {
+    lead = await db.getLead(hit.lead_id);
   }
 
   if (lead) {
     // la próxima vez lo reconoce directo por la cookie del navegador
-    await db.actualizar('visitors', eq('id', ctx.visitorId), { lead_id: lead.id });
+    const v = await db.getVisitor(ctx.visitorId);
+    if (v) await db.setVisitor(ctx.visitorId, { ...v, lead_id: lead.id });
     return {
       estado: 'confirmado', nombre: lead.nombre, negocio: lead.negocio, giro: lead.giro,
       necesidad: lead.necesidad, resumen: lead.resumen, ultima_vez: lead.updated_at,
     };
   }
 
-  if (nombre) {
-    const count = await db.contar('leads', eq('nombre_norm', nombre));
-    if (count > 0) {
-      return {
-        estado: 'posible_coincidencia',
-        instruccion: 'Pide nombre del negocio, teléfono o correo para confirmar. No reveles datos.',
-      };
-    }
+  if (nombre && await db.existeNombre(nombre)) {
+    return {
+      estado: 'posible_coincidencia',
+      instruccion: 'Pide nombre del negocio, teléfono o correo para confirmar. No reveles datos.',
+    };
   }
   return { estado: 'sin_coincidencia' };
 }

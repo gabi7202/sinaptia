@@ -1,18 +1,22 @@
 /**
- * api/voz/chat.js — Un turno de conversación con el LLM (Gemini o Grok, ver server/llm.js), en streaming real.
+ * api/voz/chat.js — Un turno de conversación con el LLM (Groq/Gemini/Grok, ver server/llm.js), en streaming real.
  *
  * POST { sessionId, text } · cookie vid
  *   → text/plain en stream: el cliente habla la primera frase antes de que el
- *     modelo termine (la ventaja nº1 de B sobre el proxy JSON de A).
+ *     modelo termine (la ventaja nº1 sobre el proxy JSON).
  *
- * Seguridad y costo (heredado de B): mismo origen, UUID estrictos, sesión
- * propiedad del visitante, límite de 60 mensajes/hora/visitante, texto ≤1000.
- * Bucle de herramientas ≤4 rondas (buscar_cliente) y respuesta final guardada
- * en messages para el resumen de cierre. Límite duro de llamada: si la sesión
- * supera MAX_MINUTOS_LLAMADA, el system prompt del turno lleva avisoLimite()
- * (el agente concreta el pago, redirige firme o se despide — nunca se alarga).
+ * Seguridad y costo: mismo origen, UUID estrictos, sesión propiedad del
+ * visitante, límite de 60 mensajes/hora/visitante (INCR con ventana en KV),
+ * texto ≤1000. Bucle de herramientas ≤4 rondas (buscar_cliente) y respuesta
+ * final guardada en los mensajes de la sesión para el resumen de cierre.
+ * Límite duro de llamada: si la sesión supera MAX_MINUTOS_LLAMADA, el system
+ * prompt del turno lleva avisoLimite() (el agente concreta el pago, redirige
+ * firme o se despide — nunca se alarga).
+ *
+ * Persistencia: Vercel KV (server/kv.js). Supabase quedó eliminado del proyecto.
  */
-import { crearSupabase, isUUID, mismoOrigen, leerCookies, leerCuerpo, json, eq } from '../../server/nucleo.js';
+import { crearKV } from '../../server/kv.js';
+import { isUUID, mismoOrigen, leerCookies, leerCuerpo, json } from '../../server/nucleo.js';
 import { llm, modeloChat } from '../../server/llm.js';
 import { buildSystem, tools, runTool, normalizarHistorial, MAX_POR_HORA, RONDAS_TOOLS,
   MAX_MINUTOS_LLAMADA, minutosTranscurridos, avisoLimite } from '../../server/agente.js';
@@ -23,7 +27,7 @@ export default async function handler(req, res) {
   if (!mismoOrigen(req)) return json(res, 403, { error: 'origin' });
 
   const env = process.env;
-  const db = crearSupabase(env);
+  const db = crearKV(env);
   if (!db.disponible()) return json(res, 503, { error: 'backend sin configurar' });
 
   const vid = leerCookies(req).vid;
@@ -31,29 +35,23 @@ export default async function handler(req, res) {
   const text = String((b && b.text) || '').trim().slice(0, 1000);
   if (!text || !isUUID(vid) || !isUUID(b && b.sessionId)) return json(res, 400, { error: 'bad' });
 
-  const { data: s } = await db.select('sessions',
-    `select=id,lang,created_at&${eq('id', b.sessionId)}&${eq('visitor_id', vid)}`, { single: true });
-  if (!s) return json(res, 403, { error: 'session' });
+  const s = await db.getSession(b.sessionId);
+  if (!s || s.visitor_id !== vid) return json(res, 403, { error: 'session' });
 
-  // límite de gasto por visitante: mensajes de usuario en la última hora
-  const desde = new Date(Date.now() - 3600e3).toISOString();
-  const recientes = await db.contar('messages',
-    `${eq('visitor_id', vid)}&${eq('role', 'user')}&created_at=gte.${desde}`);
-  if (recientes >= MAX_POR_HORA) return json(res, 429, { error: 'limit' });
+  // límite de gasto por visitante: contador en KV con ventana de 1 h (INCR+EXPIRE)
+  const rl = await db.incrConVentana(`rl:${vid}`, 3600);
+  if (rl.ok && rl.n > MAX_POR_HORA) return json(res, 429, { error: 'limit' });
 
   const now = new Date().toISOString();
-  await db.insertar('messages', { session_id: s.id, visitor_id: vid, role: 'user', content: text, lang: s.lang });
-  await db.actualizar('sessions', eq('id', s.id), { needs_summary: true, last_msg_at: now });
+  await db.pushMessage(s.id, { role: 'user', content: text, lang: s.lang, ts: now });
+  await db.setSession(s.id, { ...s, needs_summary: true, last_msg_at: now });
+  await db.marcarPendiente(s.id, vid, Date.now());   // red del cron si el end nunca llega
 
-  // historial: últimos 30 mensajes, normalizado para Grok (empieza en user, alterna)
-  const { data: hist } = await db.select('messages',
-    `select=role,content&${eq('session_id', s.id)}&order=created_at.desc&limit=30`);
-  const msgs = normalizarHistorial((hist || []).slice().reverse());
+  // historial: últimos 30 mensajes, normalizado (empieza en user, alterna roles)
+  const msgs = normalizarHistorial((await db.getMessages(s.id)).slice(-30));
 
-  const { data: v } = await db.select('visitors', `select=lead_id&${eq('id', vid)}`, { single: true });
-  const lead = v && v.lead_id
-    ? (await db.select('leads', `select=*&${eq('id', v.lead_id)}`, { single: true })).data
-    : null;
+  const v = await db.getVisitor(vid);
+  const lead = v && v.lead_id ? await db.getLead(v.lead_id) : null;
   // límite duro de llamada: pasado el tope, el turno viaja con el aviso de cierre
   const system = buildSystem(s.lang, lead) +
     (minutosTranscurridos(s.created_at) >= MAX_MINUTOS_LLAMADA ? `\n\n${avisoLimite()}` : '');
@@ -115,7 +113,7 @@ export default async function handler(req, res) {
   }
 
   if (full.trim()) {
-    await db.insertar('messages', { session_id: s.id, visitor_id: vid, role: 'assistant', content: full.trim(), lang: s.lang });
+    await db.pushMessage(s.id, { role: 'assistant', content: full.trim(), lang: s.lang, ts: new Date().toISOString() });
   }
   if (abierto) {
     try {
