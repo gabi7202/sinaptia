@@ -1,5 +1,7 @@
 ---
 import { CONFIG } from '../config.js';
+const NOMBRE = 'Yunior Rafael Ortiz Carela';
+const LINKEDIN = 'https://www.linkedin.com/in/yunior-rafael-ortiz-carela';
 ---
 <nav class="nav">
   <div class="nav-in">
@@ -18,6 +20,30 @@ import { CONFIG } from '../config.js';
     </a>
     <div class="nav-id" id="nav-id" role="group" aria-label="Idioma"></div>
     <div class="nav-live resolviendo" id="nav-live"><i></i><span id="nav-live-txt">resolviendo tu contexto…</span></div>
+    <a class="nav-link" href="#auditoria">Auditoría gratis</a>
     <button class="nav-cta" id="nav-agente">Hablar con el agente</button>
+    <div class="nav-perfil">
+      <a class="nav-foto" href={LINKEDIN} target="_blank" rel="noopener me" aria-label={`LinkedIn de ${NOMBRE}`}>
+        <img src="/perfil.png" alt={`Foto de ${NOMBRE}`} width="40" height="40" />
+      </a>
+      <div class="nav-perfil-txt">
+        <span class="nav-nombre">{NOMBRE}</span>
+        <span class="nav-ubic">{CONFIG.marca.ubicacion}</span>
+      </div>
+    </div>
   </div>
 </nav>
+
+<style>
+  .nav-perfil{display:flex;align-items:center;gap:10px;margin-left:6px;padding-left:14px;border-left:1px solid var(--borde)}
+  .nav-foto img{width:40px;height:40px;border-radius:50%;object-fit:cover;display:block;
+    border:2px solid var(--azul-borde);box-shadow:0 0 0 3px var(--azul-suave);transition:.15s}
+  .nav-foto:hover img{border-color:var(--azul);transform:translateY(-1px)}
+  .nav-perfil-txt{display:flex;flex-direction:column;line-height:1.25}
+  .nav-nombre{font-size:12.5px;font-weight:700;color:var(--tinta);letter-spacing:-.01em}
+  .nav-ubic{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;color:var(--tinta3);text-transform:uppercase}
+  @media (max-width:1080px){
+    .nav-perfil{margin-left:0;padding-left:0;border-left:none}
+    .nav-perfil-txt{display:none}
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+/**
+ * Quien.astro — P0-7: la cara del sitio.
+ * Va después de #fundadoras y antes de #crecimiento.
+ * Foto: /public/perfil.png (cuadrada, mín. 800×800, fondo liso).
+ */
+const NOMBRE = 'Yunior Rafael Ortiz Carela';
+const LINKEDIN = 'https://www.linkedin.com/in/yunior-rafael-ortiz-carela';
+const ANIOS = '+8'; // "+8 años" — ajústalo si no son tus años exactos de experiencia
+---
+<section id="quien">
+  <div class="wrap quien-grid">
+    <div class="quien-foto">
+      <img src="/perfil.png" alt={`Fotografía de ${NOMBRE}, fundador de SINAPTIA`} width="800" height="800" loading="lazy" />
+    </div>
+    <div class="quien-txt">
+      <div class="eyebrow"><i></i> quién está detrás</div>
+      <h2 class="sec-title">Soy {NOMBRE}.</h2>
+      <p class="sec-lead">{ANIOS} años construyendo software. Aquí no hay equipo ni intermediarios:
+        <b>programo, automatizo y vigilo que nada se caiga</b>. Tú hablas siempre con la misma persona
+        que escribe el código.</p>
+      <ul class="quien-list">
+        <li>Construí y mantengo en producción <a href="https://aura-taller.web.app" target="_blank" rel="noopener">Control Taller</a>, un sistema de gestión de talleres con app Android nativa, web, pagos y tickets — hoy lo usan 40 talleres registrados.</li>
+        <li>Trabajo 100% en remoto desde México para clientes en México, EE.&nbsp;UU. y Europa.</li>
+        <li>Firmo NDA y acuerdo de tratamiento de datos antes de empezar. Cumplo GDPR y EU AI Act por diseño, no por folleto.</li>
+      </ul>
+      <div class="quien-links">
+        <a class="btn btn-primary" href={LINKEDIN} target="_blank" rel="noopener me">Ver mi LinkedIn</a>
+        <span class="quien-handle">linkedin.com/in/yunior-rafael-ortiz-carela</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quien-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    gap: clamp(24px, 5vw, 56px);
+    align-items: center;
+    padding-block: clamp(48px, 8vw, 88px);
+  }
+  .quien-foto img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid var(--borde, #d7dee6);
+    display: block;
+  }
+  .quien-txt .sec-title { margin-bottom: 12px; }
+  .quien-list {
+    margin: 18px 0 22px;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .quien-links { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .quien-handle { font-size: 13px; opacity: .7; }
+  @media (max-width: 720px) {
+    .quien-grid { grid-template-columns: 1fr; }
+    .quien-foto { max-width: 260px; }
+  }
+</style>
