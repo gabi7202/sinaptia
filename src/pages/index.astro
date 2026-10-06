@@ -26,7 +26,17 @@ import Footer from '../components/Footer.astro';
 // FAQPage: mismo texto que la sección visible (Google exige coincidencia).
 // Ayuda a aparecer en resultados enriquecidos y a que los motores generativos
 // puedan citar nuestras respuestas tal cual.
-const faqLd = JSON.stringify(faqJsonLd(CONFIG.urlPublica));
+// El origen se resuelve igual que en Base.astro: urlPublica > Astro.site
+// (> SITE_URL de Vercel) > URL de la petición (solo SSR), para que el @id no
+// se quede apuntando a una URL vieja si cambias de proyecto o conectas dominio.
+const envSite = import.meta.env.SITE_URL ? String(import.meta.env.SITE_URL) : '';
+const peticion = (import.meta.renderer === 'server' && Astro.url && /^https?:$/.test(Astro.url.protocol))
+  ? Astro.url.origin : '';
+const origenLd = CONFIG.urlPublica
+  || (Astro.site ? String(Astro.site).replace(/\/$/, '') : '')
+  || (envSite ? envSite.replace(/\/$/, '') : '')
+  || peticion;
+const faqLd = JSON.stringify(faqJsonLd(origenLd));
 ---
 <Base
   title="SINAPTIA — IA que entra en operación"

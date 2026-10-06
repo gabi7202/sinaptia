@@ -21,8 +21,12 @@ export const CONFIG = {
     agenda: 'https://cal.com/tu-usuario/descubrimiento',
   },
   ciudadRespaldo: 'Bogotá',
-  // URL pública real (necesaria para que el QR apunte a tu dominio):
-  urlPublica: 'https://sinaptia.vercel.app',   // dominio de producción (canonical, og:url, QR)
+  // URL pública real (necesaria para que el QR apunte a tu dominio).
+  // Déjala VACÍA para que el sitio use automáticamente la URL donde se está
+  // viendo (tu proyecto de Vercel, el dominio propio que conectes después, o
+  // la preview). Solo ponla a mano si quieres forzar una URL fija — p. ej.
+  // 'https://sinaptialabs.com' — y que canonical/og:url/QR apunten siempre ahí.
+  urlPublica: '',                          // '' = autodetectar (recomendado)
   // Automatización de prospectos: POST JSON con el lead completo cuando acepta el PDF.
   // null = solo localStorage + PDF.
   webhookUrl: null,
