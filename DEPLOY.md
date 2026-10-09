@@ -60,11 +60,18 @@ no hay ningún archivo con claves en el repo; viven como secretos del entorno.
    (`vercel.json` ya lo fija, incluido el header de seguridad y la función `api/ia.js`.)
 3. *Settings → Environment Variables*: añade `GEMINI_API_KEY` (Gemini), `XAI_API_KEY` (Grok) u `OPENAI_KEY` y, si quieres
    restringir el origen, `ORIGEN_PERMITIDO=https://tu-dominio.com`.
-4. *Deploy*. Tu URL temporal: `https://sinaptia.vercel.app`.
+4. *Deploy*. Vercel te da una URL del proyecto (`https://<nombre>.vercel.app`): puede ser
+   distinta a la que tenías antes si el proyecto se creó con otro nombre — no pasa nada,
+   el sitio se autodetecta (ver punto 6).
 5. En `src/config.js` pon `ia.endpoint = '/api/ia'` (mismo origen, sin CORS) y haz commit.
-6. Prueba el cerebro:
+6. **No hace falta escribir tu URL en ninguna parte**: `urlPublica` se deja vacío y el build
+   usa `SITE_URL`, la variable que Vercel inyecta automáticamente con la URL real del
+   proyecto. Canonical, `og:url`, `og:image`, el QR y el sitemap apuntan solos a donde el
+   sitio viva (la URL de Vercel hoy, tu dominio cuando lo conectes en §4). Si alguna vez
+   quieres forzar una URL fija, escribe `urlPublica: 'https://…'` en `src/config.js`.
+7. Prueba el cerebro (sustituye `<nombre>` por la URL que te dio Vercel):
    ```bash
-   curl -X POST https://sinaptia.vercel.app/api/ia \
+   curl -X POST https://<nombre>.vercel.app/api/ia \
      -H 'Content-Type: application/json' \
      -d '{"traducir":{"texto":"Hola, gracias por tu interés.","de":"es","a":"en"}}'
    ```
@@ -99,14 +106,18 @@ Y en `src/config.js`: `ia.endpoint = 'https://sinaptia-ia.TU_SUBDOMINIO.workers.
    registros exactos (un `A` y un `CNAME`, o un `CNAME` plano si usas Nameservers de Vercel).
    El SSL se emite solo en minutos.
 3. En Firebase: *Hosting → Add custom domain* y sigue la verificación por TXT.
-4. **Después** de que el dominio responda, actualiza `src/config.js`:
+4. **Después** de que el dominio responda, **no necesitas tocar nada**: Vercel vuelve a
+   construir con `SITE_URL` apuntando al dominio marcado como *Production*, y canonical,
+   `og:url`, `og:image`, el QR y el sitemap se regeneran solos apuntando a él. Solo si
+   quieres fijar la URL a mano (o usar un dominio que Vercel no marque como producción),
+   actualiza `src/config.js`:
    ```js
    urlPublica: 'https://tu-dominio.com/',
    marca: { agenda: 'https://cal.com/tu-usuario/descubrimiento', email: 'hola@tu-dominio.com', web: 'tu-dominio.com' },
    ```
-   y haz commit: el canonical, el `og:url`, el `og:image` y el QR se regeneran apuntando a tu
-   dominio en el siguiente deploy. Hasta que no lo configures, canonical y og:url se omiten a
-   propósito (no pueden ser absolutos) y el QR usa un dominio de ejemplo.
+   y haz commit. Hasta que exista alguna de las dos (`urlPublica` o el build dentro de
+   Vercel), canonical y `og:url` se omiten a propósito (no pueden ser absolutos) y el QR
+   usa un dominio de ejemplo.
 5. Verifica tras el deploy:
    - `https://tu-dominio.com/` → saludo con ciudad y clima reales
    - `https://tu-dominio.com/?voz=1&lang=en` → llamada en inglés para tu prospecto de EE. UU.

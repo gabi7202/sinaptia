@@ -368,15 +368,24 @@ const blobs = [];
     /id="salida-opciones"/.test(htmlCrudo) && /id="salida-pdf"/.test(htmlCrudo) &&
     /id="salida-wa"[^>]*href="https:\/\/wa\.me\/529834066179/.test(htmlCrudo) &&
     !/type="email"/.test(htmlCrudo) && !/form-email/.test(htmlCrudo));
-  t('con urlPublica configurada, canonical y og:url son absolutos',
-    /rel="canonical" href="https:\/\/sinaptia\.vercel\.app\/"/.test(htmlCrudo) && /property="og:url" content="https:\/\/sinaptia\.vercel\.app\/"/.test(htmlCrudo));
+  t('con el origen del sitio resuelto (SITE_URL/urlPublica), canonical y og:url son absolutos',
+    /rel="canonical" href="https:\/\/mi-proyecto\.vercel\.app\/"/.test(htmlCrudo) && /property="og:url" content="https:\/\/mi-proyecto\.vercel\.app\/"/.test(htmlCrudo));
   t('og:image y twitter:card presentes siempre',
     /property="og:image"/.test(htmlCrudo) && /name="twitter:card"/.test(htmlCrudo));
   t('og:image apunta al og.png raíz en todas las páginas (no al directorio de la página)',
-    /property="og:image" content="https:\/\/sinaptia\.vercel\.app\/og\.png"/.test(htmlCrudo));
+    /property="og:image" content="https:\/\/mi-proyecto\.vercel\.app\/og\.png"/.test(htmlCrudo));
   const vozCrudo = fs.readFileSync(path.join(DIST, 'voz/index.html'), 'utf8');
   t('og:image de /voz también apunta a la raíz (regresión del 404 /voz/og.png)',
-    /property="og:image" content="https:\/\/sinaptia\.vercel\.app\/og\.png"/.test(vozCrudo) && !/\/voz\/og\.png/.test(vozCrudo));
+    /property="og:image" content="https:\/\/mi-proyecto\.vercel\.app\/og\.png"/.test(vozCrudo) && !/\/voz\/og\.png/.test(vozCrudo));
+  // SEO: el sitemap se genera con la URL real del sitio (SITE_URL de Vercel),
+  // no con una hardcodeada: cambia la URL del proyecto y todo sigue apuntando bien.
+  let sitemapXml = '';
+  try { sitemapXml = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8'); } catch (e) { /* sin sitemap */ }
+  t('sitemap.xml generado con la URL real del sitio (todas las rutas absolutas)',
+    /<urlset/.test(sitemapXml) &&
+    /<loc>https:\/\/mi-proyecto\.vercel\.app\/<\/loc>/.test(sitemapXml) &&
+    /<loc>https:\/\/mi-proyecto\.vercel\.app\/voz\/<\/loc>/.test(sitemapXml) &&
+    !/sinaptia\.vercel\.app/.test(sitemapXml));
   t('JSON-LD con Organization, Service y WebSite',
     /"Organization"/.test(htmlCrudo) && /"Service"/.test(htmlCrudo) && /"WebSite"/.test(htmlCrudo));
   t('JSON-LD no expone precios ni ofertas (cero precios, también para crawlers)',

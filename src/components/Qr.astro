@@ -12,7 +12,18 @@ import QRCode from 'qrcode';
 import { CONFIG } from '../config.js';
 
 const base = import.meta.env.BASE_URL || '/';
-const sitio = CONFIG.urlPublica || (Astro.site ? String(Astro.site).replace(/\/$/, '') + base : '');
+// urlPublica fija > Astro.site (> SITE_URL inyectado por Vercel) > origin de la
+// petición (solo en SSR; en prerender Astro.url es un placeholder). Así el QR
+// apunta siempre a la URL real del sitio, cambie esta de proyecto o de dominio
+// en Vercel; solo queda placeholder si no hay ninguna URL pública conocida.
+const envSite = import.meta.env.SITE_URL ? String(import.meta.env.SITE_URL) : '';
+const peticion = (import.meta.renderer === 'server' && Astro.url && /^https?:$/.test(Astro.url.protocol))
+  ? Astro.url.origin : '';
+const candidato = CONFIG.urlPublica
+  || (Astro.site ? String(Astro.site) : '')
+  || envSite
+  || peticion;
+const sitio = candidato ? candidato.replace(/\/$/, '') + base : '';
 const raiz = (sitio || 'https://tu-dominio.com').replace(/\/$/, '');
 // El QR lleva a /voz: la puerta corta. Popup a media pantalla, idioma y a hablar.
 const urlQr = raiz + '/voz';
