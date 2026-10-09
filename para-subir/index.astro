@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import { CONFIG } from '../config.js';
+import { faqJsonLd } from '../lib/faq.js';
+import Nav from '../components/Nav.astro';
+import LegalBanner from '../components/LegalBanner.astro';
+import Hero from '../components/Hero.astro';
+import QueHace from '../components/QueHace.astro';
+import Problema from '../components/Problema.astro';
+import Servicios from '../components/Servicios.astro';
+import Proceso from '../components/Proceso.astro';
+import Precios from '../components/Precios.astro';
+import Fundadoras from '../components/Fundadoras.astro';
+import Quien from '../components/Quien.astro';
+import ComoPiensa from '../components/ComoPiensa.astro';
+import Crecimiento from '../components/Crecimiento.astro';
+import Faq from '../components/Faq.astro';
+import LeadMagnet from '../components/LeadMagnet.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import Qr from '../components/Qr.astro';
+import AgentDock from '../components/AgentDock.astro';
+import Llamada from '../components/Llamada.astro';
+import Invitacion from '../components/Invitacion.astro';
+import Footer from '../components/Footer.astro';
+
+// FAQPage: mismo texto que la sección visible (Google exige coincidencia).
+// Ayuda a aparecer en resultados enriquecidos y a que los motores generativos
+// puedan citar nuestras respuestas tal cual.
+const faqLd = JSON.stringify(faqJsonLd(CONFIG.urlPublica));
+---
+<Base
+  title="SINAPTIA — IA que entra en operación"
+  description="Un agente de IA que te saluda por tu ciudad y aterriza lo que la IA puede hacer en tu mercado local, entiende tu operación en una sola conversación, corrige lo que está mal planteado y te deja un brief en PDF con lo que de verdad conviene automatizar."
+>
+  <script type="application/ld+json" set:html={faqLd} />
+  <Nav />
+  <LegalBanner />
+  <Hero />
+  <QueHace />
+  <Problema />
+  <Servicios />
+  <Proceso />
+  <Precios />
+  <Fundadoras />
+  <Quien />
+  <Crecimiento />
+  <ComoPiensa />
+  <Faq />
+  <LeadMagnet />
+  <Qr />
+  <CtaFinal />
+  <Footer />
+  <AgentDock />
+  <Llamada />
+  <Invitacion />
+  <script>
+    import '../scripts/main.js';
+  </script>
+</Base>
