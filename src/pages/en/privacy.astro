@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import { CONFIG } from '../../config.js';
+---
+<Base
+  title="Privacy — SINAPTIA"
+  description="What the Sinaptia site processes, where it lives, and how to delete it."
+  lang="en"
+>
+  <main class="wrap wrap-narrow" style="padding:64px 26px">
+    <div class="eyebrow"><i></i> privacy</div>
+    <h1 class="sec-title">What we know about you, and what we do not</h1>
+    <p class="sec-lead">Short version: no advertising cookies, no pixels. What exists is what you choose to type or say.</p>
+
+    <h3 style="margin:26px 0 8px">1 · Your browser</h3>
+    <p>The agent talks, stores the conversation and generates your brief inside your browser. The
+      PDF stays on your device. You can clear the site data at any time from your browser settings.</p>
+
+    <h3 style="margin:26px 0 8px">2 · Temporary conversation memory</h3>
+    <p>So Nexa does not lose the thread when you reload or lock your phone, the conversation is kept
+      in this browser's local storage for up to 12 hours after the last turn. It is not shared across
+      devices. Type “start over” in the chat to delete it immediately. After 12 hours it is removed
+      automatically.</p>
+
+    <h3 style="margin:26px 0 8px">3 · The AI provider</h3>
+    <p>When you talk to Nexa, your message and the conversation context are sent to the configured
+      model provider (Groq by default) to generate the reply. We do not use that data to train our
+      own models or third-party models. Provider keys live on the server, never in your browser. If
+      you prefer not to send anything to a model, the local engine still answers without a network.</p>
+
+    <h3 style="margin:26px 0 8px">4 · Voice</h3>
+    <p>Speech recognition uses your browser's native capability. In desktop Chrome the audio is
+      processed by Google's speech service (not our integration, but not fully local either); in Safari
+      it is processed locally. The microphone only turns on after you tap. The video-call interpreter
+      does not record or store audio.</p>
+
+    <h3 style="margin:26px 0 8px">5 · A copy of your brief</h3>
+    <p>Your PDF is downloaded to your device. We also try to send a copy to the Sinaptia team so we can
+      reply; if no delivery channel is configured, the site offers you Share or Email instead. The copy
+      contains the details you gave in the conversation and the proposed project.</p>
+
+    <h3 style="margin:26px 0 8px">6 · Your rights</h3>
+    <p>Access, correction, deletion, portability and objection. Message us on
+      <a href={CONFIG.marca.whatsappUrl} target="_blank" rel="noopener">WhatsApp {CONFIG.marca.whatsapp}</a> and we
+      will handle it without asking for more data than needed to identify you.</p>
+
+    <p style="margin-top:30px"><a href="/en/">← Back to Sinaptia</a> · <a href="/privacidad/">Versión en español</a></p>
+  </main>
+</Base>

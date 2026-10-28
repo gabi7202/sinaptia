@@ -1,0 +1,12 @@
+---
+import { CONFIG } from '../config.js';
+---
+<footer class="footer">
+  <div class="wrap footer-in">
+    <span>{CONFIG.marca.nombre} · {CONFIG.marca.tagline}</span>
+    <span>
+      <a href={CONFIG.marca.whatsappUrl} target="_blank" rel="noopener">WhatsApp {CONFIG.marca.whatsapp}</a>
+      · <a href="/en/">English site</a> · {CONFIG.marca.web}
+    </span>
+  </div>
+</footer>

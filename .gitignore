@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+*.log
+.DS_Store
+
+# Documentación interna de negocio: NUNCA publicar.
+# Viaja con el repo en local pero git la excluye del commit.
+docs-internos/
+
+# Claves reales del entorno: NUNCA a git (.env.ejemplo sí viaja)
+.env
+.env.*
+!.env.ejemplo

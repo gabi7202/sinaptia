@@ -1,0 +1,275 @@
+---
+/**
+ * /interprete — Puente de idioma para el dueño que no habla inglés.
+ *
+ * Dos modos en la misma página:
+ *   1. ESCRITO: ES→EN / EN→ES con traducción instantánea o Google Translate.
+ *   2. VOZ PARA VIDEOLLAMADA: interpretación por turnos. El dueño pulsa
+ *      "Escuchar al cliente" y la IA transcribe en inglés, traduce al español y
+ *      lo dice; luego "Hablarle" para el camino inverso. Honesto: no es
+ *      simultáneo, es por turnos, y así se entiende.
+ *
+ * Sin worker configurado cada dirección ofrece Google Translate con el texto
+ * cargado: no es automático, pero es un clic.
+ */
+import Base from '../layouts/Base.astro';
+import { CONFIG } from '../config.js';
+---
+<Base title="Intérprete — SINAPTIA" description="Puente de idioma para operar conversaciones en inglés sin hablarlo, escrito y por voz para videollamadas.">
+  <style>
+    .interp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+    .interp-grid button{font:inherit;font-size:14px;font-weight:700;padding:16px 14px;border-radius:12px;cursor:pointer;
+      background:var(--azul);color:#fff;border:1px solid var(--azul);transition:.15s}
+    .interp-grid button.alt{background:var(--blanco);color:var(--azul-osc);border-color:var(--azul-borde)}
+    .interp-grid button:hover{transform:translateY(-1px)}
+    .interp-estado{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--azul-osc);min-height:18px}
+    .interp-log{white-space:pre-wrap;font-size:13px;background:var(--fondo);border:1px solid var(--borde);border-radius:10px;padding:12px;margin-top:10px;max-height:220px;overflow:auto}
+    .interp-acciones{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+    .interp-acciones button{font:inherit;font-size:12px;padding:8px 13px;border-radius:99px;cursor:pointer;background:var(--blanco);border:1px solid var(--borde);color:var(--tinta2)}
+    .interp-acciones button:hover{border-color:var(--azul);color:var(--azul)}
+    .interp-check{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tinta3);margin:6px 0 0}
+    @media(max-width:600px){.interp-grid{grid-template-columns:1fr}}
+  </style>
+  <main class="wrap wrap-narrow" style="padding:56px 26px">
+    <div class="eyebrow"><i></i> puente de idioma</div>
+    <h1 class="sec-title">Tú escribes en español.<br />Tu prospecto lo lee en inglés.</h1>
+    <p class="sec-lead">Y al revés: pegas lo que él escribió y lo lees en español. Si tu worker está
+      configurado, la traducción es instantánea; si no, un clic te lleva a Google Translate con el
+      texto ya cargado.</p>
+
+    <div class="calc" style="margin-top:26px">
+      <div class="calc-head">
+        <h3>Español → Inglés</h3>
+        <p>Escribe lo que quieres decirle. Sale listo para copiar y pegar en tu email o WhatsApp.</p>
+      </div>
+      <textarea id="es-in" rows="5" style="width:100%;background:var(--fondo);border:1px solid var(--borde);border-radius:9px;padding:12px;font-family:inherit;font-size:14px;color:var(--tinta)" placeholder="Ej: Hola Mark, gracias por tu interés. Te preparé una propuesta con dos fases y un número cerrado. ¿Te parece si la revisamos el jueves?"></textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0">
+        <button class="btn p" id="traducir-es">Traducir al inglés</button>
+        <button class="btn s" id="gt-es">Abrir en Google Translate</button>
+      </div>
+      <textarea id="en-out" rows="5" readonly style="width:100%;background:var(--azul-suave);border:1px solid var(--azul-borde);border-radius:9px;padding:12px;font-family:inherit;font-size:14px;color:var(--tinta2)" placeholder="Aquí aparece el texto en inglés…"></textarea>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn s" id="copiar-en">Copiar inglés</button>
+      </div>
+    </div>
+
+    <div class="calc" style="margin-top:20px">
+      <div class="calc-head">
+        <h3>Inglés → Español</h3>
+        <p>Pega lo que escribió el prospecto y léelo en español.</p>
+      </div>
+      <textarea id="en-in" rows="5" style="width:100%;background:var(--fondo);border:1px solid var(--borde);border-radius:9px;padding:12px;font-family:inherit;font-size:14px;color:var(--tinta)" placeholder="Paste the prospect's message here…"></textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0">
+        <button class="btn p" id="traducir-en">Traducir al español</button>
+        <button class="btn s" id="gt-en">Abrir en Google Translate</button>
+      </div>
+      <textarea id="es-out" rows="5" readonly style="width:100%;background:var(--azul-suave);border:1px solid var(--azul-borde);border-radius:9px;padding:12px;font-family:inherit;font-size:14px;color:var(--tinta2)" placeholder="Aquí aparece el texto en español…"></textarea>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn s" id="copiar-es">Copiar español</button>
+      </div>
+    </div>
+
+    <div class="calc" id="modo-llamada" style="margin-top:20px">
+      <div class="calc-head">
+        <h3>Modo videollamada (por turnos)</h3>
+        <p>Para una llamada real: pon el altavoz. Pulsa «Escuchar al cliente» y la IA transcribe en inglés,
+          traduce al español y te lo dice. Luego pulsa «Hablarle» para responder en español y que salga en
+          inglés. Es por turnos, no simultáneo: así se entiende y no se pisan las voces.</p>
+      </div>
+      <div class="interp-grid">
+        <button type="button" id="escuchar-en">🎧 Escuchar al cliente (EN → ES)</button>
+        <button type="button" class="alt" id="hablar-es">🎙️ Hablarle (ES → EN)</button>
+      </div>
+      <label class="interp-check"><input type="checkbox" id="seguir" checked /> Seguir escuchando al cliente después de traducir (manos libres)</label>
+      <div class="interp-estado" id="interp-estado" aria-live="polite">Listo. Elige un botón para empezar.</div>
+      <div class="interp-log" id="interp-log" aria-live="polite"></div>
+      <div class="interp-acciones">
+        <button type="button" id="interp-stop">Detener</button>
+        <button type="button" id="interp-copiar">Copiar transcripción</button>
+        <button type="button" id="interp-limpiar">Limpiar</button>
+      </div>
+      <p class="calc-sup" style="margin-top:10px">El audio no se guarda. El reconocimiento de voz es el del navegador
+        (en Chrome de escritorio se procesa en servidores de Google; en Safari es local). Si el navegador no
+        reconoce voz, usa el modo escrito de arriba.</p>
+    </div>
+
+    <div class="calc" style="margin-top:20px">
+      <div class="calc-head">
+        <h3>Resumen en español de la conversación guardada</h3>
+        <p>Toma los turnos guardados en este navegador (chat o voz) y los resume en español: qué pidió,
+          qué datos dio y cuál es el siguiente paso. Requiere worker configurado.</p>
+      </div>
+      <button class="btn p" id="resumir">Resumir conversación en español</button>
+      <div id="resumen-out" class="calc-sup" style="white-space:pre-wrap;margin-top:12px"></div>
+    </div>
+
+    <p class="calc-sup" style="margin-top:18px">
+      {CONFIG.ia && CONFIG.ia.endpoint
+        ? 'Worker configurado: las traducciones y el resumen son instantáneos.'
+        : 'Sin worker configurado: las traducciones se abren en Google Translate con el texto cargado. Configura ia.endpoint para traducción instantánea.'}
+    </p>
+  </main>
+
+  <script>
+    import { CONFIG } from '../config.js';
+    import { BD } from '../lib/bd.js';
+    import { par, elegirVoz, transcripcion, estadoTexto } from '../lib/interprete.js';
+
+    const endpoint = CONFIG.ia && CONFIG.ia.endpoint;
+    const $ = (id) => document.getElementById(id);
+
+    async function pedir(cuerpo, timeoutMs = 12000) {
+      if (!endpoint) return null;
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const r = await fetch(endpoint, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          signal: ctrl.signal, body: JSON.stringify(cuerpo),
+        });
+        clearTimeout(timer);
+        if (!r.ok) return null;
+        return await r.json();
+      } catch (e) { clearTimeout(timer); return null; }
+    }
+    function gt(texto, de, a) {
+      window.open('https://translate.google.com/?sl=' + de + '&tl=' + a + '&text=' + encodeURIComponent(texto), '_blank');
+    }
+    function copiar(id) {
+      const t = $(id).value;
+      if (navigator.clipboard) navigator.clipboard.writeText(t);
+    }
+
+    $('traducir-es').addEventListener('click', async () => {
+      const texto = $('es-in').value.trim();
+      if (!texto) return;
+      const j = await pedir({ traducir: { texto, de: 'es', a: 'en' } });
+      if (j && j.traducido) $('en-out').value = j.traducido;
+      else gt(texto, 'es', 'en');
+    });
+    $('gt-es').addEventListener('click', () => gt($('es-in').value, 'es', 'en'));
+    $('copiar-en').addEventListener('click', () => copiar('en-out'));
+
+    $('traducir-en').addEventListener('click', async () => {
+      const texto = $('en-in').value.trim();
+      if (!texto) return;
+      const j = await pedir({ traducir: { texto, de: 'en', a: 'es' } });
+      if (j && j.traducido) $('es-out').value = j.traducido;
+      else gt(texto, 'en', 'es');
+    });
+    $('gt-en').addEventListener('click', () => gt($('en-in').value, 'en', 'es'));
+    $('copiar-es').addEventListener('click', () => copiar('es-out'));
+
+    /* ── Modo voz: interpretación por turnos ── */
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let rec = null;
+    let activo = null;
+    let turnos = [];
+    let voces = [];
+
+    function cargarVoces() {
+      try { voces = window.speechSynthesis ? window.speechSynthesis.getVoices() : []; } catch (e) { voces = []; }
+    }
+    if (window.speechSynthesis) {
+      cargarVoces();
+      window.speechSynthesis.onvoiceschanged = cargarVoces;
+    }
+
+    function estado(e, dir = activo || 'en-es') { $('interp-estado').textContent = estadoTexto(e, dir); }
+    function pintarLog() {
+      $('interp-log').textContent = transcripcion(turnos) || 'La transcripción aparecerá aquí.';
+      $('interp-log').scrollTop = $('interp-log').scrollHeight;
+    }
+
+    function hablar(texto, lang) {
+      return new Promise((resolve) => {
+        if (!window.speechSynthesis || !texto) { resolve(); return; }
+        const u = new SpeechSynthesisUtterance(texto);
+        const v = elegirVoz(voces.length ? voces : (window.speechSynthesis.getVoices() || []), lang, CONFIG.voz && CONFIG.voz.genero);
+        if (v) u.voice = v;
+        u.lang = lang;
+        u.rate = 1.02;
+        u.onend = () => resolve();
+        u.onerror = () => resolve();
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      });
+    }
+
+    async function traducirTexto(texto, de, a) {
+      const j = await pedir({ traducir: { texto, de, a } });
+      if (j && j.traducido) return j.traducido;
+      return null;
+    }
+
+    function escuchar(dir) {
+      if (!SR) { estado('sin_mic', dir); return; }
+      const p = par(dir);
+      if (rec) { try { rec.abort(); } catch (e) {} }
+      const r = new SR();
+      rec = r;
+      r.lang = p.stt;
+      r.continuous = false;
+      r.interimResults = false;
+      r.maxAlternatives = 1;
+      let finalizado = false;
+      r.onresult = async (ev) => {
+        const texto = (ev.results[0] && ev.results[0][0] && ev.results[0][0].transcript || '').trim();
+        if (!texto) { estado('inactivo', dir); return; }
+        finalizado = true;
+        estado('traduciendo', dir);
+        const trad = await traducirTexto(texto, p.de, p.a);
+        if (!trad) {
+          estado('error', dir);
+          $('interp-log').textContent += `\n[${p.etiqueta}] ${texto}\n→ (sin worker: abre Google Translate)\n`;
+          return;
+        }
+        turnos.push({ dir, original: texto, traducido: trad });
+        pintarLog();
+        estado('hablando', dir);
+        await hablar(trad, p.tts);
+        if (activo === dir && dir === 'en-es' && $('seguir').checked) {
+          setTimeout(() => { if (activo === dir) escuchar(dir); }, 350);
+        } else {
+          estado('inactivo', dir);
+        }
+      };
+      r.onerror = (ev) => {
+        if (ev.error === 'no-speech' || ev.error === 'aborted') return;
+        if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') estado('sin_mic', dir);
+        else estado('error', dir);
+      };
+      r.onend = () => { if (!finalizado && activo === dir) estado('inactivo', dir); };
+      activo = dir;
+      estado('escuchando', dir);
+      try { r.start(); } catch (e) { estado('error', dir); }
+    }
+
+    function detener() {
+      activo = null;
+      if (rec) { try { rec.abort(); } catch (e) {} rec = null; }
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      estado('inactivo');
+    }
+
+    $('escuchar-en').addEventListener('click', () => { detener(); escuchar('en-es'); });
+    $('hablar-es').addEventListener('click', () => { detener(); escuchar('es-en'); });
+    $('interp-stop').addEventListener('click', detener);
+    $('interp-copiar').addEventListener('click', () => {
+      if (navigator.clipboard) navigator.clipboard.writeText(transcripcion(turnos));
+    });
+    $('interp-limpiar').addEventListener('click', () => { turnos = []; pintarLog(); detener(); });
+    pintarLog();
+
+    $('resumir').addEventListener('click', async () => {
+      const bd = new BD({});
+      const turnosBd = bd.todos().filter((r) => r.evento === 'turno');
+      if (!turnosBd.length) { $('resumen-out').textContent = 'No hay conversaciones guardadas en este navegador todavía.'; return; }
+      const conv = turnosBd.map((t) => (t.canal || 'chat') + ' | ' + (t.usuario || '') + ' → ' + (t.respuesta || '')).join('\n');
+      const j = await pedir({ resumir: { conversacion: conv, idioma: 'es' } });
+      $('resumen-out').textContent = j && j.resumen
+        ? j.resumen
+        : 'Sin worker configurado no puedo resumir automáticamente. Copia la conversación y pégala en Google Translate, o configura ia.endpoint.\n\n' + conv;
+    });
+  </script>
+</Base>
